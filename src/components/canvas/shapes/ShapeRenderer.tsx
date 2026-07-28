@@ -1,8 +1,10 @@
 import type Konva from 'konva'
-import type { Shape, ShapeId } from '../../../types/document'
-import { LineShape } from './LineShape'
-import { RectShape } from './RectShape'
-import { CircleShape } from './CircleShape'
+import type { Shape, ShapeId } from '~/types/document'
+import { LineShape } from '~/components/canvas/shapes/LineShape'
+import { RectShape } from '~/components/canvas/shapes/RectShape'
+import { CircleShape } from '~/components/canvas/shapes/CircleShape'
+import { ArcShape } from '~/components/canvas/shapes/ArcShape'
+import { TextShape } from '~/components/canvas/shapes/TextShape'
 
 export interface ShapeInteraction {
   registerNode: (id: ShapeId, node: Konva.Node | null) => void
@@ -35,6 +37,10 @@ export function ShapeRenderer({ shape, interactive, interaction }: ShapeRenderer
       return <RectShape shape={shape} {...shared} />
     case 'circle':
       return <CircleShape shape={shape} {...shared} />
+    case 'arc':
+      return <ArcShape shape={shape} {...shared} />
+    case 'text':
+      return <TextShape shape={shape} {...shared} />
     default:
       return null
   }

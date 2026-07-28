@@ -1,6 +1,6 @@
 import { Rect } from 'react-konva'
 import type Konva from 'konva'
-import type { Shape } from '../../../types/document'
+import type { Shape } from '~/types/document'
 
 interface RectShapeProps {
   shape: Extract<Shape, { type: 'rect' }>

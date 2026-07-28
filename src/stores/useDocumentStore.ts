@@ -1,12 +1,14 @@
 import { create } from 'zustand'
 import { temporal } from 'zundo'
-import type { Document, Shape, ShapeId, ShapePatch } from '../types/document'
+import type { Document, Shape, ShapeId, ShapePatch } from '~/types/document'
 
 interface DocumentStore {
   document: Document
   addShape: (shape: Shape) => void
   updateShape: (id: ShapeId, patch: ShapePatch) => void
   removeShape: (id: ShapeId) => void
+  clear: () => void
+  setUnits: (units: Document['units']) => void
 }
 
 const initialDocument: Document = {
@@ -38,6 +40,14 @@ export const useDocumentStore = create<DocumentStore>()(
           ...state.document,
           shapes: state.document.shapes.filter((shape) => shape.id !== id),
         },
+      })),
+    clear: () =>
+      set((state) => ({
+        document: { ...state.document, shapes: [] },
+      })),
+    setUnits: (units) =>
+      set((state) => ({
+        document: { ...state.document, units },
       })),
   })),
 )

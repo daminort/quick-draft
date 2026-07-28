@@ -1,31 +1,63 @@
-import { useDocumentStore } from '../../stores/useDocumentStore'
-import { useSelectionStore } from '../../stores/useSelectionStore'
+import { useDocumentStore } from '~/stores/useDocumentStore'
+import type { Shape } from '~/types/document'
 
-export function StylePanel() {
-  const selectedIds = useSelectionStore((state) => state.selectedIds)
-  const shapes = useDocumentStore((state) => state.document.shapes)
+interface StylePanelProps {
+  shape: Shape
+}
+
+export function StylePanel({ shape }: StylePanelProps) {
   const updateShape = useDocumentStore((state) => state.updateShape)
 
-  if (selectedIds.length !== 1) return null
-  const shape = shapes.find((candidate) => candidate.id === selectedIds[0])
-  if (!shape || !('style' in shape)) return null
+  if (!('style' in shape)) return null
+  const { style } = shape
 
   return (
-    <div style={{ width: 220, padding: 12, borderLeft: '1px solid #ddd' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
         Stroke width
         <input
           type="number"
           min={1}
-          value={shape.style.strokeWidth}
+          value={style.strokeWidth}
           onChange={(e) => {
             const value = Number(e.target.value)
             if (Number.isFinite(value) && value > 0) {
-              updateShape(shape.id, { style: { ...shape.style, strokeWidth: value } })
+              updateShape(shape.id, { style: { ...style, strokeWidth: value } })
             }
           }}
         />
       </label>
+
+      <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
+        Stroke color
+        <input
+          type="color"
+          value={style.stroke}
+          onChange={(e) => updateShape(shape.id, { style: { ...style, stroke: e.target.value } })}
+        />
+      </label>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <input
+            type="checkbox"
+            checked={style.fill !== undefined}
+            onChange={(e) =>
+              updateShape(shape.id, {
+                style: { ...style, fill: e.target.checked ? (style.fill ?? '#ffffff') : undefined },
+              })
+            }
+          />
+          Fill
+        </label>
+        {style.fill !== undefined && (
+          <input
+            type="color"
+            value={style.fill}
+            onChange={(e) => updateShape(shape.id, { style: { ...style, fill: e.target.value } })}
+          />
+        )}
+      </div>
     </div>
   )
 }

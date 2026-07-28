@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Transformer } from 'react-konva'
 import type Konva from 'konva'
-import { useDocumentStore } from '../../stores/useDocumentStore'
-import type { Shape, ShapePatch } from '../../types/document'
+import { useDocumentStore } from '~/stores/useDocumentStore'
+import type { Shape, ShapePatch } from '~/types/document'
 
 interface SelectionTransformerProps {
   shape: Shape | null
@@ -54,7 +54,7 @@ export function SelectionTransformer({ shape, node }: SelectionTransformerProps)
     transformerRef.current?.getLayer()?.batchDraw()
   }, [node])
 
-  if (!shape || !node) return null
+  if (!shape || !node || shape.type === 'arc' || shape.type === 'text') return null
 
   return (
     <Transformer

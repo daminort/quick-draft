@@ -1,18 +1,19 @@
-import { Circle } from 'react-konva'
+import { Path } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
+import { computeArcPath } from '~/lib/arcPath'
 
-interface CircleShapeProps {
-  shape: Extract<Shape, { type: 'circle' }>
+interface ArcShapeProps {
+  shape: Extract<Shape, { type: 'arc' }>
   draggable: boolean
   onSelect: () => void
   onDragStart: () => void
   onDragMove: (node: Konva.Node) => void
   onDragEnd: (node: Konva.Node) => void
-  setNodeRef: (node: Konva.Circle | null) => void
+  setNodeRef: (node: Konva.Path | null) => void
 }
 
-export function CircleShape({
+export function ArcShape({
   shape,
   draggable,
   onSelect,
@@ -20,17 +21,18 @@ export function CircleShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: CircleShapeProps) {
+}: ArcShapeProps) {
   return (
-    <Circle
+    <Path
       ref={setNodeRef}
-      x={shape.cx}
-      y={shape.cy}
-      radius={shape.r}
+      x={0}
+      y={0}
+      data={computeArcPath(shape.cx, shape.cy, shape.r, shape.startAngle, shape.endAngle)}
       stroke={shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}
       dash={shape.style.dash}
+      hitStrokeWidth={12}
       draggable={draggable}
       onClick={onSelect}
       onTap={onSelect}

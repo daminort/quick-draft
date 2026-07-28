@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { ShapeId } from '../types/document'
+import type { ShapeId } from '~/types/document'
 
 interface SelectionStore {
   selectedIds: ShapeId[]

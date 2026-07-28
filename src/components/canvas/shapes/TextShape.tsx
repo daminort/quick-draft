@@ -1,18 +1,18 @@
-import { Circle } from 'react-konva'
+import { Text } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
 
-interface CircleShapeProps {
-  shape: Extract<Shape, { type: 'circle' }>
+interface TextShapeProps {
+  shape: Extract<Shape, { type: 'text' }>
   draggable: boolean
   onSelect: () => void
   onDragStart: () => void
   onDragMove: (node: Konva.Node) => void
   onDragEnd: (node: Konva.Node) => void
-  setNodeRef: (node: Konva.Circle | null) => void
+  setNodeRef: (node: Konva.Text | null) => void
 }
 
-export function CircleShape({
+export function TextShape({
   shape,
   draggable,
   onSelect,
@@ -20,17 +20,20 @@ export function CircleShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: CircleShapeProps) {
+}: TextShapeProps) {
+  const fontStyle =
+    [shape.bold && 'bold', shape.italic && 'italic'].filter(Boolean).join(' ') || 'normal'
+
   return (
-    <Circle
+    <Text
       ref={setNodeRef}
-      x={shape.cx}
-      y={shape.cy}
-      radius={shape.r}
-      stroke={shape.style.stroke}
-      strokeWidth={shape.style.strokeWidth}
-      fill={shape.style.fill}
-      dash={shape.style.dash}
+      x={shape.x}
+      y={shape.y}
+      text={shape.text}
+      fontFamily={shape.fontFamily}
+      fontSize={shape.fontSize}
+      fontStyle={fontStyle}
+      fill={shape.fill}
       draggable={draggable}
       onClick={onSelect}
       onTap={onSelect}

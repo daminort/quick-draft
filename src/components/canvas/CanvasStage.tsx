@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Stage, Layer } from 'react-konva'
 import type Konva from 'konva'
-import { useDocumentStore } from '../../stores/useDocumentStore'
-import { useSelectionStore } from '../../stores/useSelectionStore'
-import { useToolStore } from '../../stores/useToolStore'
-import { ShapeRenderer } from './shapes/ShapeRenderer'
-import { SelectionTransformer } from './SelectionTransformer'
-import { useDrawingTool } from './tools/useDrawingTool'
-import { useSelectTool } from './tools/useSelectTool'
+import { useDocumentStore } from '~/stores/useDocumentStore'
+import { useSelectionStore } from '~/stores/useSelectionStore'
+import { useToolStore } from '~/stores/useToolStore'
+import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
+import { SelectionTransformer } from '~/components/canvas/SelectionTransformer'
+import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool'
+import { useSelectTool } from '~/components/canvas/tools/useSelectTool'
 
 export function CanvasStage() {
   const containerRef = useRef<HTMLDivElement>(null)

@@ -1,6 +1,6 @@
 import { Line } from 'react-konva'
 import type Konva from 'konva'
-import type { Shape } from '../../../types/document'
+import type { Shape } from '~/types/document'
 
 interface LineShapeProps {
   shape: Extract<Shape, { type: 'line' }>

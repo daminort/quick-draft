@@ -1,8 +1,8 @@
 import { useCallback, useRef } from 'react'
 import type Konva from 'konva'
-import { useDocumentStore } from '../../../stores/useDocumentStore'
-import { useSelectionStore } from '../../../stores/useSelectionStore'
-import type { Shape, ShapeId, ShapePatch } from '../../../types/document'
+import { useDocumentStore } from '~/stores/useDocumentStore'
+import { useSelectionStore } from '~/stores/useSelectionStore'
+import type { Shape, ShapeId, ShapePatch } from '~/types/document'
 
 function computeDragPatch(shape: Shape, node: Konva.Node): ShapePatch {
   switch (shape.type) {
@@ -10,6 +10,10 @@ function computeDragPatch(shape: Shape, node: Konva.Node): ShapePatch {
       return { x: node.x(), y: node.y() }
     case 'circle':
       return { cx: node.x(), cy: node.y() }
+    case 'arc':
+      return { cx: shape.cx + node.x(), cy: shape.cy + node.y() }
+    case 'text':
+      return { x: node.x(), y: node.y() }
     case 'line': {
       const dx = node.x() - shape.x1
       const dy = node.y() - shape.y1

@@ -46,6 +46,18 @@ export type Shape =
     }
   | {
       id: ShapeId
+      type: 'text'
+      x: number
+      y: number
+      text: string
+      fontFamily: string
+      fontSize: number
+      bold: boolean
+      italic: boolean
+      fill: string
+    }
+  | {
+      id: ShapeId
       type: 'component-instance'
       componentId: string
       x: number
