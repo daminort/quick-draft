@@ -7,7 +7,15 @@ export interface DimensionGeometry {
   arrowLine: { x1: number; y1: number; x2: number; y2: number }
   extensionA: { x1: number; y1: number; x2: number; y2: number }
   extensionB: { x1: number; y1: number; x2: number; y2: number }
-  label: { x: number; y: number; width: number; centered: boolean }
+  label: {
+    x: number
+    y: number
+    width: number
+    /** Horizontal anchor: which edge of the text sits at `x` — 'start' grows right, 'end' grows left. */
+    align: 'start' | 'center' | 'end'
+    /** Vertical anchor: which edge of the text sits at `y`. */
+    baseline: 'top' | 'bottom'
+  }
   /** Short connector drawn when the label had to be moved outside the dimension line. */
   leader: { x1: number; y1: number; x2: number; y2: number } | null
   length: number
@@ -19,7 +27,7 @@ const UNIT_TO_MM: Record<LengthUnit, number> = { mm: 1, cm: 10, m: 1000 }
 const EXTENSION_GAP = 5
 const EXTENSION_OVERSHOOT = 5
 const LABEL_GAP_HORIZONTAL = 10
-const LABEL_GAP_VERTICAL = 18
+const LABEL_GAP_VERTICAL = 10
 const LEADER_GAP = 4
 const TEXT_PADDING = 6
 const CHAR_WIDTH_RATIO = 0.62
@@ -67,6 +75,7 @@ function buildLabelAndLeader(
   a: Point,
   b: Point,
   normal: Point,
+  axis: DimensionAxis,
   labelGap: number,
   labelText: string,
   fontSize: number,
@@ -77,13 +86,23 @@ function buildLabelAndLeader(
   const textWidth = estimateTextWidth(labelText, fontSize)
   const midpoint = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
 
+  // Anchor the text so it always grows away from the dimension line, never back across it:
+  // for a vertical dimension the label sits beside the line (left or right of it) and must be
+  // aligned accordingly; for a horizontal one it stays centered above/below, where the growth
+  // direction doesn't matter.
+  const align: DimensionGeometry['label']['align'] =
+    axis === 'vertical' ? (normal.x >= 0 ? 'start' : 'end') : 'center'
+  const baseline: DimensionGeometry['label']['baseline'] =
+    axis === 'horizontal' && normal.y >= 0 ? 'top' : 'bottom'
+
   if (lineLength >= textWidth + TEXT_PADDING) {
     return {
       label: {
         x: midpoint.x + normal.x * labelGap,
         y: midpoint.y + normal.y * labelGap,
         width: textWidth,
-        centered: true,
+        align,
+        baseline,
       },
       leader: null,
     }
@@ -99,7 +118,8 @@ function buildLabelAndLeader(
       x: anchor.x + normal.x * labelGap,
       y: anchor.y + normal.y * labelGap,
       width: textWidth,
-      centered: false,
+      align,
+      baseline,
     },
     leader: { x1: b.x, y1: b.y, x2: anchor.x, y2: anchor.y },
   }
@@ -133,15 +153,19 @@ export function computeDimensionGeometry(
   const lineCoordinate = isVertical ? x2 + offset : y2 + offset
   const lineA: Point = isVertical ? { x: lineCoordinate, y: y1 } : { x: x1, y: lineCoordinate }
   const lineB: Point = isVertical ? { x: lineCoordinate, y: y2 } : { x: x2, y: lineCoordinate }
-  // Label offset direction: to the right for vertical dimensions, upward (canvas -y) for
-  // horizontal ones, so the text sits above the dimension line rather than below it.
-  const normal: Point = isVertical ? { x: 1, y: 0 } : { x: 0, y: -1 }
+  // Label offset direction follows which side the extension lines start from, continuing
+  // outward past the dimension line: right of the line when the points sit to its left
+  // (offset > 0) and vice versa for vertical dimensions; below the line when the points sit
+  // above it (offset > 0) and vice versa for horizontal ones.
+  const sign = Math.sign(offset) || -1
+  const normal: Point = isVertical ? { x: sign, y: 0 } : { x: 0, y: sign }
 
   const length = convertLength(refLength, documentScale, documentUnits, dimensionUnit)
   const { label, leader } = buildLabelAndLeader(
     lineA,
     lineB,
     normal,
+    axis,
     isVertical ? LABEL_GAP_VERTICAL : LABEL_GAP_HORIZONTAL,
     formatDimensionLabel(length, dimensionUnit, showUnit),
     fontSize,

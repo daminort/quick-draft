@@ -113,8 +113,14 @@ export function DimensionShape({
         text={formatDimensionLabel(geometry.length, shape.unit, showUnit)}
         fontSize={DIMENSION_LABEL_FONT_SIZE}
         fill={color}
-        offsetX={geometry.label.centered ? geometry.label.width / 2 : 0}
-        offsetY={DIMENSION_LABEL_FONT_SIZE}
+        offsetX={
+          geometry.label.align === 'center'
+            ? geometry.label.width / 2
+            : geometry.label.align === 'end'
+              ? geometry.label.width
+              : 0
+        }
+        offsetY={geometry.label.baseline === 'bottom' ? DIMENSION_LABEL_FONT_SIZE : 0}
       />
     </Group>
   )
