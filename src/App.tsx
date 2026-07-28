@@ -5,8 +5,10 @@ import { SettingsPanel } from '~/components/panels/SettingsPanel'
 import { ComponentLibrary } from '~/components/panels/ComponentLibrary'
 import { PrintView } from '~/components/print/PrintView'
 import { useUIStore } from '~/stores/useUIStore'
+import { useRestoreDocument } from '~/stores/useRestoreDocument'
 
 function App() {
+  useRestoreDocument()
   const settingsOpen = useUIStore((state) => state.settingsOpen)
   const libraryOpen = useUIStore((state) => state.libraryOpen)
   const printOpen = useUIStore((state) => state.printOpen)

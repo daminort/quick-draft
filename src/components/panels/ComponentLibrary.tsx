@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useRef, useState, type ChangeEvent } from 'react'
 import { Stage, Layer, Group } from 'react-konva'
 import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
+import { DownloadSimpleIcon } from '@phosphor-icons/react/dist/csr/DownloadSimple'
+import { UploadSimpleIcon } from '@phosphor-icons/react/dist/csr/UploadSimple'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
 import { noopShapeInteraction, type ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
 import { getUnionBounds } from '~/lib/bounds'
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
+import {
+  exportComponentLibraryToJsonFile,
+  importComponentLibraryFromJsonFile,
+} from '~/lib/persistence/fileIO'
 import type { ComponentDef } from '~/types/document'
 
 const PREVIEW_SIZE = 64
@@ -54,8 +60,10 @@ export const COMPONENT_DRAG_MIME = 'application/x-quickdraft-component-id'
 export function ComponentLibrary() {
   const components = useDocumentStore((state) => state.document.components)
   const removeComponent = useDocumentStore((state) => state.removeComponent)
+  const importComponents = useDocumentStore((state) => state.importComponents)
   const entries = Object.values(components)
   const [deleteTarget, setDeleteTarget] = useState<ComponentDef | null>(null)
+  const importInputRef = useRef<HTMLInputElement>(null)
 
   const handleDeleteConfirmed = () => {
     if (!deleteTarget) return
@@ -65,6 +73,18 @@ export function ComponentLibrary() {
     const nextSelection = selectedIds.flatMap((id) => replacedBy[id] ?? [id])
     useSelectionStore.getState().select(nextSelection)
     setDeleteTarget(null)
+  }
+
+  const handleImportLibrary = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      const defs = await importComponentLibraryFromJsonFile(file)
+      importComponents(defs)
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Failed to import the library.')
+    }
   }
 
   return (
@@ -80,6 +100,57 @@ export function ComponentLibrary() {
       }}
     >
       <h2 style={{ fontSize: 14, margin: 0 }}>Component library</h2>
+
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button
+          type="button"
+          onClick={() => exportComponentLibraryToJsonFile(components)}
+          disabled={entries.length === 0}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            flex: 1,
+            padding: '6px 8px',
+            border: '1px solid #ddd',
+            borderRadius: 6,
+            background: 'transparent',
+            cursor: entries.length === 0 ? 'default' : 'pointer',
+            opacity: entries.length === 0 ? 0.5 : 1,
+            fontSize: 12,
+          }}
+        >
+          <DownloadSimpleIcon size={16} />
+          Export
+        </button>
+        <button
+          type="button"
+          onClick={() => importInputRef.current?.click()}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            flex: 1,
+            padding: '6px 8px',
+            border: '1px solid #ddd',
+            borderRadius: 6,
+            background: 'transparent',
+            cursor: 'pointer',
+            fontSize: 12,
+          }}
+        >
+          <UploadSimpleIcon size={16} />
+          Import
+        </button>
+        <input
+          ref={importInputRef}
+          type="file"
+          accept=".json,application/json"
+          onChange={handleImportLibrary}
+          style={{ display: 'none' }}
+        />
+      </div>
+
       {entries.length === 0 && (
         <p style={{ margin: 0, fontSize: 12, color: '#666' }}>
           Select two or more shapes and group them into a component to see it here.

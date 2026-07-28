@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { temporal } from 'zundo'
 import { getUnionBounds } from '~/lib/bounds'
 import { translateShape, flattenComponentInstance } from '~/lib/shapeTransform'
+import { saveCurrentDocument } from '~/lib/persistence/indexedDb'
 import type { ComponentDef, Document, Shape, ShapeId, ShapePatch } from '~/types/document'
 
 interface DocumentStore {
@@ -20,6 +21,14 @@ interface DocumentStore {
    * entry does. Returns a map from each replaced instance's old id to its new shapes' ids.
    */
   removeComponent: (componentId: string) => Record<ShapeId, ShapeId[]>
+  /** Replaces the whole document (e.g. loading a .json file or restoring an autosave) as a fresh
+   * snapshot rather than an undoable edit — the undo history is reset along with it. */
+  loadDocument: (doc: Document) => void
+  /**
+   * Merges imported component definitions into the library. An id that already exists locally is
+   * kept as a separate entry under a freshly generated id, rather than silently overwriting it.
+   */
+  importComponents: (defs: ComponentDef[]) => void
 }
 
 const initialDocument: Document = {
@@ -140,5 +149,28 @@ export const useDocumentStore = create<DocumentStore>()(
       set((state) => ({ document: { ...state.document, components, shapes } }))
       return replacedBy
     },
+    loadDocument: (doc) => {
+      set({ document: doc })
+      useDocumentStore.temporal.getState().clear()
+    },
+    importComponents: (defs) => {
+      set((state) => {
+        const components = { ...state.document.components }
+        for (const def of defs) {
+          const id = components[def.id] ? crypto.randomUUID() : def.id
+          components[id] = { ...def, id }
+        }
+        return { document: { ...state.document, components } }
+      })
+    },
   })),
 )
+
+const AUTOSAVE_DEBOUNCE_MS = 800
+let autosaveTimer: ReturnType<typeof setTimeout> | undefined
+useDocumentStore.subscribe((state) => {
+  if (autosaveTimer) clearTimeout(autosaveTimer)
+  autosaveTimer = setTimeout(() => {
+    void saveCurrentDocument(state.document)
+  }, AUTOSAVE_DEBOUNCE_MS)
+})

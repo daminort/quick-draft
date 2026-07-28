@@ -16,6 +16,7 @@ import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { useUIStore } from '~/stores/useUIStore'
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
+import { FileActions } from '~/components/panels/FileActions'
 
 const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
   { tool: 'select', label: 'Select', Icon: CursorIcon },
@@ -105,6 +106,8 @@ export function Toolbar() {
       >
         <StackIcon size={20} />
       </button>
+
+      <FileActions />
 
       <button
         type="button"
