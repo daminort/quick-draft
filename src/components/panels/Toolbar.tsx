@@ -9,6 +9,7 @@ import { RulerIcon } from '@phosphor-icons/react/dist/csr/Ruler'
 import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/ArrowsOutLineHorizontal'
 import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
 import { GearIcon } from '@phosphor-icons/react/dist/csr/Gear'
+import { StackIcon } from '@phosphor-icons/react/dist/csr/Stack'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
@@ -37,6 +38,8 @@ export function Toolbar() {
   const clearSelection = useSelectionStore((state) => state.clear)
   const settingsOpen = useUIStore((state) => state.settingsOpen)
   const toggleSettings = useUIStore((state) => state.toggleSettings)
+  const libraryOpen = useUIStore((state) => state.libraryOpen)
+  const toggleLibrary = useUIStore((state) => state.toggleLibrary)
   const [clearDialogOpen, setClearDialogOpen] = useState(false)
 
   const handleClearConfirmed = () => {
@@ -81,6 +84,28 @@ export function Toolbar() {
 
       <button
         type="button"
+        title="Component library"
+        aria-label="Component library"
+        aria-pressed={libraryOpen}
+        onClick={toggleLibrary}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 36,
+          height: 36,
+          border: 'none',
+          borderRadius: 6,
+          background: libraryOpen ? '#dbe4ff' : 'transparent',
+          cursor: 'pointer',
+          marginTop: 'auto',
+        }}
+      >
+        <StackIcon size={20} />
+      </button>
+
+      <button
+        type="button"
         title="Settings"
         aria-label="Settings"
         aria-pressed={settingsOpen}
@@ -95,7 +120,6 @@ export function Toolbar() {
           borderRadius: 6,
           background: settingsOpen ? '#dbe4ff' : 'transparent',
           cursor: 'pointer',
-          marginTop: 'auto',
         }}
       >
         <GearIcon size={20} />

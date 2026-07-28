@@ -30,6 +30,17 @@ function computeTransformPatch(shape: Shape, node: Konva.Node): ShapePatch {
       node.scaleY(1)
       return { cx: node.x(), cy: node.y(), r: Math.max(1, shape.r * scale) }
     }
+    case 'component-instance': {
+      const scale = node.scaleX()
+      node.scaleX(1)
+      node.scaleY(1)
+      return {
+        x: node.x(),
+        y: node.y(),
+        rotation: node.rotation(),
+        scale: Math.max(0.01, shape.scale * scale),
+      }
+    }
     case 'line': {
       const transform = node.getTransform()
       const p1 = transform.point({ x: 0, y: 0 })
@@ -69,9 +80,9 @@ export function SelectionTransformer({ shape, node }: SelectionTransformerProps)
       ref={transformerRef}
       nodes={[node]}
       rotateEnabled={shape.type !== 'line'}
-      keepRatio={shape.type === 'circle'}
+      keepRatio={shape.type === 'circle' || shape.type === 'component-instance'}
       enabledAnchors={
-        shape.type === 'circle'
+        shape.type === 'circle' || shape.type === 'component-instance'
           ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']
           : undefined
       }

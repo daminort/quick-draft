@@ -1,7 +1,7 @@
 import { Line } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
-import type { ViewBounds } from '~/components/canvas/shapes/ShapeRenderer'
+import type { ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
 
 const GUIDE_COLOR = 'rgba(59, 130, 246, 0.6)'
 const GUIDE_SELECTED_COLOR = '#1d4ed8'

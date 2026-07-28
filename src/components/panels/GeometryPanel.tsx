@@ -247,6 +247,32 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
           </label>
         </>
       )
+    case 'component-instance':
+      return (
+        <>
+          <NumberField
+            label="X"
+            value={shape.x}
+            onChange={(v) => updateShape(shape.id, { x: v })}
+          />
+          <NumberField
+            label="Y"
+            value={shape.y}
+            onChange={(v) => updateShape(shape.id, { y: v })}
+          />
+          <NumberField
+            label="Scale"
+            value={shape.scale}
+            min={0.01}
+            onChange={(v) => updateShape(shape.id, { scale: v })}
+          />
+          <NumberField
+            label="Rotation"
+            value={shape.rotation}
+            onChange={(v) => updateShape(shape.id, { rotation: v })}
+          />
+        </>
+      )
     default:
       return null
   }

@@ -12,6 +12,7 @@ import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool'
 import { useSelectTool } from '~/components/canvas/tools/useSelectTool'
 import { useCanvasZoom } from '~/components/canvas/tools/useCanvasZoom'
 import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan'
+import { COMPONENT_DRAG_MIME } from '~/components/panels/ComponentLibrary'
 
 const SNAP_INDICATOR_COLOR = '#ff3b8d'
 const SNAP_POINT_SIZE = 5
@@ -24,8 +25,11 @@ export function CanvasStage() {
   const [size, setSize] = useState({ width: 0, height: 0 })
 
   const shapes = useDocumentStore((state) => state.document.shapes)
+  const components = useDocumentStore((state) => state.document.components)
   const removeShape = useDocumentStore((state) => state.removeShape)
+  const addComponentInstance = useDocumentStore((state) => state.addComponentInstance)
   const selectedIds = useSelectionStore((state) => state.selectedIds)
+  const select = useSelectionStore((state) => state.select)
   const clearSelection = useSelectionStore((state) => state.clear)
   const activeTool = useToolStore((state) => state.activeTool)
   const setTool = useToolStore((state) => state.setTool)
@@ -113,9 +117,31 @@ export function CanvasStage() {
     bottom: (size.height - zoom.y) / zoom.scale,
   }
 
+  function handleComponentDrop(e: React.DragEvent<HTMLDivElement>) {
+    const componentId = e.dataTransfer.getData(COMPONENT_DRAG_MIME)
+    if (!componentId || !components[componentId]) return
+    e.preventDefault()
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const x = (e.clientX - rect.left - zoom.x) / zoom.scale
+    const y = (e.clientY - rect.top - zoom.y) / zoom.scale
+    const instanceId = addComponentInstance(componentId, x, y)
+    // Deferred: the instance's Konva node registers on mount, one render after this one — selecting
+    // it a tick later (instead of in the same batch) lets the Transformer find it immediately.
+    setTimeout(() => select([instanceId]), 0)
+  }
+
+  function handleComponentDragOver(e: React.DragEvent<HTMLDivElement>) {
+    if (!e.dataTransfer.types.includes(COMPONENT_DRAG_MIME)) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'copy'
+  }
+
   return (
     <div
       ref={containerRef}
+      onDrop={handleComponentDrop}
+      onDragOver={handleComponentDragOver}
       style={{
         width: '100%',
         height: '100%',

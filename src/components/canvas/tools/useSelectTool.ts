@@ -26,7 +26,8 @@ function computeDragResult(
 ): { patch: ShapePatch; indicator: SnapIndicator } {
   switch (shape.type) {
     case 'rect':
-    case 'text': {
+    case 'text':
+    case 'component-instance': {
       const snapped = snapPoint({ x: node.x(), y: node.y() }, targets, tolerance)
       return {
         patch: { x: snapped.x, y: snapped.y },
@@ -130,6 +131,7 @@ interface MarqueeDrag {
 export function useSelectTool() {
   const updateShape = useDocumentStore((state) => state.updateShape)
   const shapes = useDocumentStore((state) => state.document.shapes)
+  const components = useDocumentStore((state) => state.document.components)
   const guidesVisible = useUIStore((state) => state.guidesVisible)
   const snapTolerance = useUIStore((state) => state.snapTolerance)
   const activeTool = useToolStore((state) => state.activeTool)
@@ -373,7 +375,7 @@ export function useSelectTool() {
       }
       const ids = shapes
         .filter((shape) => {
-          const bounds = getShapeBounds(shape)
+          const bounds = getShapeBounds(shape, components)
           return bounds !== null && boundsIntersect(bounds, marqueeBounds)
         })
         .map((shape) => shape.id)
@@ -386,7 +388,16 @@ export function useSelectTool() {
       window.removeEventListener('mousemove', handleWindowMouseMove)
       window.removeEventListener('mouseup', handleWindowMouseUp)
     }
-  }, [dragTargets, snapTolerance, viewScale, updateShape, shapes, select, clearSelection])
+  }, [
+    dragTargets,
+    snapTolerance,
+    viewScale,
+    updateShape,
+    shapes,
+    components,
+    select,
+    clearSelection,
+  ])
 
   return {
     registerNode,

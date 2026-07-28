@@ -52,6 +52,9 @@ export function collectSnapTargets(
       case 'text':
         addPoint(shape.x, shape.y)
         break
+      case 'component-instance':
+        addPoint(shape.x, shape.y)
+        break
       default:
         break
     }

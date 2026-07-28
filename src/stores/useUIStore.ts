@@ -5,6 +5,8 @@ export const DEFAULT_SNAP_TOLERANCE = 8
 interface UIStore {
   settingsOpen: boolean
   toggleSettings: () => void
+  libraryOpen: boolean
+  toggleLibrary: () => void
   guidesVisible: boolean
   toggleGuidesVisible: () => void
   snapTolerance: number
@@ -17,7 +19,9 @@ interface UIStore {
 
 export const useUIStore = create<UIStore>()((set) => ({
   settingsOpen: false,
-  toggleSettings: () => set((state) => ({ settingsOpen: !state.settingsOpen })),
+  toggleSettings: () => set((state) => ({ settingsOpen: !state.settingsOpen, libraryOpen: false })),
+  libraryOpen: false,
+  toggleLibrary: () => set((state) => ({ libraryOpen: !state.libraryOpen, settingsOpen: false })),
   guidesVisible: true,
   toggleGuidesVisible: () => set((state) => ({ guidesVisible: !state.guidesVisible })),
   snapTolerance: DEFAULT_SNAP_TOLERANCE,

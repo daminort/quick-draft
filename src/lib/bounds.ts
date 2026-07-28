@@ -1,4 +1,4 @@
-import type { Shape } from '~/types/document'
+import type { ComponentDef, Shape } from '~/types/document'
 
 export interface Bounds {
   x1: number
@@ -23,8 +23,32 @@ function rotatePoint(
   return { x: origin.x + dx * cos - dy * sin, y: origin.y + dx * sin + dy * cos }
 }
 
+/** Union of all shapes' bounds, used to place a new component's local anchor / preview scale. */
+export function getUnionBounds(
+  shapes: Shape[],
+  components: Record<string, ComponentDef> = {},
+): Bounds | null {
+  let union: Bounds | null = null
+  for (const shape of shapes) {
+    const bounds = getShapeBounds(shape, components)
+    if (!bounds) continue
+    union = union
+      ? {
+          x1: Math.min(union.x1, bounds.x1),
+          y1: Math.min(union.y1, bounds.y1),
+          x2: Math.max(union.x2, bounds.x2),
+          y2: Math.max(union.y2, bounds.y2),
+        }
+      : bounds
+  }
+  return union
+}
+
 /** Axis-aligned bounding box for a shape, used for marquee-selection hit testing. */
-export function getShapeBounds(shape: Shape): Bounds | null {
+export function getShapeBounds(
+  shape: Shape,
+  components: Record<string, ComponentDef> = {},
+): Bounds | null {
   switch (shape.type) {
     case 'line':
       return {
@@ -80,6 +104,25 @@ export function getShapeBounds(shape: Shape): Bounds | null {
       if (shape.orientation === 'h')
         return { x1: -GUIDE_SPAN, y1: shape.position, x2: GUIDE_SPAN, y2: shape.position }
       return null
+    case 'component-instance': {
+      const def = components[shape.componentId]
+      if (!def) return null
+      const localBounds = getUnionBounds(def.shapes, components)
+      if (!localBounds) return null
+      const corners = [
+        { x: localBounds.x1, y: localBounds.y1 },
+        { x: localBounds.x2, y: localBounds.y1 },
+        { x: localBounds.x2, y: localBounds.y2 },
+        { x: localBounds.x1, y: localBounds.y2 },
+      ].map((c) => {
+        const scaled = { x: c.x * shape.scale, y: c.y * shape.scale }
+        const rotated = rotatePoint(scaled, { x: 0, y: 0 }, shape.rotation)
+        return { x: rotated.x + shape.x, y: rotated.y + shape.y }
+      })
+      const xs = corners.map((c) => c.x)
+      const ys = corners.map((c) => c.y)
+      return { x1: Math.min(...xs), y1: Math.min(...ys), x2: Math.max(...xs), y2: Math.max(...ys) }
+    }
     default:
       return null
   }

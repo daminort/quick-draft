@@ -1,5 +1,6 @@
 import type Konva from 'konva'
-import type { Shape, ShapeId } from '~/types/document'
+import type { Shape } from '~/types/document'
+import type { ShapeInteraction, ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
 import { LineShape } from '~/components/canvas/shapes/LineShape'
 import { RectShape } from '~/components/canvas/shapes/RectShape'
 import { CircleShape } from '~/components/canvas/shapes/CircleShape'
@@ -7,22 +8,7 @@ import { ArcShape } from '~/components/canvas/shapes/ArcShape'
 import { TextShape } from '~/components/canvas/shapes/TextShape'
 import { GuideShape } from '~/components/canvas/shapes/GuideShape'
 import { DimensionShape } from '~/components/canvas/shapes/DimensionShape'
-
-export interface ShapeInteraction {
-  registerNode: (id: ShapeId, node: Konva.Node | null) => void
-  selectShape: (id: ShapeId) => void
-  handleDragStart: (shape: Shape) => void
-  handleDragMove: (shape: Shape, node: Konva.Node) => void
-  handleDragEnd: (shape: Shape, node: Konva.Node) => void
-  handleManualMouseDown: (shape: Shape, e: Konva.KonvaEventObject<MouseEvent>) => void
-}
-
-export interface ViewBounds {
-  left: number
-  top: number
-  right: number
-  bottom: number
-}
+import { ComponentInstanceShape } from '~/components/canvas/shapes/ComponentInstanceShape'
 
 interface ShapeRendererProps {
   shape: Shape
@@ -82,6 +68,8 @@ export function ShapeRenderer({
           setNodeRef={shared.setNodeRef}
         />
       )
+    case 'component-instance':
+      return <ComponentInstanceShape shape={shape} {...shared} />
     default:
       return null
   }
