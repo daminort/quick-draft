@@ -188,6 +188,65 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
           )}
         </>
       )
+    case 'dimension':
+      return (
+        <>
+          <NumberField
+            label="X1"
+            value={shape.x1}
+            onChange={(v) => updateShape(shape.id, { x1: v })}
+          />
+          <NumberField
+            label="Y1"
+            value={shape.y1}
+            onChange={(v) => updateShape(shape.id, { y1: v })}
+          />
+          <NumberField
+            label="X2"
+            value={shape.x2}
+            onChange={(v) => updateShape(shape.id, { x2: v })}
+          />
+          <NumberField
+            label="Y2"
+            value={shape.y2}
+            onChange={(v) => updateShape(shape.id, { y2: v })}
+          />
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
+            Axis
+            <select
+              value={shape.axis}
+              onChange={(e) =>
+                updateShape(shape.id, {
+                  axis: e.target.value as 'horizontal' | 'vertical',
+                })
+              }
+            >
+              <option value="horizontal">Horizontal</option>
+              <option value="vertical">Vertical</option>
+            </select>
+          </label>
+          <NumberField
+            label="Offset"
+            value={shape.offset}
+            onChange={(v) => updateShape(shape.id, { offset: v })}
+          />
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
+            Unit
+            <select
+              value={shape.unit}
+              onChange={(e) =>
+                updateShape(shape.id, {
+                  unit: e.target.value as 'mm' | 'cm' | 'm',
+                })
+              }
+            >
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+              <option value="m">m</option>
+            </select>
+          </label>
+        </>
+      )
     default:
       return null
   }

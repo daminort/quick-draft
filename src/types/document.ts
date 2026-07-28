@@ -33,7 +33,11 @@ export type Shape =
   | {
       id: ShapeId
       type: 'dimension'
-      refShapeId: ShapeId
+      x1: number
+      y1: number
+      x2: number
+      y2: number
+      axis: 'horizontal' | 'vertical'
       offset: number
       unit: 'mm' | 'cm' | 'm'
     }

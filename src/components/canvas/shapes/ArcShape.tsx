@@ -5,26 +5,17 @@ import { computeArcPath } from '~/lib/arcPath'
 
 interface ArcShapeProps {
   shape: Extract<Shape, { type: 'arc' }>
-  draggable: boolean
+  interactive: boolean
   onSelect: () => void
-  onDragStart: () => void
-  onDragMove: (node: Konva.Node) => void
-  onDragEnd: (node: Konva.Node) => void
+  onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void
   setNodeRef: (node: Konva.Path | null) => void
 }
 
-export function ArcShape({
-  shape,
-  draggable,
-  onSelect,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-  setNodeRef,
-}: ArcShapeProps) {
+export function ArcShape({ shape, interactive, onSelect, onMouseDown, setNodeRef }: ArcShapeProps) {
   return (
     <Path
       ref={setNodeRef}
+      id={shape.id}
       x={0}
       y={0}
       data={computeArcPath(shape.cx, shape.cy, shape.r, shape.startAngle, shape.endAngle)}
@@ -33,12 +24,9 @@ export function ArcShape({
       fill={shape.style.fill}
       dash={shape.style.dash}
       hitStrokeWidth={12}
-      draggable={draggable}
       onClick={onSelect}
       onTap={onSelect}
-      onDragStart={onDragStart}
-      onDragMove={(e) => onDragMove(e.target)}
-      onDragEnd={(e) => onDragEnd(e.target)}
+      onMouseDown={interactive ? onMouseDown : undefined}
     />
   )
 }

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type Konva from 'konva'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
@@ -7,6 +7,7 @@ import { useViewStore } from '~/stores/useViewStore'
 import { collectSnapTargets, snapPoint, type SnapTargets } from '~/lib/snap'
 import type { Shape, ShapeId, ShapePatch } from '~/types/document'
 
+type Point = { x: number; y: number }
 type SnapIndicator = { x: number | null; y: number | null }
 const NO_SNAP: SnapIndicator = { x: null, y: null }
 
@@ -30,20 +31,6 @@ function computeDragResult(
     }
     case 'circle': {
       const snapped = snapPoint({ x: node.x(), y: node.y() }, targets, tolerance)
-      return {
-        patch: { cx: snapped.x, cy: snapped.y },
-        indicator: {
-          x: snapped.snappedX ? snapped.x : null,
-          y: snapped.snappedY ? snapped.y : null,
-        },
-      }
-    }
-    case 'arc': {
-      const snapped = snapPoint(
-        { x: shape.cx + node.x(), y: shape.cy + node.y() },
-        targets,
-        tolerance,
-      )
       return {
         patch: { cx: snapped.x, cy: snapped.y },
         indicator: {
@@ -83,6 +70,50 @@ function computeDragResult(
   }
 }
 
+/**
+ * Arc and dimension render at a fixed (0,0) Konva baseline (their geometry is already absolute),
+ * so Konva's own `draggable` — which tracks position via a one-time absolute-position offset
+ * captured at drag start — doesn't compose cleanly with resetting that baseline every render.
+ * These two are dragged manually instead: track the pointer position (already zoom-compensated,
+ * the same primitive the drawing tools use) from mousedown to mouseup ourselves, with no
+ * dependency on Konva's internal drag/position bookkeeping at all.
+ */
+function computeManualDragPatch(
+  shape: Shape,
+  delta: Point,
+  targets: SnapTargets,
+  tolerance: number,
+): { patch: ShapePatch; indicator: SnapIndicator } {
+  switch (shape.type) {
+    case 'arc': {
+      const snapped = snapPoint(
+        { x: shape.cx + delta.x, y: shape.cy + delta.y },
+        targets,
+        tolerance,
+      )
+      return {
+        patch: { cx: snapped.x, cy: snapped.y },
+        indicator: {
+          x: snapped.snappedX ? snapped.x : null,
+          y: snapped.snappedY ? snapped.y : null,
+        },
+      }
+    }
+    case 'dimension': {
+      const projected = shape.axis === 'vertical' ? delta.x : delta.y
+      return { patch: { offset: shape.offset + projected }, indicator: NO_SNAP }
+    }
+    default:
+      return { patch: {}, indicator: NO_SNAP }
+  }
+}
+
+interface ManualDrag {
+  origin: Shape
+  startPointer: Point
+  stage: Konva.Stage
+}
+
 export function useSelectTool() {
   const updateShape = useDocumentStore((state) => state.updateShape)
   const shapes = useDocumentStore((state) => state.document.shapes)
@@ -92,6 +123,7 @@ export function useSelectTool() {
   const select = useSelectionStore((state) => state.select)
   const clearSelection = useSelectionStore((state) => state.clear)
   const nodeRefs = useRef(new Map<ShapeId, Konva.Node>())
+  const manualDrag = useRef<ManualDrag | null>(null)
   const [snapIndicator, setSnapIndicator] = useState<SnapIndicator>(NO_SNAP)
 
   const registerNode = useCallback((id: ShapeId, node: Konva.Node | null) => {
@@ -116,8 +148,8 @@ export function useSelectTool() {
   )
 
   const handleDragStart = useCallback(
-    (id: ShapeId) => {
-      selectShape(id)
+    (shape: Shape) => {
+      selectShape(shape.id)
       useDocumentStore.temporal.getState().pause()
     },
     [selectShape],
@@ -162,6 +194,50 @@ export function useSelectTool() {
     [updateShape, dragTargets, snapTolerance, viewScale],
   )
 
+  const handleManualMouseDown = useCallback(
+    (shape: Shape, e: Konva.KonvaEventObject<MouseEvent>) => {
+      const stage = e.target.getStage()
+      const pointer = stage?.getRelativePointerPosition()
+      if (!stage || !pointer) return
+      manualDrag.current = { origin: shape, startPointer: pointer, stage }
+      selectShape(shape.id)
+      useDocumentStore.temporal.getState().pause()
+    },
+    [selectShape],
+  )
+
+  useEffect(() => {
+    function handleWindowMouseMove() {
+      const drag = manualDrag.current
+      if (!drag) return
+      const pointer = drag.stage.getRelativePointerPosition()
+      if (!pointer) return
+      const delta = { x: pointer.x - drag.startPointer.x, y: pointer.y - drag.startPointer.y }
+      const { patch, indicator } = computeManualDragPatch(
+        drag.origin,
+        delta,
+        dragTargets(drag.origin.id),
+        snapTolerance / viewScale,
+      )
+      updateShape(drag.origin.id, patch)
+      setSnapIndicator(indicator)
+    }
+
+    function handleWindowMouseUp() {
+      if (!manualDrag.current) return
+      manualDrag.current = null
+      useDocumentStore.temporal.getState().resume()
+      setSnapIndicator(NO_SNAP)
+    }
+
+    window.addEventListener('mousemove', handleWindowMouseMove)
+    window.addEventListener('mouseup', handleWindowMouseUp)
+    return () => {
+      window.removeEventListener('mousemove', handleWindowMouseMove)
+      window.removeEventListener('mouseup', handleWindowMouseUp)
+    }
+  }, [dragTargets, snapTolerance, viewScale, updateShape])
+
   return {
     registerNode,
     getNode,
@@ -170,6 +246,7 @@ export function useSelectTool() {
     handleDragStart,
     handleDragMove,
     handleDragEnd,
+    handleManualMouseDown,
     snapIndicator,
   }
 }

@@ -27,6 +27,7 @@ export function TextShape({
   return (
     <Text
       ref={setNodeRef}
+      id={shape.id}
       x={shape.x}
       y={shape.y}
       text={shape.text}

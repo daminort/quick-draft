@@ -54,7 +54,14 @@ export function SelectionTransformer({ shape, node }: SelectionTransformerProps)
     transformerRef.current?.getLayer()?.batchDraw()
   }, [node])
 
-  if (!shape || !node || shape.type === 'arc' || shape.type === 'text' || shape.type === 'guide')
+  if (
+    !shape ||
+    !node ||
+    shape.type === 'arc' ||
+    shape.type === 'text' ||
+    shape.type === 'guide' ||
+    shape.type === 'dimension'
+  )
     return null
 
   return (

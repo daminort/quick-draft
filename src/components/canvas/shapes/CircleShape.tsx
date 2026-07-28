@@ -24,6 +24,7 @@ export function CircleShape({
   return (
     <Circle
       ref={setNodeRef}
+      id={shape.id}
       x={shape.cx}
       y={shape.cy}
       radius={shape.r}

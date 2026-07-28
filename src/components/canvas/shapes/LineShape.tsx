@@ -24,6 +24,7 @@ export function LineShape({
   return (
     <Line
       ref={setNodeRef}
+      id={shape.id}
       x={shape.x1}
       y={shape.y1}
       points={[0, 0, shape.x2 - shape.x1, shape.y2 - shape.y1]}

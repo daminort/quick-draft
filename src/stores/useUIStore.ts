@@ -9,6 +9,8 @@ interface UIStore {
   toggleGuidesVisible: () => void
   snapTolerance: number
   setSnapTolerance: (tolerance: number) => void
+  showDimensionUnit: boolean
+  toggleShowDimensionUnit: () => void
 }
 
 export const useUIStore = create<UIStore>()((set) => ({
@@ -18,4 +20,6 @@ export const useUIStore = create<UIStore>()((set) => ({
   toggleGuidesVisible: () => set((state) => ({ guidesVisible: !state.guidesVisible })),
   snapTolerance: DEFAULT_SNAP_TOLERANCE,
   setSnapTolerance: (tolerance) => set({ snapTolerance: Math.max(0, tolerance) }),
+  showDimensionUnit: false,
+  toggleShowDimensionUnit: () => set((state) => ({ showDimensionUnit: !state.showDimensionUnit })),
 }))

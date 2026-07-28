@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Stage, Layer, Line } from 'react-konva'
+import { Stage, Layer, Line, Rect } from 'react-konva'
 import type Konva from 'konva'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
@@ -14,6 +14,7 @@ import { useCanvasZoom } from '~/components/canvas/tools/useCanvasZoom'
 import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan'
 
 const SNAP_INDICATOR_COLOR = '#ff3b8d'
+const SNAP_POINT_SIZE = 5
 
 export function CanvasStage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -21,7 +22,9 @@ export function CanvasStage() {
   const [size, setSize] = useState({ width: 0, height: 0 })
 
   const shapes = useDocumentStore((state) => state.document.shapes)
+  const removeShape = useDocumentStore((state) => state.removeShape)
   const selectedIds = useSelectionStore((state) => state.selectedIds)
+  const clearSelection = useSelectionStore((state) => state.clear)
   const activeTool = useToolStore((state) => state.activeTool)
   const setTool = useToolStore((state) => state.setTool)
   const guidesVisible = useUIStore((state) => state.guidesVisible)
@@ -59,6 +62,23 @@ export function CanvasStage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [setTool])
 
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return
+      const target = e.target as HTMLElement | null
+      const tag = target?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable)
+        return
+      if (selectedIds.length === 0) return
+      e.preventDefault()
+      selectedIds.forEach((id) => removeShape(id))
+      clearSelection()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedIds, removeShape, clearSelection])
+
   const visibleShapes = guidesVisible ? shapes : shapes.filter((shape) => shape.type !== 'guide')
 
   useEffect(() => {
@@ -67,7 +87,7 @@ export function CanvasStage() {
     layer.clearCache()
     layer.cache()
     layer.batchDraw()
-  }, [visibleShapes])
+  }, [visibleShapes, selectedIds])
 
   const isInteractive = activeTool === 'select'
   const selectedShape =
@@ -120,6 +140,7 @@ export function CanvasStage() {
               interactive={isInteractive}
               interaction={selectTool}
               viewBounds={viewBounds}
+              selected={selectedIds.includes(shape.id)}
             />
           ))}
         </Layer>
@@ -148,6 +169,19 @@ export function CanvasStage() {
               stroke={SNAP_INDICATOR_COLOR}
               strokeWidth={1 / zoom.scale}
               dash={[4 / zoom.scale, 4 / zoom.scale]}
+              listening={false}
+            />
+          )}
+          {snapIndicator.x !== null && snapIndicator.y !== null && (
+            <Rect
+              x={snapIndicator.x}
+              y={snapIndicator.y}
+              width={SNAP_POINT_SIZE / zoom.scale}
+              height={SNAP_POINT_SIZE / zoom.scale}
+              offsetX={SNAP_POINT_SIZE / zoom.scale / 2}
+              offsetY={SNAP_POINT_SIZE / zoom.scale / 2}
+              stroke={SNAP_INDICATOR_COLOR}
+              strokeWidth={1 / zoom.scale}
               listening={false}
             />
           )}

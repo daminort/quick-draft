@@ -9,6 +9,8 @@ export function SettingsPanel() {
   const toggleGuidesVisible = useUIStore((state) => state.toggleGuidesVisible)
   const snapTolerance = useUIStore((state) => state.snapTolerance)
   const setSnapTolerance = useUIStore((state) => state.setSnapTolerance)
+  const showDimensionUnit = useUIStore((state) => state.showDimensionUnit)
+  const toggleShowDimensionUnit = useUIStore((state) => state.toggleShowDimensionUnit)
   const clearGuides = useDocumentStore((state) => state.clearGuides)
   const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false)
 
@@ -66,6 +68,14 @@ export function SettingsPanel() {
               if (Number.isFinite(value)) setSnapTolerance(value)
             }}
           />
+        </label>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <h3 style={{ fontSize: 13, margin: 0 }}>Dimensions</h3>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+          <input type="checkbox" checked={showDimensionUnit} onChange={toggleShowDimensionUnit} />
+          Show unit
         </label>
       </div>
 

@@ -30,6 +30,7 @@ export function GuideShape({
 }: GuideShapeProps) {
   const common = {
     ref: setNodeRef,
+    id: shape.id,
     stroke: GUIDE_COLOR,
     strokeWidth: 1,
     dash: GUIDE_DASH,

@@ -24,6 +24,7 @@ export function RectShape({
   return (
     <Rect
       ref={setNodeRef}
+      id={shape.id}
       x={shape.x}
       y={shape.y}
       width={shape.w}

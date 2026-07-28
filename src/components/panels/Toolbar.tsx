@@ -6,6 +6,7 @@ import { CircleIcon } from '@phosphor-icons/react/dist/csr/Circle'
 import { CircleNotchIcon } from '@phosphor-icons/react/dist/csr/CircleNotch'
 import { TextTIcon } from '@phosphor-icons/react/dist/csr/TextT'
 import { RulerIcon } from '@phosphor-icons/react/dist/csr/Ruler'
+import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/ArrowsOutLineHorizontal'
 import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
 import { GearIcon } from '@phosphor-icons/react/dist/csr/Gear'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
@@ -22,6 +23,11 @@ const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
   { tool: 'arc', label: 'Arc', Icon: CircleNotchIcon },
   { tool: 'text', label: 'Text', Icon: TextTIcon },
   { tool: 'guide', label: 'Guide (G) — click: horizontal, Shift+click: vertical', Icon: RulerIcon },
+  {
+    tool: 'dimension',
+    label: 'Dimension — click two points, then drag to set direction and offset',
+    Icon: ArrowsOutLineHorizontalIcon,
+  },
 ]
 
 export function Toolbar() {
