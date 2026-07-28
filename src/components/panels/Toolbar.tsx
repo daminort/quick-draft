@@ -6,6 +6,7 @@ import { CircleIcon } from '@phosphor-icons/react/dist/csr/Circle'
 import { CircleNotchIcon } from '@phosphor-icons/react/dist/csr/CircleNotch'
 import { TextTIcon } from '@phosphor-icons/react/dist/csr/TextT'
 import { RulerIcon } from '@phosphor-icons/react/dist/csr/Ruler'
+import { PencilRulerIcon } from '@phosphor-icons/react/dist/csr/PencilRuler'
 import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/ArrowsOutLineHorizontal'
 import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
 import { GearIcon } from '@phosphor-icons/react/dist/csr/Gear'
@@ -30,6 +31,12 @@ const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
     tool: 'dimension',
     label: 'Dimension — click two points, then drag to set direction and offset',
     Icon: ArrowsOutLineHorizontalIcon,
+  },
+  {
+    tool: 'ruler',
+    label:
+      'Ruler — click two points to measure; hold Shift to lock to horizontal/vertical; type a number + Enter to set an exact length',
+    Icon: PencilRulerIcon,
   },
 ]
 

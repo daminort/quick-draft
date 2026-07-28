@@ -1,6 +1,15 @@
 import { create } from 'zustand'
 
-export type Tool = 'select' | 'line' | 'rect' | 'circle' | 'arc' | 'text' | 'guide' | 'dimension'
+export type Tool =
+  | 'select'
+  | 'line'
+  | 'rect'
+  | 'circle'
+  | 'arc'
+  | 'text'
+  | 'guide'
+  | 'dimension'
+  | 'ruler'
 
 interface ToolStore {
   activeTool: Tool

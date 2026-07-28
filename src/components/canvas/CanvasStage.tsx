@@ -9,6 +9,8 @@ import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer'
 import { ZoomControl } from '~/components/canvas/ZoomControl'
 import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool'
+import { useRulerTool } from '~/components/canvas/tools/useRulerTool'
+import { RulerOverlay } from '~/components/canvas/RulerOverlay'
 import { useSelectTool } from '~/components/canvas/tools/useSelectTool'
 import { useCanvasZoom } from '~/components/canvas/tools/useCanvasZoom'
 import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan'
@@ -37,6 +39,7 @@ export function CanvasStage() {
   const dimensionsVisible = useUIStore((state) => state.dimensionsVisible)
 
   const drawingTool = useDrawingTool()
+  const rulerTool = useRulerTool()
   const selectTool = useSelectTool()
   const zoom = useCanvasZoom(size)
   const pan = useCanvasPan()
@@ -161,8 +164,12 @@ export function CanvasStage() {
           if (pan.handleMouseDown(e)) return
           selectTool.handleStageMouseDown(e)
           drawingTool.handleMouseDown(e)
+          rulerTool.handleMouseDown(e)
         }}
-        onMouseMove={drawingTool.handleMouseMove}
+        onMouseMove={(e) => {
+          drawingTool.handleMouseMove(e)
+          rulerTool.handleMouseMove(e)
+        }}
         onMouseUp={drawingTool.handleMouseUp}
       >
         <Layer ref={staticLayerRef}>
@@ -187,6 +194,7 @@ export function CanvasStage() {
             />
           )}
           <SelectionTransformer shape={selectedShape} node={selectedNode} />
+          {rulerTool.draftRuler && <RulerOverlay ruler={rulerTool.draftRuler} scale={zoom.scale} />}
           {snapIndicator.x !== null && (
             <Line
               points={[snapIndicator.x, viewBounds.top, snapIndicator.x, viewBounds.bottom]}
