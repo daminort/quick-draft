@@ -1,34 +1,98 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import type Konva from 'konva'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
+import { useUIStore } from '~/stores/useUIStore'
+import { useViewStore } from '~/stores/useViewStore'
+import { collectSnapTargets, snapPoint, type SnapTargets } from '~/lib/snap'
 import type { Shape, ShapeId, ShapePatch } from '~/types/document'
 
-function computeDragPatch(shape: Shape, node: Konva.Node): ShapePatch {
+type SnapIndicator = { x: number | null; y: number | null }
+const NO_SNAP: SnapIndicator = { x: null, y: null }
+
+function computeDragResult(
+  shape: Shape,
+  node: Konva.Node,
+  targets: SnapTargets,
+  tolerance: number,
+): { patch: ShapePatch; indicator: SnapIndicator } {
   switch (shape.type) {
     case 'rect':
-      return { x: node.x(), y: node.y() }
-    case 'circle':
-      return { cx: node.x(), cy: node.y() }
-    case 'arc':
-      return { cx: shape.cx + node.x(), cy: shape.cy + node.y() }
-    case 'text':
-      return { x: node.x(), y: node.y() }
+    case 'text': {
+      const snapped = snapPoint({ x: node.x(), y: node.y() }, targets, tolerance)
+      return {
+        patch: { x: snapped.x, y: snapped.y },
+        indicator: {
+          x: snapped.snappedX ? snapped.x : null,
+          y: snapped.snappedY ? snapped.y : null,
+        },
+      }
+    }
+    case 'circle': {
+      const snapped = snapPoint({ x: node.x(), y: node.y() }, targets, tolerance)
+      return {
+        patch: { cx: snapped.x, cy: snapped.y },
+        indicator: {
+          x: snapped.snappedX ? snapped.x : null,
+          y: snapped.snappedY ? snapped.y : null,
+        },
+      }
+    }
+    case 'arc': {
+      const snapped = snapPoint(
+        { x: shape.cx + node.x(), y: shape.cy + node.y() },
+        targets,
+        tolerance,
+      )
+      return {
+        patch: { cx: snapped.x, cy: snapped.y },
+        indicator: {
+          x: snapped.snappedX ? snapped.x : null,
+          y: snapped.snappedY ? snapped.y : null,
+        },
+      }
+    }
     case 'line': {
-      const dx = node.x() - shape.x1
-      const dy = node.y() - shape.y1
-      return { x1: node.x(), y1: node.y(), x2: shape.x2 + dx, y2: shape.y2 + dy }
+      const snapped = snapPoint({ x: node.x(), y: node.y() }, targets, tolerance)
+      const dx = snapped.x - shape.x1
+      const dy = snapped.y - shape.y1
+      return {
+        patch: { x1: snapped.x, y1: snapped.y, x2: shape.x2 + dx, y2: shape.y2 + dy },
+        indicator: {
+          x: snapped.snappedX ? snapped.x : null,
+          y: snapped.snappedY ? snapped.y : null,
+        },
+      }
+    }
+    case 'guide': {
+      if (shape.orientation === 'v') {
+        const snapped = snapPoint({ x: node.x(), y: 0 }, targets, tolerance)
+        return {
+          patch: { position: snapped.x },
+          indicator: { x: snapped.snappedX ? snapped.x : null, y: null },
+        }
+      }
+      const snapped = snapPoint({ x: 0, y: node.y() }, targets, tolerance)
+      return {
+        patch: { position: snapped.y },
+        indicator: { x: null, y: snapped.snappedY ? snapped.y : null },
+      }
     }
     default:
-      return {}
+      return { patch: {}, indicator: NO_SNAP }
   }
 }
 
 export function useSelectTool() {
   const updateShape = useDocumentStore((state) => state.updateShape)
+  const shapes = useDocumentStore((state) => state.document.shapes)
+  const guidesVisible = useUIStore((state) => state.guidesVisible)
+  const snapTolerance = useUIStore((state) => state.snapTolerance)
+  const viewScale = useViewStore((state) => state.scale)
   const select = useSelectionStore((state) => state.select)
   const clearSelection = useSelectionStore((state) => state.clear)
   const nodeRefs = useRef(new Map<ShapeId, Konva.Node>())
+  const [snapIndicator, setSnapIndicator] = useState<SnapIndicator>(NO_SNAP)
 
   const registerNode = useCallback((id: ShapeId, node: Konva.Node | null) => {
     if (node) {
@@ -59,19 +123,43 @@ export function useSelectTool() {
     [selectShape],
   )
 
+  const dragTargets = useCallback(
+    (excludeId: ShapeId): SnapTargets => {
+      const visibleShapes = guidesVisible
+        ? shapes
+        : shapes.filter((shape) => shape.type !== 'guide')
+      return collectSnapTargets(visibleShapes, { excludeId })
+    },
+    [shapes, guidesVisible],
+  )
+
   const handleDragMove = useCallback(
     (shape: Shape, node: Konva.Node) => {
-      updateShape(shape.id, computeDragPatch(shape, node))
+      const { patch, indicator } = computeDragResult(
+        shape,
+        node,
+        dragTargets(shape.id),
+        snapTolerance / viewScale,
+      )
+      updateShape(shape.id, patch)
+      setSnapIndicator(indicator)
     },
-    [updateShape],
+    [updateShape, dragTargets, snapTolerance, viewScale],
   )
 
   const handleDragEnd = useCallback(
     (shape: Shape, node: Konva.Node) => {
-      updateShape(shape.id, computeDragPatch(shape, node))
+      const { patch } = computeDragResult(
+        shape,
+        node,
+        dragTargets(shape.id),
+        snapTolerance / viewScale,
+      )
+      updateShape(shape.id, patch)
       useDocumentStore.temporal.getState().resume()
+      setSnapIndicator(NO_SNAP)
     },
-    [updateShape],
+    [updateShape, dragTargets, snapTolerance, viewScale],
   )
 
   return {
@@ -82,5 +170,6 @@ export function useSelectTool() {
     handleDragStart,
     handleDragMove,
     handleDragEnd,
+    snapIndicator,
   }
 }

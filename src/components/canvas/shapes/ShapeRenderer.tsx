@@ -5,6 +5,7 @@ import { RectShape } from '~/components/canvas/shapes/RectShape'
 import { CircleShape } from '~/components/canvas/shapes/CircleShape'
 import { ArcShape } from '~/components/canvas/shapes/ArcShape'
 import { TextShape } from '~/components/canvas/shapes/TextShape'
+import { GuideShape } from '~/components/canvas/shapes/GuideShape'
 
 export interface ShapeInteraction {
   registerNode: (id: ShapeId, node: Konva.Node | null) => void
@@ -14,13 +15,21 @@ export interface ShapeInteraction {
   handleDragEnd: (shape: Shape, node: Konva.Node) => void
 }
 
+export interface ViewBounds {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
+
 interface ShapeRendererProps {
   shape: Shape
   interactive: boolean
   interaction: ShapeInteraction
+  viewBounds: ViewBounds
 }
 
-export function ShapeRenderer({ shape, interactive, interaction }: ShapeRendererProps) {
+export function ShapeRenderer({ shape, interactive, interaction, viewBounds }: ShapeRendererProps) {
   const shared = {
     draggable: interactive,
     onSelect: () => interaction.selectShape(shape.id),
@@ -41,6 +50,8 @@ export function ShapeRenderer({ shape, interactive, interaction }: ShapeRenderer
       return <ArcShape shape={shape} {...shared} />
     case 'text':
       return <TextShape shape={shape} {...shared} />
+    case 'guide':
+      return <GuideShape shape={shape} viewBounds={viewBounds} {...shared} />
     default:
       return null
   }

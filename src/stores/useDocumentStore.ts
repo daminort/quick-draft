@@ -8,6 +8,7 @@ interface DocumentStore {
   updateShape: (id: ShapeId, patch: ShapePatch) => void
   removeShape: (id: ShapeId) => void
   clear: () => void
+  clearGuides: () => void
   setUnits: (units: Document['units']) => void
 }
 
@@ -44,6 +45,13 @@ export const useDocumentStore = create<DocumentStore>()(
     clear: () =>
       set((state) => ({
         document: { ...state.document, shapes: [] },
+      })),
+    clearGuides: () =>
+      set((state) => ({
+        document: {
+          ...state.document,
+          shapes: state.document.shapes.filter((shape) => shape.type !== 'guide'),
+        },
       })),
     setUnits: (units) =>
       set((state) => ({

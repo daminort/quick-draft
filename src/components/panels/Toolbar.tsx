@@ -1,15 +1,18 @@
+import { useState } from 'react'
 import { CursorIcon } from '@phosphor-icons/react/dist/csr/Cursor'
 import { LineSegmentIcon } from '@phosphor-icons/react/dist/csr/LineSegment'
 import { RectangleIcon } from '@phosphor-icons/react/dist/csr/Rectangle'
 import { CircleIcon } from '@phosphor-icons/react/dist/csr/Circle'
 import { CircleNotchIcon } from '@phosphor-icons/react/dist/csr/CircleNotch'
 import { TextTIcon } from '@phosphor-icons/react/dist/csr/TextT'
+import { RulerIcon } from '@phosphor-icons/react/dist/csr/Ruler'
 import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
 import { GearIcon } from '@phosphor-icons/react/dist/csr/Gear'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { useUIStore } from '~/stores/useUIStore'
+import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
 
 const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
   { tool: 'select', label: 'Select', Icon: CursorIcon },
@@ -18,6 +21,7 @@ const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
   { tool: 'circle', label: 'Circle', Icon: CircleIcon },
   { tool: 'arc', label: 'Arc', Icon: CircleNotchIcon },
   { tool: 'text', label: 'Text', Icon: TextTIcon },
+  { tool: 'guide', label: 'Guide (G) — click: horizontal, Shift+click: vertical', Icon: RulerIcon },
 ]
 
 export function Toolbar() {
@@ -27,12 +31,12 @@ export function Toolbar() {
   const clearSelection = useSelectionStore((state) => state.clear)
   const settingsOpen = useUIStore((state) => state.settingsOpen)
   const toggleSettings = useUIStore((state) => state.toggleSettings)
+  const [clearDialogOpen, setClearDialogOpen] = useState(false)
 
-  const handleClear = () => {
-    if (window.confirm('Clear the entire canvas?')) {
-      clearDocument()
-      clearSelection()
-    }
+  const handleClearConfirmed = () => {
+    clearDocument()
+    clearSelection()
+    setClearDialogOpen(false)
   }
 
   return (
@@ -95,7 +99,7 @@ export function Toolbar() {
         type="button"
         title="Clear canvas"
         aria-label="Clear canvas"
-        onClick={handleClear}
+        onClick={() => setClearDialogOpen(true)}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -110,6 +114,15 @@ export function Toolbar() {
       >
         <TrashIcon size={20} />
       </button>
+
+      <ConfirmDialog
+        open={clearDialogOpen}
+        title="Clear canvas"
+        message="This will remove all shapes from the canvas."
+        confirmLabel="Clear"
+        onConfirm={handleClearConfirmed}
+        onCancel={() => setClearDialogOpen(false)}
+      />
     </div>
   )
 }

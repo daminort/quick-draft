@@ -156,6 +156,38 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
           />
         </>
       )
+    case 'guide':
+      return (
+        <>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
+            Orientation
+            <select
+              value={shape.orientation}
+              onChange={(e) =>
+                updateShape(shape.id, {
+                  orientation: e.target.value as 'h' | 'v' | 'angle',
+                })
+              }
+            >
+              <option value="h">Horizontal</option>
+              <option value="v">Vertical</option>
+              <option value="angle">Angle</option>
+            </select>
+          </label>
+          <NumberField
+            label="Position"
+            value={shape.position}
+            onChange={(v) => updateShape(shape.id, { position: v })}
+          />
+          {shape.orientation === 'angle' && (
+            <NumberField
+              label="Angle"
+              value={shape.angle ?? 0}
+              onChange={(v) => updateShape(shape.id, { angle: v })}
+            />
+          )}
+        </>
+      )
     default:
       return null
   }

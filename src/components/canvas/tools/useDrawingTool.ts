@@ -3,6 +3,9 @@ import type Konva from 'konva'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { useToolStore } from '~/stores/useToolStore'
+import { useUIStore } from '~/stores/useUIStore'
+import { useViewStore } from '~/stores/useViewStore'
+import { collectSnapTargets, snapPoint } from '~/lib/snap'
 import type { Shape, Style } from '~/types/document'
 
 const DEFAULT_STYLE: Style = { stroke: '#1a1a1a', strokeWidth: 1 }
@@ -10,9 +13,12 @@ const DEFAULT_TEXT_COLOR = '#1a1a1a'
 
 type Point = { x: number; y: number }
 type ArcPhase = 'radius' | 'angle'
+type SnapIndicator = { x: number | null; y: number | null }
+
+const NO_SNAP: SnapIndicator = { x: null, y: null }
 
 function getPointerPosition(stage: Konva.Stage): Point {
-  return stage.getPointerPosition() ?? { x: 0, y: 0 }
+  return stage.getRelativePointerPosition() ?? { x: 0, y: 0 }
 }
 
 function angleBetween(center: Point, point: Point): number {
@@ -37,17 +43,38 @@ function hasSize(shape: Shape): boolean {
 export function useDrawingTool() {
   const activeTool = useToolStore((state) => state.activeTool)
   const setTool = useToolStore((state) => state.setTool)
+  const doc = useDocumentStore((state) => state.document)
   const addShape = useDocumentStore((state) => state.addShape)
   const selectShape = useSelectionStore((state) => state.select)
+  const guidesVisible = useUIStore((state) => state.guidesVisible)
+  const snapTolerance = useUIStore((state) => state.snapTolerance)
+  const viewScale = useViewStore((state) => state.scale)
   const [draftShape, setDraftShape] = useState<Shape | null>(null)
+  const [snapIndicator, setSnapIndicator] = useState<SnapIndicator>(NO_SNAP)
   const startPoint = useRef<Point | null>(null)
   const arcPhase = useRef<ArcPhase | null>(null)
 
   useEffect(() => {
     setDraftShape(null)
+    setSnapIndicator(NO_SNAP)
     startPoint.current = null
     arcPhase.current = null
   }, [activeTool])
+
+  const snapCursor = useCallback(
+    (point: Point): Point => {
+      const shapes = guidesVisible
+        ? doc.shapes
+        : doc.shapes.filter((shape) => shape.type !== 'guide')
+      const result = snapPoint(point, collectSnapTargets(shapes), snapTolerance / viewScale)
+      setSnapIndicator({
+        x: result.snappedX ? result.x : null,
+        y: result.snappedY ? result.y : null,
+      })
+      return { x: result.x, y: result.y }
+    },
+    [doc.shapes, guidesVisible, snapTolerance, viewScale],
+  )
 
   const handleArcMouseDown = useCallback(
     (point: Point) => {
@@ -94,7 +121,7 @@ export function useDrawingTool() {
       if (activeTool === 'select') return
       const stage = e.target.getStage()
       if (!stage) return
-      const point = getPointerPosition(stage)
+      const point = snapCursor(getPointerPosition(stage))
 
       if (activeTool === 'arc') {
         handleArcMouseDown(point)
@@ -117,6 +144,18 @@ export function useDrawingTool() {
         })
         selectShape([id])
         setTool('select')
+        return
+      }
+
+      if (activeTool === 'guide') {
+        const id = crypto.randomUUID()
+        const orientation = e.evt.shiftKey ? 'v' : 'h'
+        addShape({
+          id,
+          type: 'guide',
+          orientation,
+          position: orientation === 'v' ? point.x : point.y,
+        })
         return
       }
 
@@ -148,14 +187,14 @@ export function useDrawingTool() {
         setDraftShape({ id, type: 'circle', cx: point.x, cy: point.y, r: 0, style: DEFAULT_STYLE })
       }
     },
-    [activeTool, handleArcMouseDown, addShape, selectShape, setTool],
+    [activeTool, handleArcMouseDown, addShape, selectShape, setTool, snapCursor],
   )
 
   const handleMouseMove = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
       const stage = e.target.getStage()
       if (!stage) return
-      const point = getPointerPosition(stage)
+      const point = snapCursor(getPointerPosition(stage))
 
       if (activeTool === 'arc') {
         setDraftShape((current) => {
@@ -177,7 +216,18 @@ export function useDrawingTool() {
       setDraftShape((current) => {
         if (!current) return current
         if (current.type === 'line') {
-          return { ...current, x2: point.x, y2: point.y }
+          let x2 = point.x
+          let y2 = point.y
+          if (e.evt.shiftKey) {
+            const dx = point.x - current.x1
+            const dy = point.y - current.y1
+            if (Math.abs(dx) > Math.abs(dy)) {
+              y2 = current.y1
+            } else {
+              x2 = current.x1
+            }
+          }
+          return { ...current, x2, y2 }
         }
         if (current.type === 'rect') {
           return {
@@ -194,11 +244,11 @@ export function useDrawingTool() {
         return current
       })
     },
-    [activeTool],
+    [activeTool, snapCursor],
   )
 
   const handleMouseUp = useCallback(() => {
-    if (activeTool === 'arc') return
+    if (activeTool === 'arc' || activeTool === 'guide') return
 
     setDraftShape((current) => {
       if (current && hasSize(current)) {
@@ -207,10 +257,12 @@ export function useDrawingTool() {
       return null
     })
     startPoint.current = null
+    setSnapIndicator(NO_SNAP)
   }, [activeTool, addShape])
 
   return {
     draftShape: activeTool === 'select' ? null : draftShape,
+    snapIndicator,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,

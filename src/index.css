@@ -1,5 +1,6 @@
 :root {
   color-scheme: light dark;
+  font-family: 'Roboto', system-ui, sans-serif;
 }
 
 html,
@@ -13,4 +14,11 @@ body,
 
 body {
   overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
