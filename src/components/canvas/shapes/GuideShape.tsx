@@ -4,6 +4,7 @@ import type { Shape } from '~/types/document'
 import type { ViewBounds } from '~/components/canvas/shapes/ShapeRenderer'
 
 const GUIDE_COLOR = 'rgba(59, 130, 246, 0.6)'
+const GUIDE_SELECTED_COLOR = '#1d4ed8'
 const GUIDE_DASH = [4, 4]
 const GUIDE_REACH = 100000
 
@@ -11,6 +12,7 @@ interface GuideShapeProps {
   shape: Extract<Shape, { type: 'guide' }>
   viewBounds: ViewBounds
   draggable: boolean
+  selected?: boolean
   onSelect: () => void
   onDragStart: () => void
   onDragMove: (node: Konva.Node) => void
@@ -22,6 +24,7 @@ export function GuideShape({
   shape,
   viewBounds,
   draggable,
+  selected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -31,7 +34,7 @@ export function GuideShape({
   const common = {
     ref: setNodeRef,
     id: shape.id,
-    stroke: GUIDE_COLOR,
+    stroke: selected ? GUIDE_SELECTED_COLOR : GUIDE_COLOR,
     strokeWidth: 1,
     dash: GUIDE_DASH,
     hitStrokeWidth: 12,

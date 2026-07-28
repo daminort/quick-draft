@@ -41,6 +41,7 @@ export function ShapeRenderer({
 }: ShapeRendererProps) {
   const shared = {
     draggable: interactive,
+    selected,
     onSelect: interactive ? () => interaction.selectShape(shape.id) : () => {},
     onDragStart: () => interaction.handleDragStart(shape),
     onDragMove: (node: Konva.Node) => interaction.handleDragMove(shape, node),
@@ -60,6 +61,7 @@ export function ShapeRenderer({
         <ArcShape
           shape={shape}
           interactive={interactive}
+          selected={selected}
           onSelect={shared.onSelect}
           onMouseDown={(e) => interaction.handleManualMouseDown(shape, e)}
           setNodeRef={shared.setNodeRef}

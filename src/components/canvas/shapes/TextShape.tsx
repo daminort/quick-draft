@@ -2,9 +2,12 @@ import { Text } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
 
+const SELECTED_COLOR = '#1d4ed8'
+
 interface TextShapeProps {
   shape: Extract<Shape, { type: 'text' }>
   draggable: boolean
+  selected?: boolean
   onSelect: () => void
   onDragStart: () => void
   onDragMove: (node: Konva.Node) => void
@@ -15,6 +18,7 @@ interface TextShapeProps {
 export function TextShape({
   shape,
   draggable,
+  selected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -34,7 +38,7 @@ export function TextShape({
       fontFamily={shape.fontFamily}
       fontSize={shape.fontSize}
       fontStyle={fontStyle}
-      fill={shape.fill}
+      fill={selected ? SELECTED_COLOR : shape.fill}
       draggable={draggable}
       onClick={onSelect}
       onTap={onSelect}

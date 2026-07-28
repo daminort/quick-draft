@@ -2,9 +2,12 @@ import { Circle } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
 
+const SELECTED_COLOR = '#1d4ed8'
+
 interface CircleShapeProps {
   shape: Extract<Shape, { type: 'circle' }>
   draggable: boolean
+  selected?: boolean
   onSelect: () => void
   onDragStart: () => void
   onDragMove: (node: Konva.Node) => void
@@ -15,6 +18,7 @@ interface CircleShapeProps {
 export function CircleShape({
   shape,
   draggable,
+  selected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -28,7 +32,7 @@ export function CircleShape({
       x={shape.cx}
       y={shape.cy}
       radius={shape.r}
-      stroke={shape.style.stroke}
+      stroke={selected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}
       dash={shape.style.dash}

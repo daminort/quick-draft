@@ -1,0 +1,90 @@
+import type { Shape } from '~/types/document'
+
+export interface Bounds {
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+}
+
+const GUIDE_SPAN = 1e6
+const TEXT_CHAR_WIDTH_RATIO = 0.6
+
+function rotatePoint(
+  point: { x: number; y: number },
+  origin: { x: number; y: number },
+  angleDeg: number,
+) {
+  const angle = (angleDeg * Math.PI) / 180
+  const cos = Math.cos(angle)
+  const sin = Math.sin(angle)
+  const dx = point.x - origin.x
+  const dy = point.y - origin.y
+  return { x: origin.x + dx * cos - dy * sin, y: origin.y + dx * sin + dy * cos }
+}
+
+/** Axis-aligned bounding box for a shape, used for marquee-selection hit testing. */
+export function getShapeBounds(shape: Shape): Bounds | null {
+  switch (shape.type) {
+    case 'line':
+      return {
+        x1: Math.min(shape.x1, shape.x2),
+        y1: Math.min(shape.y1, shape.y2),
+        x2: Math.max(shape.x1, shape.x2),
+        y2: Math.max(shape.y1, shape.y2),
+      }
+    case 'rect': {
+      const origin = { x: shape.x, y: shape.y }
+      const corners = [
+        { x: 0, y: 0 },
+        { x: shape.w, y: 0 },
+        { x: shape.w, y: shape.h },
+        { x: 0, y: shape.h },
+      ].map((c) => rotatePoint({ x: shape.x + c.x, y: shape.y + c.y }, origin, shape.rotation))
+      const xs = corners.map((c) => c.x)
+      const ys = corners.map((c) => c.y)
+      return { x1: Math.min(...xs), y1: Math.min(...ys), x2: Math.max(...xs), y2: Math.max(...ys) }
+    }
+    case 'circle':
+    case 'arc':
+      return {
+        x1: shape.cx - shape.r,
+        y1: shape.cy - shape.r,
+        x2: shape.cx + shape.r,
+        y2: shape.cy + shape.r,
+      }
+    case 'text': {
+      const width = shape.text.length * shape.fontSize * TEXT_CHAR_WIDTH_RATIO
+      return { x1: shape.x, y1: shape.y, x2: shape.x + width, y2: shape.y + shape.fontSize }
+    }
+    case 'dimension': {
+      const isVertical = shape.axis === 'vertical'
+      const lineCoordinate = isVertical ? shape.x2 + shape.offset : shape.y2 + shape.offset
+      return isVertical
+        ? {
+            x1: Math.min(shape.x1, shape.x2, lineCoordinate),
+            y1: Math.min(shape.y1, shape.y2),
+            x2: Math.max(shape.x1, shape.x2, lineCoordinate),
+            y2: Math.max(shape.y1, shape.y2),
+          }
+        : {
+            x1: Math.min(shape.x1, shape.x2),
+            y1: Math.min(shape.y1, shape.y2, lineCoordinate),
+            x2: Math.max(shape.x1, shape.x2),
+            y2: Math.max(shape.y1, shape.y2, lineCoordinate),
+          }
+    }
+    case 'guide':
+      if (shape.orientation === 'v')
+        return { x1: shape.position, y1: -GUIDE_SPAN, x2: shape.position, y2: GUIDE_SPAN }
+      if (shape.orientation === 'h')
+        return { x1: -GUIDE_SPAN, y1: shape.position, x2: GUIDE_SPAN, y2: shape.position }
+      return null
+    default:
+      return null
+  }
+}
+
+export function boundsIntersect(a: Bounds, b: Bounds): boolean {
+  return a.x1 <= b.x2 && a.x2 >= b.x1 && a.y1 <= b.y2 && a.y2 >= b.y1
+}

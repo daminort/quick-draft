@@ -16,7 +16,7 @@ const DEFAULT_TOLERANCE = 8
 
 export function collectSnapTargets(
   shapes: Shape[],
-  options: { excludeId?: ShapeId } = {},
+  options: { excludeIds?: ShapeId[] } = {},
 ): SnapTargets {
   const xs: number[] = []
   const ys: number[] = []
@@ -26,7 +26,7 @@ export function collectSnapTargets(
   }
 
   for (const shape of shapes) {
-    if (shape.id === options.excludeId) continue
+    if (options.excludeIds?.includes(shape.id)) continue
 
     switch (shape.type) {
       case 'guide':

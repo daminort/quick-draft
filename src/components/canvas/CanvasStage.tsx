@@ -15,6 +15,8 @@ import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan'
 
 const SNAP_INDICATOR_COLOR = '#ff3b8d'
 const SNAP_POINT_SIZE = 5
+const MARQUEE_STROKE_COLOR = '#2563eb'
+const MARQUEE_FILL_COLOR = 'rgba(37, 99, 235, 0.1)'
 
 export function CanvasStage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -28,6 +30,7 @@ export function CanvasStage() {
   const activeTool = useToolStore((state) => state.activeTool)
   const setTool = useToolStore((state) => state.setTool)
   const guidesVisible = useUIStore((state) => state.guidesVisible)
+  const dimensionsVisible = useUIStore((state) => state.dimensionsVisible)
 
   const drawingTool = useDrawingTool()
   const selectTool = useSelectTool()
@@ -79,7 +82,11 @@ export function CanvasStage() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedIds, removeShape, clearSelection])
 
-  const visibleShapes = guidesVisible ? shapes : shapes.filter((shape) => shape.type !== 'guide')
+  const visibleShapes = shapes.filter(
+    (shape) =>
+      (guidesVisible || shape.type !== 'guide') &&
+      (dimensionsVisible || shape.type !== 'dimension'),
+  )
 
   useEffect(() => {
     const layer = staticLayerRef.current
@@ -182,6 +189,18 @@ export function CanvasStage() {
               offsetY={SNAP_POINT_SIZE / zoom.scale / 2}
               stroke={SNAP_INDICATOR_COLOR}
               strokeWidth={1 / zoom.scale}
+              listening={false}
+            />
+          )}
+          {selectTool.marqueeRect && (
+            <Rect
+              x={selectTool.marqueeRect.x}
+              y={selectTool.marqueeRect.y}
+              width={selectTool.marqueeRect.width}
+              height={selectTool.marqueeRect.height}
+              stroke={MARQUEE_STROKE_COLOR}
+              strokeWidth={1 / zoom.scale}
+              fill={MARQUEE_FILL_COLOR}
               listening={false}
             />
           )}

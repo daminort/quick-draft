@@ -11,6 +11,8 @@ interface UIStore {
   setSnapTolerance: (tolerance: number) => void
   showDimensionUnit: boolean
   toggleShowDimensionUnit: () => void
+  dimensionsVisible: boolean
+  toggleDimensionsVisible: () => void
 }
 
 export const useUIStore = create<UIStore>()((set) => ({
@@ -22,4 +24,6 @@ export const useUIStore = create<UIStore>()((set) => ({
   setSnapTolerance: (tolerance) => set({ snapTolerance: Math.max(0, tolerance) }),
   showDimensionUnit: false,
   toggleShowDimensionUnit: () => set((state) => ({ showDimensionUnit: !state.showDimensionUnit })),
+  dimensionsVisible: true,
+  toggleDimensionsVisible: () => set((state) => ({ dimensionsVisible: !state.dimensionsVisible })),
 }))

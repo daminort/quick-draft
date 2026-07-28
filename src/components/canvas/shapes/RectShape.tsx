@@ -2,9 +2,12 @@ import { Rect } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
 
+const SELECTED_COLOR = '#1d4ed8'
+
 interface RectShapeProps {
   shape: Extract<Shape, { type: 'rect' }>
   draggable: boolean
+  selected?: boolean
   onSelect: () => void
   onDragStart: () => void
   onDragMove: (node: Konva.Node) => void
@@ -15,6 +18,7 @@ interface RectShapeProps {
 export function RectShape({
   shape,
   draggable,
+  selected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -30,7 +34,7 @@ export function RectShape({
       width={shape.w}
       height={shape.h}
       rotation={shape.rotation}
-      stroke={shape.style.stroke}
+      stroke={selected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}
       dash={shape.style.dash}
