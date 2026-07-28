@@ -15,6 +15,9 @@ interface UIStore {
   toggleShowDimensionUnit: () => void
   dimensionsVisible: boolean
   toggleDimensionsVisible: () => void
+  printOpen: boolean
+  openPrint: () => void
+  closePrint: () => void
 }
 
 export const useUIStore = create<UIStore>()((set) => ({
@@ -30,4 +33,7 @@ export const useUIStore = create<UIStore>()((set) => ({
   toggleShowDimensionUnit: () => set((state) => ({ showDimensionUnit: !state.showDimensionUnit })),
   dimensionsVisible: true,
   toggleDimensionsVisible: () => set((state) => ({ dimensionsVisible: !state.dimensionsVisible })),
+  printOpen: false,
+  openPrint: () => set({ printOpen: true }),
+  closePrint: () => set({ printOpen: false }),
 }))

@@ -10,6 +10,7 @@ import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/Arro
 import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
 import { GearIcon } from '@phosphor-icons/react/dist/csr/Gear'
 import { StackIcon } from '@phosphor-icons/react/dist/csr/Stack'
+import { PrinterIcon } from '@phosphor-icons/react/dist/csr/Printer'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
@@ -40,6 +41,7 @@ export function Toolbar() {
   const toggleSettings = useUIStore((state) => state.toggleSettings)
   const libraryOpen = useUIStore((state) => state.libraryOpen)
   const toggleLibrary = useUIStore((state) => state.toggleLibrary)
+  const openPrint = useUIStore((state) => state.openPrint)
   const [clearDialogOpen, setClearDialogOpen] = useState(false)
 
   const handleClearConfirmed = () => {
@@ -102,6 +104,26 @@ export function Toolbar() {
         }}
       >
         <StackIcon size={20} />
+      </button>
+
+      <button
+        type="button"
+        title="Print"
+        aria-label="Print"
+        onClick={openPrint}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 36,
+          height: 36,
+          border: 'none',
+          borderRadius: 6,
+          background: 'transparent',
+          cursor: 'pointer',
+        }}
+      >
+        <PrinterIcon size={20} />
       </button>
 
       <button

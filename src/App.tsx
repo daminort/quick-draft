@@ -3,11 +3,14 @@ import { Toolbar } from '~/components/panels/Toolbar'
 import { PropertiesPanel } from '~/components/panels/PropertiesPanel'
 import { SettingsPanel } from '~/components/panels/SettingsPanel'
 import { ComponentLibrary } from '~/components/panels/ComponentLibrary'
+import { PrintView } from '~/components/print/PrintView'
 import { useUIStore } from '~/stores/useUIStore'
 
 function App() {
   const settingsOpen = useUIStore((state) => state.settingsOpen)
   const libraryOpen = useUIStore((state) => state.libraryOpen)
+  const printOpen = useUIStore((state) => state.printOpen)
+  const closePrint = useUIStore((state) => state.closePrint)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
@@ -24,6 +27,7 @@ function App() {
           <PropertiesPanel />
         )}
       </div>
+      <PrintView open={printOpen} onClose={closePrint} />
     </div>
   )
 }
