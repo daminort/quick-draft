@@ -54,6 +54,10 @@ export type Shape =
       rotation: number
     }
 
+type DistributivePartial<T> = T extends unknown ? Partial<T> : never
+
+export type ShapePatch = DistributivePartial<Shape>
+
 export interface ComponentDef {
   id: string
   name: string
