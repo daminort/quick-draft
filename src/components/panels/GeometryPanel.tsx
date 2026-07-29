@@ -194,22 +194,22 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
           <NumberField
             label="X1"
             value={shape.x1}
-            onChange={(v) => updateShape(shape.id, { x1: v })}
+            onChange={(v) => updateShape(shape.id, { x1: v, bindingA: null })}
           />
           <NumberField
             label="Y1"
             value={shape.y1}
-            onChange={(v) => updateShape(shape.id, { y1: v })}
+            onChange={(v) => updateShape(shape.id, { y1: v, bindingA: null })}
           />
           <NumberField
             label="X2"
             value={shape.x2}
-            onChange={(v) => updateShape(shape.id, { x2: v })}
+            onChange={(v) => updateShape(shape.id, { x2: v, bindingB: null })}
           />
           <NumberField
             label="Y2"
             value={shape.y2}
-            onChange={(v) => updateShape(shape.id, { y2: v })}
+            onChange={(v) => updateShape(shape.id, { y2: v, bindingB: null })}
           />
           <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
             Axis

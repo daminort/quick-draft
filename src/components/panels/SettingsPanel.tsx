@@ -13,6 +13,10 @@ export function SettingsPanel() {
   const toggleShowDimensionUnit = useUIStore((state) => state.toggleShowDimensionUnit)
   const dimensionsVisible = useUIStore((state) => state.dimensionsVisible)
   const toggleDimensionsVisible = useUIStore((state) => state.toggleDimensionsVisible)
+  const rulerVisible = useUIStore((state) => state.rulerVisible)
+  const toggleRulerVisible = useUIStore((state) => state.toggleRulerVisible)
+  const rulerGuidesVisible = useUIStore((state) => state.rulerGuidesVisible)
+  const toggleRulerGuidesVisible = useUIStore((state) => state.toggleRulerGuidesVisible)
   const clearGuides = useDocumentStore((state) => state.clearGuides)
   const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false)
 
@@ -82,6 +86,18 @@ export function SettingsPanel() {
         <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
           <input type="checkbox" checked={showDimensionUnit} onChange={toggleShowDimensionUnit} />
           Show unit
+        </label>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <h3 style={{ fontSize: 13, margin: 0 }}>Ruler</h3>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+          <input type="checkbox" checked={rulerVisible} onChange={toggleRulerVisible} />
+          Show ruler
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+          <input type="checkbox" checked={rulerGuidesVisible} onChange={toggleRulerGuidesVisible} />
+          Show cursor guides
         </label>
       </div>
 

@@ -51,11 +51,28 @@ export function StylePanel({ shape }: StylePanelProps) {
           Fill
         </label>
         {style.fill !== undefined && (
-          <input
-            type="color"
-            value={style.fill}
-            onChange={(e) => updateShape(shape.id, { style: { ...style, fill: e.target.value } })}
-          />
+          <>
+            <input
+              type="color"
+              value={style.fill}
+              onChange={(e) => updateShape(shape.id, { style: { ...style, fill: e.target.value } })}
+            />
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              Fill opacity
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={style.fillOpacity ?? 1}
+                onChange={(e) =>
+                  updateShape(shape.id, {
+                    style: { ...style, fillOpacity: Number(e.target.value) },
+                  })
+                }
+              />
+            </label>
+          </>
         )}
       </div>
     </div>

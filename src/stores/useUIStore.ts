@@ -15,6 +15,10 @@ interface UIStore {
   toggleShowDimensionUnit: () => void
   dimensionsVisible: boolean
   toggleDimensionsVisible: () => void
+  rulerVisible: boolean
+  toggleRulerVisible: () => void
+  rulerGuidesVisible: boolean
+  toggleRulerGuidesVisible: () => void
   printOpen: boolean
   openPrint: () => void
   closePrint: () => void
@@ -33,6 +37,10 @@ export const useUIStore = create<UIStore>()((set) => ({
   toggleShowDimensionUnit: () => set((state) => ({ showDimensionUnit: !state.showDimensionUnit })),
   dimensionsVisible: true,
   toggleDimensionsVisible: () => set((state) => ({ dimensionsVisible: !state.dimensionsVisible })),
+  rulerVisible: false,
+  toggleRulerVisible: () => set((state) => ({ rulerVisible: !state.rulerVisible })),
+  rulerGuidesVisible: false,
+  toggleRulerGuidesVisible: () => set((state) => ({ rulerGuidesVisible: !state.rulerGuidesVisible })),
   printOpen: false,
   openPrint: () => set({ printOpen: true }),
   closePrint: () => set({ printOpen: false }),

@@ -4,7 +4,16 @@ export interface Style {
   strokeWidth: number
   stroke: string
   fill?: string
+  fillOpacity?: number
   dash?: number[]
+}
+
+/** A named point on a shape that a dimension's endpoint can bind to. */
+export type ShapePointKey = 'p1' | 'p2' | 'tl' | 'tr' | 'br' | 'bl' | 'center' | 'origin'
+
+export interface DimensionBinding {
+  shapeId: ShapeId
+  point: ShapePointKey
 }
 
 export type Shape =
@@ -40,6 +49,8 @@ export type Shape =
       axis: 'horizontal' | 'vertical'
       offset: number
       unit: 'mm' | 'cm' | 'm'
+      bindingA: DimensionBinding | null
+      bindingB: DimensionBinding | null
     }
   | {
       id: ShapeId

@@ -115,7 +115,17 @@ function transformShape(
       // a best-effort placement (points transform correctly, axis/offset assume no rotation).
       const p1 = transformPoint({ x: shape.x1, y: shape.y1 }, x, y, scale, rotation)
       const p2 = transformPoint({ x: shape.x2, y: shape.y2 }, x, y, scale, rotation)
-      return { ...shape, x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, offset: shape.offset * scale }
+      // Bindings reference shape ids that are regenerated on flatten, so they'd otherwise dangle.
+      return {
+        ...shape,
+        x1: p1.x,
+        y1: p1.y,
+        x2: p2.x,
+        y2: p2.y,
+        offset: shape.offset * scale,
+        bindingA: null,
+        bindingB: null,
+      }
     }
     case 'guide': {
       if (shape.orientation === 'v') {

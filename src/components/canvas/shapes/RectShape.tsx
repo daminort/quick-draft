@@ -37,6 +37,8 @@ export function RectShape({
       stroke={selected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}
+      opacity={shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1}
+      perfectDrawEnabled={false}
       dash={shape.style.dash}
       draggable={draggable}
       onClick={onSelect}

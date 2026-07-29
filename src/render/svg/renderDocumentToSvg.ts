@@ -61,11 +61,15 @@ function renderShape(shape: Shape, ctx: RenderContext): string {
       const transform = shape.rotation
         ? ` transform="rotate(${round(shape.rotation)} ${x} ${y})"`
         : ''
-      return `<rect x="${x}" y="${y}" width="${L(shape.w)}" height="${L(shape.h)}" stroke="${shape.style.stroke}" stroke-width="${L(shape.style.strokeWidth)}" fill="${shape.style.fill ?? 'none'}"${dash ? ` stroke-dasharray="${dash}"` : ''}${transform} />`
+      const fillOpacity =
+        shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : undefined
+      return `<rect x="${x}" y="${y}" width="${L(shape.w)}" height="${L(shape.h)}" stroke="${shape.style.stroke}" stroke-width="${L(shape.style.strokeWidth)}" fill="${shape.style.fill ?? 'none'}"${fillOpacity !== undefined ? ` fill-opacity="${fillOpacity}"` : ''}${dash ? ` stroke-dasharray="${dash}"` : ''}${transform} />`
     }
     case 'circle': {
       const dash = shape.style.dash?.map(L).join(',')
-      return `<circle cx="${X(shape.cx)}" cy="${Y(shape.cy)}" r="${L(shape.r)}" stroke="${shape.style.stroke}" stroke-width="${L(shape.style.strokeWidth)}" fill="${shape.style.fill ?? 'none'}"${dash ? ` stroke-dasharray="${dash}"` : ''} />`
+      const fillOpacity =
+        shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : undefined
+      return `<circle cx="${X(shape.cx)}" cy="${Y(shape.cy)}" r="${L(shape.r)}" stroke="${shape.style.stroke}" stroke-width="${L(shape.style.strokeWidth)}" fill="${shape.style.fill ?? 'none'}"${fillOpacity !== undefined ? ` fill-opacity="${fillOpacity}"` : ''}${dash ? ` stroke-dasharray="${dash}"` : ''} />`
     }
     case 'arc': {
       const path = computeArcPath(
@@ -76,7 +80,9 @@ function renderShape(shape: Shape, ctx: RenderContext): string {
         shape.endAngle,
       )
       const dash = shape.style.dash?.map(L).join(',')
-      return `<path d="${path}" stroke="${shape.style.stroke}" stroke-width="${L(shape.style.strokeWidth)}" fill="${shape.style.fill ?? 'none'}"${dash ? ` stroke-dasharray="${dash}"` : ''} />`
+      const fillOpacity =
+        shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : undefined
+      return `<path d="${path}" stroke="${shape.style.stroke}" stroke-width="${L(shape.style.strokeWidth)}" fill="${shape.style.fill ?? 'none'}"${fillOpacity !== undefined ? ` fill-opacity="${fillOpacity}"` : ''}${dash ? ` stroke-dasharray="${dash}"` : ''} />`
     }
     case 'text': {
       return `<text x="${X(shape.x)}" y="${Y(shape.y)}" font-family="${escapeXml(shape.fontFamily)}" font-size="${L(shape.fontSize)}" font-weight="${shape.bold ? 'bold' : 'normal'}" font-style="${shape.italic ? 'italic' : 'normal'}" fill="${shape.fill}" dominant-baseline="hanging">${escapeXml(shape.text)}</text>`

@@ -11,6 +11,7 @@ import { ZoomControl } from '~/components/canvas/ZoomControl'
 import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool'
 import { useRulerTool } from '~/components/canvas/tools/useRulerTool'
 import { RulerOverlay } from '~/components/canvas/RulerOverlay'
+import { CanvasRulers } from '~/components/canvas/RulerBar'
 import { useSelectTool } from '~/components/canvas/tools/useSelectTool'
 import { useCanvasZoom } from '~/components/canvas/tools/useCanvasZoom'
 import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan'
@@ -37,6 +38,11 @@ export function CanvasStage() {
   const setTool = useToolStore((state) => state.setTool)
   const guidesVisible = useUIStore((state) => state.guidesVisible)
   const dimensionsVisible = useUIStore((state) => state.dimensionsVisible)
+  const rulerVisible = useUIStore((state) => state.rulerVisible)
+  const rulerGuidesVisible = useUIStore((state) => state.rulerGuidesVisible)
+  const documentScale = useDocumentStore((state) => state.document.scale)
+  const documentUnits = useDocumentStore((state) => state.document.units)
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null)
 
   const drawingTool = useDrawingTool()
   const rulerTool = useRulerTool()
@@ -169,7 +175,11 @@ export function CanvasStage() {
         onMouseMove={(e) => {
           drawingTool.handleMouseMove(e)
           rulerTool.handleMouseMove(e)
+          if (rulerVisible && rulerGuidesVisible) {
+            setCursorPos(e.target.getStage()?.getPointerPosition() ?? null)
+          }
         }}
+        onMouseLeave={() => setCursorPos(null)}
         onMouseUp={drawingTool.handleMouseUp}
       >
         <Layer ref={staticLayerRef}>
@@ -240,6 +250,18 @@ export function CanvasStage() {
           )}
         </Layer>
       </Stage>
+      {rulerVisible && (
+        <CanvasRulers
+          width={size.width}
+          height={size.height}
+          scale={zoom.scale}
+          offsetX={zoom.x}
+          offsetY={zoom.y}
+          documentScale={documentScale}
+          documentUnits={documentUnits}
+          cursor={rulerGuidesVisible ? cursorPos : null}
+        />
+      )}
       <ZoomControl
         scale={zoom.scale}
         onZoomIn={zoom.zoomIn}

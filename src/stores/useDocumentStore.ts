@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { temporal } from 'zundo'
 import { getUnionBounds } from '~/lib/bounds'
 import { translateShape, flattenComponentInstance } from '~/lib/shapeTransform'
+import { resyncDimensionBindings } from '~/lib/dimensionBinding'
 import { saveCurrentDocument } from '~/lib/persistence/indexedDb'
 import type { ComponentDef, Document, Shape, ShapeId, ShapePatch } from '~/types/document'
 
@@ -46,21 +47,26 @@ export const useDocumentStore = create<DocumentStore>()(
         document: { ...state.document, shapes: [...state.document.shapes, shape] },
       })),
     updateShape: (id, patch) =>
-      set((state) => ({
-        document: {
-          ...state.document,
-          shapes: state.document.shapes.map((shape) =>
-            shape.id === id ? ({ ...shape, ...patch } as Shape) : shape,
-          ),
-        },
-      })),
+      set((state) => {
+        const shapes = state.document.shapes.map((shape) =>
+          shape.id === id ? ({ ...shape, ...patch } as Shape) : shape,
+        )
+        return { document: { ...state.document, shapes: resyncDimensionBindings(shapes) } }
+      }),
     removeShape: (id) =>
-      set((state) => ({
-        document: {
-          ...state.document,
-          shapes: state.document.shapes.filter((shape) => shape.id !== id),
-        },
-      })),
+      set((state) => {
+        const shapes = state.document.shapes
+          .filter((shape) => shape.id !== id)
+          .map((shape) => {
+            if (shape.type !== 'dimension') return shape
+            const bindingA = shape.bindingA?.shapeId === id ? null : shape.bindingA
+            const bindingB = shape.bindingB?.shapeId === id ? null : shape.bindingB
+            return bindingA === shape.bindingA && bindingB === shape.bindingB
+              ? shape
+              : { ...shape, bindingA, bindingB }
+          })
+        return { document: { ...state.document, shapes } }
+      }),
     clear: () =>
       set((state) => ({
         document: { ...state.document, shapes: [] },

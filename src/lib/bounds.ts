@@ -10,7 +10,7 @@ export interface Bounds {
 const GUIDE_SPAN = 1e6
 const TEXT_CHAR_WIDTH_RATIO = 0.6
 
-function rotatePoint(
+export function rotatePoint(
   point: { x: number; y: number },
   origin: { x: number; y: number },
   angleDeg: number,

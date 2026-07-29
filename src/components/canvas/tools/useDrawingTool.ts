@@ -6,6 +6,7 @@ import { useToolStore } from '~/stores/useToolStore'
 import { useUIStore } from '~/stores/useUIStore'
 import { useViewStore } from '~/stores/useViewStore'
 import { collectSnapTargets, snapPoint } from '~/lib/snap'
+import { findBindingForPoint } from '~/lib/dimensionBinding'
 import type { Shape, Style } from '~/types/document'
 
 const DEFAULT_STYLE: Style = { stroke: '#1a1a1a', strokeWidth: 1 }
@@ -160,9 +161,11 @@ export function useDrawingTool() {
         axis: 'horizontal',
         offset: 0,
         unit: doc.units,
+        bindingA: findBindingForPoint(doc.shapes, a),
+        bindingB: findBindingForPoint(doc.shapes, point),
       })
     },
-    [doc.units, setDraftShape],
+    [doc.shapes, doc.units, setDraftShape],
   )
 
   const handleMouseDown = useCallback(
