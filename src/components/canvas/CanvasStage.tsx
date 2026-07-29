@@ -5,7 +5,7 @@ import { ArrowLineUpIcon } from '@phosphor-icons/react/dist/csr/ArrowLineUp'
 import { ArrowLineDownIcon } from '@phosphor-icons/react/dist/csr/ArrowLineDown'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
-import { useToolStore } from '~/stores/useToolStore'
+import { useToolStore, type Tool } from '~/stores/useToolStore'
 import { useUIStore } from '~/stores/useUIStore'
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer'
@@ -27,6 +27,19 @@ import {
   MARQUEE_STROKE_COLOR,
   MARQUEE_FILL_COLOR,
 } from '~/constants/canvas'
+
+// Keyed by e.code (physical key position), not e.key, so the shortcut still matches when a
+// non-Latin keyboard layout (e.g. Cyrillic) is active and e.key would report a different character.
+const TOOL_HOTKEYS: Partial<Record<string, Tool>> = {
+  KeyG: 'guide',
+  KeyL: 'line',
+  KeyR: 'rect',
+  KeyC: 'circle',
+  KeyA: 'arc',
+  KeyT: 'text',
+  KeyD: 'dimension',
+  KeyU: 'ruler',
+}
 
 export function CanvasStage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -79,13 +92,14 @@ export function CanvasStage() {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key.toLowerCase() !== 'g') return
+      const tool = TOOL_HOTKEYS[e.code]
+      if (!tool) return
       if (e.ctrlKey || e.metaKey || e.altKey) return
       const target = e.target as HTMLElement | null
       const tag = target?.tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable)
         return
-      setTool('guide')
+      setTool(tool)
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -108,6 +122,36 @@ export function CanvasStage() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedIds, removeShape, clearSelection])
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.code !== 'KeyZ') return
+      if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey) return
+      const target = e.target as HTMLElement | null
+      const tag = target?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable)
+        return
+      e.preventDefault()
+      useDocumentStore.temporal.getState().undo()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'Escape') return
+      const target = e.target as HTMLElement | null
+      const tag = target?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable)
+        return
+      setTool('select')
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [setTool])
 
   const visibleShapes = shapes.filter(
     (shape) =>

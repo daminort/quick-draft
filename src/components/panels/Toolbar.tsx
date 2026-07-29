@@ -21,21 +21,21 @@ import { FileActions } from '~/components/panels/FileActions'
 
 const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
   { tool: 'select', label: 'Select', Icon: CursorIcon },
-  { tool: 'line', label: 'Line', Icon: LineSegmentIcon },
-  { tool: 'rect', label: 'Rectangle', Icon: RectangleIcon },
-  { tool: 'circle', label: 'Circle', Icon: CircleIcon },
-  { tool: 'arc', label: 'Arc', Icon: CircleNotchIcon },
-  { tool: 'text', label: 'Text', Icon: TextTIcon },
+  { tool: 'line', label: 'Line (L)', Icon: LineSegmentIcon },
+  { tool: 'rect', label: 'Rectangle (R)', Icon: RectangleIcon },
+  { tool: 'circle', label: 'Circle (C)', Icon: CircleIcon },
+  { tool: 'arc', label: 'Arc (A)', Icon: CircleNotchIcon },
+  { tool: 'text', label: 'Text (T)', Icon: TextTIcon },
   { tool: 'guide', label: 'Guide (G) — click: horizontal, Shift+click: vertical', Icon: RulerIcon },
   {
     tool: 'dimension',
-    label: 'Dimension — click two points, then drag to set direction and offset',
+    label: 'Dimension (D) — click two points, then drag to set direction and offset',
     Icon: ArrowsOutLineHorizontalIcon,
   },
   {
     tool: 'ruler',
     label:
-      'Ruler — click two points to measure; hold Shift to lock to horizontal/vertical; type a number + Enter to set an exact length',
+      'Ruler (U) — click two points to measure; hold Shift to lock to horizontal/vertical; type a number + Enter to set an exact length',
     Icon: PencilRulerIcon,
   },
 ]
