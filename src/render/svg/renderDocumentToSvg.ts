@@ -14,7 +14,7 @@ const PAGE_MARGIN_MM = 10
 /** Fallback page size, in mm, used only when the document has no printable shapes. */
 const EMPTY_PAGE_SIZE_MM = { width: 210, height: 297 }
 
-const DIMENSION_COLOR = '#333333'
+const DIMENSION_COLOR = '#ff7272'
 const DIMENSION_STROKE_WIDTH = 1
 const ARROW_SIZE = 6
 const ARROW_MARKER_ID = 'quickdraft-dimension-arrow'
@@ -99,6 +99,7 @@ function renderShape(shape: Shape, ctx: RenderContext): string {
         ctx.document.units,
         shape.unit,
         ctx.showDimensionUnit,
+        ctx.document.shapes,
       )
       if (!geometry) return ''
 
@@ -111,17 +112,25 @@ function renderShape(shape: Shape, ctx: RenderContext): string {
       const dominantBaseline = geometry.label.baseline === 'top' ? 'hanging' : 'text-after-edge'
 
       const parts = [
-        `<line x1="${X(geometry.extensionA.x1)}" y1="${Y(geometry.extensionA.y1)}" x2="${X(geometry.extensionA.x2)}" y2="${Y(geometry.extensionA.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
-        `<line x1="${X(geometry.extensionB.x1)}" y1="${Y(geometry.extensionB.y1)}" x2="${X(geometry.extensionB.x2)}" y2="${Y(geometry.extensionB.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
         `<line x1="${X(geometry.arrowLine.x1)}" y1="${Y(geometry.arrowLine.y1)}" x2="${X(geometry.arrowLine.x2)}" y2="${Y(geometry.arrowLine.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" marker-start="url(#${ARROW_MARKER_ID})" marker-end="url(#${ARROW_MARKER_ID})" />`,
       ]
+      if (geometry.extensionA) {
+        parts.push(
+          `<line x1="${X(geometry.extensionA.x1)}" y1="${Y(geometry.extensionA.y1)}" x2="${X(geometry.extensionA.x2)}" y2="${Y(geometry.extensionA.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
+        )
+      }
+      if (geometry.extensionB) {
+        parts.push(
+          `<line x1="${X(geometry.extensionB.x1)}" y1="${Y(geometry.extensionB.y1)}" x2="${X(geometry.extensionB.x2)}" y2="${Y(geometry.extensionB.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
+        )
+      }
       if (geometry.leader) {
         parts.push(
           `<line x1="${X(geometry.leader.x1)}" y1="${Y(geometry.leader.y1)}" x2="${X(geometry.leader.x2)}" y2="${Y(geometry.leader.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
         )
       }
       parts.push(
-        `<text x="${X(geometry.label.x)}" y="${Y(geometry.label.y)}" font-size="${fontSize}" fill="${DIMENSION_COLOR}" text-anchor="${textAnchor}" dominant-baseline="${dominantBaseline}">${labelText}</text>`,
+        `<text x="${X(geometry.label.x)}" y="${Y(geometry.label.y)}" font-size="${fontSize}" font-style="italic" fill="${DIMENSION_COLOR}" text-anchor="${textAnchor}" dominant-baseline="${dominantBaseline}">${labelText}</text>`,
       )
       return parts.join('')
     }

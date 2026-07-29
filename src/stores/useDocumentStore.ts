@@ -11,6 +11,8 @@ interface DocumentStore {
   addShape: (shape: Shape) => void
   updateShape: (id: ShapeId, patch: ShapePatch) => void
   removeShape: (id: ShapeId) => void
+  bringToFront: (id: ShapeId) => void
+  sendToBack: (id: ShapeId) => void
   clear: () => void
   clearGuides: () => void
   setUnits: (units: Document['units']) => void
@@ -66,6 +68,28 @@ export const useDocumentStore = create<DocumentStore>()(
               : { ...shape, bindingA, bindingB }
           })
         return { document: { ...state.document, shapes } }
+      }),
+    bringToFront: (id) =>
+      set((state) => {
+        const shape = state.document.shapes.find((s) => s.id === id)
+        if (!shape) return state
+        return {
+          document: {
+            ...state.document,
+            shapes: [...state.document.shapes.filter((s) => s.id !== id), shape],
+          },
+        }
+      }),
+    sendToBack: (id) =>
+      set((state) => {
+        const shape = state.document.shapes.find((s) => s.id === id)
+        if (!shape) return state
+        return {
+          document: {
+            ...state.document,
+            shapes: [shape, ...state.document.shapes.filter((s) => s.id !== id)],
+          },
+        }
       }),
     clear: () =>
       set((state) => ({

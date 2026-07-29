@@ -9,7 +9,7 @@ import {
   DIMENSION_LABEL_FONT_SIZE,
 } from '~/lib/dimension'
 
-const DIMENSION_COLOR = '#333333'
+const DIMENSION_COLOR = '#ff7272'
 const DIMENSION_SELECTED_COLOR = '#1d4ed8'
 const DIMENSION_STROKE_WIDTH = 1
 const ARROW_SIZE = 6
@@ -34,6 +34,7 @@ export function DimensionShape({
 }: DimensionShapeProps) {
   const documentScale = useDocumentStore((state) => state.document.scale)
   const documentUnits = useDocumentStore((state) => state.document.units)
+  const shapes = useDocumentStore((state) => state.document.shapes)
   const showUnit = useUIStore((state) => state.showDimensionUnit)
   const color = selected ? DIMENSION_SELECTED_COLOR : DIMENSION_COLOR
 
@@ -48,6 +49,7 @@ export function DimensionShape({
     documentUnits,
     shape.unit,
     showUnit,
+    shapes,
   )
   if (!geometry) return null
 
@@ -61,28 +63,32 @@ export function DimensionShape({
       onTap={onSelect}
       onMouseDown={interactive ? onMouseDown : undefined}
     >
-      <Line
-        points={[
-          geometry.extensionA.x1,
-          geometry.extensionA.y1,
-          geometry.extensionA.x2,
-          geometry.extensionA.y2,
-        ]}
-        stroke={color}
-        strokeWidth={DIMENSION_STROKE_WIDTH}
-        hitStrokeWidth={HIT_STROKE_WIDTH}
-      />
-      <Line
-        points={[
-          geometry.extensionB.x1,
-          geometry.extensionB.y1,
-          geometry.extensionB.x2,
-          geometry.extensionB.y2,
-        ]}
-        stroke={color}
-        strokeWidth={DIMENSION_STROKE_WIDTH}
-        hitStrokeWidth={HIT_STROKE_WIDTH}
-      />
+      {geometry.extensionA && (
+        <Line
+          points={[
+            geometry.extensionA.x1,
+            geometry.extensionA.y1,
+            geometry.extensionA.x2,
+            geometry.extensionA.y2,
+          ]}
+          stroke={color}
+          strokeWidth={DIMENSION_STROKE_WIDTH}
+          hitStrokeWidth={HIT_STROKE_WIDTH}
+        />
+      )}
+      {geometry.extensionB && (
+        <Line
+          points={[
+            geometry.extensionB.x1,
+            geometry.extensionB.y1,
+            geometry.extensionB.x2,
+            geometry.extensionB.y2,
+          ]}
+          stroke={color}
+          strokeWidth={DIMENSION_STROKE_WIDTH}
+          hitStrokeWidth={HIT_STROKE_WIDTH}
+        />
+      )}
       <Arrow
         points={[
           geometry.arrowLine.x1,
@@ -112,6 +118,7 @@ export function DimensionShape({
         y={geometry.label.y}
         text={formatDimensionLabel(geometry.length, shape.unit, showUnit)}
         fontSize={DIMENSION_LABEL_FONT_SIZE}
+        fontStyle="italic"
         fill={color}
         offsetX={
           geometry.label.align === 'center'

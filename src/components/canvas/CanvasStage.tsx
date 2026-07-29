@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Stage, Layer, Line, Rect } from 'react-konva'
 import type Konva from 'konva'
+import { ArrowLineUpIcon } from '@phosphor-icons/react/dist/csr/ArrowLineUp'
+import { ArrowLineDownIcon } from '@phosphor-icons/react/dist/csr/ArrowLineDown'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { useToolStore } from '~/stores/useToolStore'
@@ -8,14 +10,17 @@ import { useUIStore } from '~/stores/useUIStore'
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer'
 import { ZoomControl } from '~/components/canvas/ZoomControl'
+import { ContextMenu } from '~/components/canvas/ContextMenu'
 import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool'
 import { useRulerTool } from '~/components/canvas/tools/useRulerTool'
 import { RulerOverlay } from '~/components/canvas/RulerOverlay'
 import { CanvasRulers } from '~/components/canvas/RulerBar'
 import { useSelectTool } from '~/components/canvas/tools/useSelectTool'
+import { useCopyPasteTool } from '~/components/canvas/tools/useCopyPasteTool'
 import { useCanvasZoom } from '~/components/canvas/tools/useCanvasZoom'
 import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan'
 import { COMPONENT_DRAG_MIME } from '~/components/panels/ComponentLibrary'
+import type { ShapeId } from '~/types/document'
 
 const SNAP_INDICATOR_COLOR = '#ff3b8d'
 const SNAP_POINT_SIZE = 5
@@ -30,6 +35,8 @@ export function CanvasStage() {
   const shapes = useDocumentStore((state) => state.document.shapes)
   const components = useDocumentStore((state) => state.document.components)
   const removeShape = useDocumentStore((state) => state.removeShape)
+  const bringToFront = useDocumentStore((state) => state.bringToFront)
+  const sendToBack = useDocumentStore((state) => state.sendToBack)
   const addComponentInstance = useDocumentStore((state) => state.addComponentInstance)
   const selectedIds = useSelectionStore((state) => state.selectedIds)
   const select = useSelectionStore((state) => state.select)
@@ -43,10 +50,16 @@ export function CanvasStage() {
   const documentScale = useDocumentStore((state) => state.document.scale)
   const documentUnits = useDocumentStore((state) => state.document.units)
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null)
+  const [contextMenu, setContextMenu] = useState<{
+    x: number
+    y: number
+    shapeId: ShapeId
+  } | null>(null)
 
   const drawingTool = useDrawingTool()
   const rulerTool = useRulerTool()
   const selectTool = useSelectTool()
+  const copyPasteTool = useCopyPasteTool()
   const zoom = useCanvasZoom(size)
   const pan = useCanvasPan()
 
@@ -140,6 +153,17 @@ export function CanvasStage() {
     setTimeout(() => select([instanceId]), 0)
   }
 
+  function handleContextMenu(e: Konva.KonvaEventObject<PointerEvent>) {
+    e.evt.preventDefault()
+    if (!isInteractive) return
+    const stage = e.target.getStage()
+    if (!stage || e.target === stage) return
+    const shapeId = e.target.id()
+    if (!shapeId) return
+    select([shapeId])
+    setContextMenu({ x: e.evt.clientX, y: e.evt.clientY, shapeId })
+  }
+
   function handleComponentDragOver(e: React.DragEvent<HTMLDivElement>) {
     if (!e.dataTransfer.types.includes(COMPONENT_DRAG_MIME)) return
     e.preventDefault()
@@ -175,12 +199,14 @@ export function CanvasStage() {
         onMouseMove={(e) => {
           drawingTool.handleMouseMove(e)
           rulerTool.handleMouseMove(e)
+          copyPasteTool.handleMouseMove(e)
           if (rulerVisible && rulerGuidesVisible) {
             setCursorPos(e.target.getStage()?.getPointerPosition() ?? null)
           }
         }}
         onMouseLeave={() => setCursorPos(null)}
         onMouseUp={drawingTool.handleMouseUp}
+        onContextMenu={handleContextMenu}
       >
         <Layer ref={staticLayerRef}>
           {visibleShapes.map((shape) => (
@@ -268,6 +294,25 @@ export function CanvasStage() {
         onZoomOut={zoom.zoomOut}
         onReset={zoom.resetZoom}
       />
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          onClose={() => setContextMenu(null)}
+          items={[
+            {
+              label: 'Bring to Front',
+              icon: <ArrowLineUpIcon size={14} />,
+              onClick: () => bringToFront(contextMenu.shapeId),
+            },
+            {
+              label: 'Send to Back',
+              icon: <ArrowLineDownIcon size={14} />,
+              onClick: () => sendToBack(contextMenu.shapeId),
+            },
+          ]}
+        />
+      )}
     </div>
   )
 }

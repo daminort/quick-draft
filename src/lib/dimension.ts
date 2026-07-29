@@ -1,3 +1,6 @@
+import { listShapeEdges, type Segment } from '~/lib/bounds'
+import type { Shape } from '~/types/document'
+
 type LengthUnit = 'mm' | 'cm' | 'm'
 type Point = { x: number; y: number }
 export type DimensionAxis = 'horizontal' | 'vertical'
@@ -5,8 +8,10 @@ export type DimensionAxis = 'horizontal' | 'vertical'
 export interface DimensionGeometry {
   /** Main dimension line, rendered with arrowheads on both ends. */
   arrowLine: { x1: number; y1: number; x2: number; y2: number }
-  extensionA: { x1: number; y1: number; x2: number; y2: number }
-  extensionB: { x1: number; y1: number; x2: number; y2: number }
+  /** Null when the extension line would run entirely along a shape's own edge — drawing it there
+   * would just double that edge's outline. */
+  extensionA: Segment | null
+  extensionB: Segment | null
   label: {
     x: number
     y: number
@@ -65,6 +70,37 @@ function extensionSegment(
   return alongX
     ? { x1: gapCoord, y1: point.y, x2: overshootCoord, y2: point.y }
     : { x1: point.x, y1: gapCoord, x2: point.x, y2: overshootCoord }
+}
+
+const EDGE_EPSILON = 1e-6
+
+/** Whether `point` sits on the (finite) `segment`, checked as perpendicular distance to the
+ * infinite line plus a bounding-box containment test — exact for collinear points. */
+function pointOnSegment(point: Point, segment: Segment, epsilon: number): boolean {
+  const dx = segment.x2 - segment.x1
+  const dy = segment.y2 - segment.y1
+  const lengthSq = dx * dx + dy * dy
+  if (lengthSq === 0) {
+    return Math.hypot(point.x - segment.x1, point.y - segment.y1) <= epsilon
+  }
+  const cross = dx * (point.y - segment.y1) - dy * (point.x - segment.x1)
+  if (Math.abs(cross) / Math.sqrt(lengthSq) > epsilon) return false
+  return (
+    point.x >= Math.min(segment.x1, segment.x2) - epsilon &&
+    point.x <= Math.max(segment.x1, segment.x2) + epsilon &&
+    point.y >= Math.min(segment.y1, segment.y2) - epsilon &&
+    point.y <= Math.max(segment.y1, segment.y2) + epsilon
+  )
+}
+
+/** True when `segment` (an extension line) lies entirely on one of `edges` (a shape's straight
+ * sides), making it redundant to draw since the shape's own outline already marks that line. */
+function liesOnAnyEdge(segment: Segment, edges: Segment[]): boolean {
+  return edges.some(
+    (edge) =>
+      pointOnSegment({ x: segment.x1, y: segment.y1 }, edge, EDGE_EPSILON) &&
+      pointOnSegment({ x: segment.x2, y: segment.y2 }, edge, EDGE_EPSILON),
+  )
 }
 
 function estimateTextWidth(text: string, fontSize: number): number {
@@ -144,6 +180,7 @@ export function computeDimensionGeometry(
   documentUnits: LengthUnit,
   dimensionUnit: LengthUnit,
   showUnit: boolean,
+  shapes: Shape[],
   fontSize: number = DIMENSION_LABEL_FONT_SIZE,
 ): DimensionGeometry | null {
   const isVertical = axis === 'vertical'
@@ -171,10 +208,14 @@ export function computeDimensionGeometry(
     fontSize,
   )
 
+  const extensionA = extensionSegment({ x: x1, y: y1 }, lineCoordinate, isVertical)
+  const extensionB = extensionSegment({ x: x2, y: y2 }, lineCoordinate, isVertical)
+  const edges = shapes.flatMap(listShapeEdges)
+
   return {
     arrowLine: { x1: lineA.x, y1: lineA.y, x2: lineB.x, y2: lineB.y },
-    extensionA: extensionSegment({ x: x1, y: y1 }, lineCoordinate, isVertical),
-    extensionB: extensionSegment({ x: x2, y: y2 }, lineCoordinate, isVertical),
+    extensionA: liesOnAnyEdge(extensionA, edges) ? null : extensionA,
+    extensionB: liesOnAnyEdge(extensionB, edges) ? null : extensionB,
     label,
     leader,
     length,
