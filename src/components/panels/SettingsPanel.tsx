@@ -9,26 +9,26 @@ import { UnitsControl } from '~/components/panels/UnitsControl';
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
 export function SettingsPanel() {
-  const guidesVisible = useUIStore(state => state.guidesVisible);
+  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const toggleGuidesVisible = useUIStore(state => state.toggleGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const setSnapTolerance = useUIStore(state => state.setSnapTolerance);
-  const showDimensionUnit = useUIStore(state => state.showDimensionUnit);
+  const shouldShowDimensionUnit = useUIStore(state => state.shouldShowDimensionUnit);
   const toggleShowDimensionUnit = useUIStore(state => state.toggleShowDimensionUnit);
-  const dimensionsVisible = useUIStore(state => state.dimensionsVisible);
+  const areDimensionsVisible = useUIStore(state => state.areDimensionsVisible);
   const toggleDimensionsVisible = useUIStore(state => state.toggleDimensionsVisible);
   const dimensionColor = useUIStore(state => state.dimensionColor);
   const setDimensionColor = useUIStore(state => state.setDimensionColor);
-  const rulerVisible = useUIStore(state => state.rulerVisible);
+  const isRulerVisible = useUIStore(state => state.isRulerVisible);
   const toggleRulerVisible = useUIStore(state => state.toggleRulerVisible);
-  const rulerGuidesVisible = useUIStore(state => state.rulerGuidesVisible);
+  const areRulerGuidesVisible = useUIStore(state => state.areRulerGuidesVisible);
   const toggleRulerGuidesVisible = useUIStore(state => state.toggleRulerGuidesVisible);
   const clearGuides = useDocumentStore(state => state.clearGuides);
-  const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false);
+  const [isDeleteGuidesDialogOpen, setIsDeleteGuidesDialogOpen] = useState(false);
 
-  const handleDeleteGuidesConfirmed = () => {
+  const onDeleteGuidesConfirmed = () => {
     clearGuides();
-    setDeleteGuidesDialogOpen(false);
+    setIsDeleteGuidesDialogOpen(false);
   };
 
   return (
@@ -50,7 +50,7 @@ export function SettingsPanel() {
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={guidesVisible} onCheckedChange={toggleGuidesVisible} />
+            <Checkbox checked={areGuidesVisible} onCheckedChange={toggleGuidesVisible} />
             Show guides
           </Flex>
         </Text>
@@ -58,7 +58,7 @@ export function SettingsPanel() {
           type="button"
           variant="soft"
           color="gray"
-          onClick={() => setDeleteGuidesDialogOpen(true)}
+          onClick={() => setIsDeleteGuidesDialogOpen(true)}
         >
           Delete all guides
         </Button>
@@ -92,13 +92,13 @@ export function SettingsPanel() {
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={dimensionsVisible} onCheckedChange={toggleDimensionsVisible} />
+            <Checkbox checked={areDimensionsVisible} onCheckedChange={toggleDimensionsVisible} />
             Show dimensions
           </Flex>
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={showDimensionUnit} onCheckedChange={toggleShowDimensionUnit} />
+            <Checkbox checked={shouldShowDimensionUnit} onCheckedChange={toggleShowDimensionUnit} />
             Show unit
           </Flex>
         </Text>
@@ -122,25 +122,25 @@ export function SettingsPanel() {
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={rulerVisible} onCheckedChange={toggleRulerVisible} />
+            <Checkbox checked={isRulerVisible} onCheckedChange={toggleRulerVisible} />
             Show ruler
           </Flex>
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={rulerGuidesVisible} onCheckedChange={toggleRulerGuidesVisible} />
+            <Checkbox checked={areRulerGuidesVisible} onCheckedChange={toggleRulerGuidesVisible} />
             Show cursor guides
           </Flex>
         </Text>
       </Flex>
 
       <ConfirmDialog
-        open={deleteGuidesDialogOpen}
+        isOpen={isDeleteGuidesDialogOpen}
         title="Delete all guides"
         message="This will remove every guide from the canvas."
         confirmLabel="Delete"
-        onConfirm={handleDeleteGuidesConfirmed}
-        onCancel={() => setDeleteGuidesDialogOpen(false)}
+        onConfirm={onDeleteGuidesConfirmed}
+        onCancel={() => setIsDeleteGuidesDialogOpen(false)}
       />
     </Flex>
   );

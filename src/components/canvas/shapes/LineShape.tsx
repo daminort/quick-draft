@@ -9,8 +9,8 @@ import type Konva from 'konva';
 
 type TLineShapeProps = {
   shape: Extract<TShape, { type: 'line' }>;
-  draggable: boolean;
-  selected?: boolean;
+  isDraggable: boolean;
+  isSelected?: boolean;
   onSelect: () => void;
   onDragStart: () => void;
   onDragMove: (node: Konva.Node) => void;
@@ -20,8 +20,8 @@ type TLineShapeProps = {
 
 export function LineShape({
   shape,
-  draggable,
-  selected = false,
+  isDraggable,
+  isSelected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -35,11 +35,11 @@ export function LineShape({
       x={shape.x1}
       y={shape.y1}
       points={[0, 0, shape.x2 - shape.x1, shape.y2 - shape.y1]}
-      stroke={selected ? SELECTED_COLOR : shape.style.stroke}
+      stroke={isSelected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       dash={shape.style.dash}
       hitStrokeWidth={HIT_STROKE_WIDTH}
-      draggable={draggable}
+      draggable={isDraggable}
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}

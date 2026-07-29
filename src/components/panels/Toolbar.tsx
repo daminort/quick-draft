@@ -62,17 +62,17 @@ export function Toolbar() {
   const setTool = useToolStore(state => state.setTool);
   const clearDocument = useDocumentStore(state => state.clear);
   const clearSelection = useSelectionStore(state => state.clear);
-  const settingsOpen = useUIStore(state => state.settingsOpen);
+  const isSettingsOpen = useUIStore(state => state.isSettingsOpen);
   const toggleSettings = useUIStore(state => state.toggleSettings);
-  const libraryOpen = useUIStore(state => state.libraryOpen);
+  const isLibraryOpen = useUIStore(state => state.isLibraryOpen);
   const toggleLibrary = useUIStore(state => state.toggleLibrary);
   const openPrint = useUIStore(state => state.openPrint);
-  const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
 
-  const handleClearConfirmed = () => {
+  const onClearConfirmed = () => {
     clearDocument();
     clearSelection();
-    setClearDialogOpen(false);
+    setIsClearDialogOpen(false);
   };
 
   return (
@@ -98,10 +98,10 @@ export function Toolbar() {
           type="button"
           title="Component library"
           aria-label="Component library"
-          aria-pressed={libraryOpen}
+          aria-pressed={isLibraryOpen}
           variant="ghost"
           size="3"
-          style={libraryOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
+          style={isLibraryOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
           onClick={toggleLibrary}
         >
           <Layers size={20} />
@@ -124,10 +124,10 @@ export function Toolbar() {
           type="button"
           title="Settings"
           aria-label="Settings"
-          aria-pressed={settingsOpen}
+          aria-pressed={isSettingsOpen}
           variant="ghost"
           size="3"
-          style={settingsOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
+          style={isSettingsOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
           onClick={toggleSettings}
         >
           <Settings size={20} />
@@ -140,19 +140,19 @@ export function Toolbar() {
           variant="ghost"
           color="red"
           size="3"
-          onClick={() => setClearDialogOpen(true)}
+          onClick={() => setIsClearDialogOpen(true)}
         >
           <Trash2 size={20} />
         </IconButton>
       </Flex>
 
       <ConfirmDialog
-        open={clearDialogOpen}
+        isOpen={isClearDialogOpen}
         title="Clear canvas"
         message="This will remove all shapes from the canvas."
         confirmLabel="Clear"
-        onConfirm={handleClearConfirmed}
-        onCancel={() => setClearDialogOpen(false)}
+        onConfirm={onClearConfirmed}
+        onCancel={() => setIsClearDialogOpen(false)}
       />
     </Flex>
   );

@@ -135,7 +135,7 @@ export function getShapeBounds(
   }
 }
 
-export function boundsIntersect(a: TBounds, b: TBounds): boolean {
+export function areBoundsIntersecting(a: TBounds, b: TBounds): boolean {
   return a.x1 <= b.x2 && a.x2 >= b.x1 && a.y1 <= b.y2 && a.y2 >= b.y1;
 }
 

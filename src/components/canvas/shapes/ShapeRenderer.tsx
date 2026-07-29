@@ -14,30 +14,30 @@ import type Konva from 'konva';
 
 type TShapeRendererProps = {
   shape: TShape;
-  interactive: boolean;
+  isInteractive: boolean;
   interaction: TShapeInteraction;
   viewBounds: TViewBounds;
-  selected?: boolean;
+  isSelected?: boolean;
   editingTextId?: TShapeId | null;
   onStartEditText?: (id: TShapeId) => void;
 };
 
 export function ShapeRenderer({
   shape,
-  interactive,
+  isInteractive,
   interaction,
   viewBounds,
-  selected = false,
+  isSelected = false,
   editingTextId = null,
   onStartEditText,
 }: TShapeRendererProps) {
   const shared = {
-    draggable: interactive,
-    selected,
-    onSelect: interactive ? () => interaction.selectShape(shape.id) : () => {},
-    onDragStart: () => interaction.handleDragStart(shape),
-    onDragMove: (node: Konva.Node) => interaction.handleDragMove(shape, node),
-    onDragEnd: (node: Konva.Node) => interaction.handleDragEnd(shape, node),
+    isDraggable: isInteractive,
+    isSelected,
+    onSelect: isInteractive ? () => interaction.selectShape(shape.id) : () => {},
+    onDragStart: () => interaction.onDragStart(shape),
+    onDragMove: (node: Konva.Node) => interaction.onDragMove(shape, node),
+    onDragEnd: (node: Konva.Node) => interaction.onDragEnd(shape, node),
     setNodeRef: (node: Konva.Node | null) => interaction.registerNode(shape.id, node),
   };
 
@@ -52,10 +52,10 @@ export function ShapeRenderer({
       return (
         <ArcShape
           shape={shape}
-          interactive={interactive}
-          selected={selected}
+          isInteractive={isInteractive}
+          isSelected={isSelected}
           onSelect={shared.onSelect}
-          onMouseDown={e => interaction.handleManualMouseDown(shape, e)}
+          onMouseDown={e => interaction.onManualMouseDown(shape, e)}
           setNodeRef={shared.setNodeRef}
         />
       );
@@ -64,8 +64,8 @@ export function ShapeRenderer({
         <TextShape
           shape={shape}
           {...shared}
-          visible={editingTextId !== shape.id}
-          onDblClick={interactive ? () => onStartEditText?.(shape.id) : undefined}
+          isVisible={editingTextId !== shape.id}
+          onDblClick={isInteractive ? () => onStartEditText?.(shape.id) : undefined}
         />
       );
     case 'guide':
@@ -74,10 +74,10 @@ export function ShapeRenderer({
       return (
         <DimensionShape
           shape={shape}
-          selected={selected}
-          interactive={interactive}
+          isSelected={isSelected}
+          isInteractive={isInteractive}
           onSelect={shared.onSelect}
-          onMouseDown={e => interaction.handleManualMouseDown(shape, e)}
+          onMouseDown={e => interaction.onManualMouseDown(shape, e)}
           setNodeRef={shared.setNodeRef}
         />
       );

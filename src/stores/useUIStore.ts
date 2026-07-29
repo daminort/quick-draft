@@ -9,64 +9,69 @@ import { AUTOSAVE_DEBOUNCE_MS } from '~/constants/persistence';
 import { saveUISettings } from '~/lib/persistence/indexedDb';
 
 type TUIStore = {
-  settingsOpen: boolean;
+  isSettingsOpen: boolean;
   toggleSettings: () => void;
-  libraryOpen: boolean;
+  isLibraryOpen: boolean;
   toggleLibrary: () => void;
-  guidesVisible: boolean;
+  areGuidesVisible: boolean;
   toggleGuidesVisible: () => void;
   snapTolerance: number;
   setSnapTolerance: (tolerance: number) => void;
-  showDimensionUnit: boolean;
+  shouldShowDimensionUnit: boolean;
   toggleShowDimensionUnit: () => void;
-  dimensionsVisible: boolean;
+  areDimensionsVisible: boolean;
   toggleDimensionsVisible: () => void;
   dimensionColor: string;
   setDimensionColor: (color: string) => void;
-  rulerVisible: boolean;
+  isRulerVisible: boolean;
   toggleRulerVisible: () => void;
-  rulerGuidesVisible: boolean;
+  areRulerGuidesVisible: boolean;
   toggleRulerGuidesVisible: () => void;
-  printOpen: boolean;
+  isPrintOpen: boolean;
   openPrint: () => void;
   closePrint: () => void;
   hydrateSettings: (settings: Partial<TPersistedUISettings>) => void;
 };
 
 export const useUIStore = create<TUIStore>()(set => ({
-  settingsOpen: false,
-  toggleSettings: () => set(state => ({ settingsOpen: !state.settingsOpen, libraryOpen: false })),
-  libraryOpen: false,
-  toggleLibrary: () => set(state => ({ libraryOpen: !state.libraryOpen, settingsOpen: false })),
-  guidesVisible: true,
-  toggleGuidesVisible: () => set(state => ({ guidesVisible: !state.guidesVisible })),
+  isSettingsOpen: false,
+  toggleSettings: () =>
+    set(state => ({ isSettingsOpen: !state.isSettingsOpen, isLibraryOpen: false })),
+  isLibraryOpen: false,
+  toggleLibrary: () =>
+    set(state => ({ isLibraryOpen: !state.isLibraryOpen, isSettingsOpen: false })),
+  areGuidesVisible: true,
+  toggleGuidesVisible: () => set(state => ({ areGuidesVisible: !state.areGuidesVisible })),
   snapTolerance: SNAP_TOLERANCE_PX,
   setSnapTolerance: tolerance => set({ snapTolerance: Math.max(0, tolerance) }),
-  showDimensionUnit: false,
-  toggleShowDimensionUnit: () => set(state => ({ showDimensionUnit: !state.showDimensionUnit })),
-  dimensionsVisible: true,
-  toggleDimensionsVisible: () => set(state => ({ dimensionsVisible: !state.dimensionsVisible })),
+  shouldShowDimensionUnit: false,
+  toggleShowDimensionUnit: () =>
+    set(state => ({ shouldShowDimensionUnit: !state.shouldShowDimensionUnit })),
+  areDimensionsVisible: true,
+  toggleDimensionsVisible: () =>
+    set(state => ({ areDimensionsVisible: !state.areDimensionsVisible })),
   dimensionColor: DEFAULT_DIMENSION_COLOR,
   setDimensionColor: color => set({ dimensionColor: color }),
-  rulerVisible: false,
-  toggleRulerVisible: () => set(state => ({ rulerVisible: !state.rulerVisible })),
-  rulerGuidesVisible: false,
-  toggleRulerGuidesVisible: () => set(state => ({ rulerGuidesVisible: !state.rulerGuidesVisible })),
-  printOpen: false,
-  openPrint: () => set({ printOpen: true }),
-  closePrint: () => set({ printOpen: false }),
+  isRulerVisible: false,
+  toggleRulerVisible: () => set(state => ({ isRulerVisible: !state.isRulerVisible })),
+  areRulerGuidesVisible: false,
+  toggleRulerGuidesVisible: () =>
+    set(state => ({ areRulerGuidesVisible: !state.areRulerGuidesVisible })),
+  isPrintOpen: false,
+  openPrint: () => set({ isPrintOpen: true }),
+  closePrint: () => set({ isPrintOpen: false }),
   hydrateSettings: settings => set(settings),
 }));
 
 function pickPersistedSettings(state: TUIStore): TPersistedUISettings {
   return {
-    guidesVisible: state.guidesVisible,
+    areGuidesVisible: state.areGuidesVisible,
     snapTolerance: state.snapTolerance,
-    showDimensionUnit: state.showDimensionUnit,
-    dimensionsVisible: state.dimensionsVisible,
+    shouldShowDimensionUnit: state.shouldShowDimensionUnit,
+    areDimensionsVisible: state.areDimensionsVisible,
     dimensionColor: state.dimensionColor,
-    rulerVisible: state.rulerVisible,
-    rulerGuidesVisible: state.rulerGuidesVisible,
+    isRulerVisible: state.isRulerVisible,
+    areRulerGuidesVisible: state.areRulerGuidesVisible,
   };
 }
 

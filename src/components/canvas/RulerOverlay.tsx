@@ -27,7 +27,7 @@ export function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
   const documentScale = useDocumentStore(state => state.document.scale);
   const documentUnits = useDocumentStore(state => state.document.units);
 
-  const direction = rulerDirection(ruler.start, ruler.point, ruler.shiftLocked);
+  const direction = rulerDirection(ruler.start, ruler.point, ruler.isShiftLocked);
   const internalLength = Math.hypot(ruler.point.x - ruler.start.x, ruler.point.y - ruler.start.y);
   const end =
     ruler.lengthOverride !== null

@@ -15,13 +15,13 @@ import { getUnionBounds } from '~/lib/bounds';
 import { flattenComponentInstance } from '~/lib/shapeTransform';
 
 export type TRenderSvgOptions = {
-  showDimensionUnit?: boolean;
+  shouldShowDimensionUnit?: boolean;
   dimensionColor?: string;
 };
 
 type TRenderContext = {
   document: TDocument;
-  showDimensionUnit: boolean;
+  shouldShowDimensionUnit: boolean;
   dimensionColor: string;
   /** Converts a raw document-space value (length, radius, font size, ...) to mm. */
   mm: (value: number) => number;
@@ -82,7 +82,7 @@ function renderShape(shape: TShape, ctx: TRenderContext): string {
       return `<path d="${path}" stroke="${shape.style.stroke}" stroke-width="${L(shape.style.strokeWidth)}" fill="${shape.style.fill ?? 'none'}"${fillOpacity !== undefined ? ` fill-opacity="${fillOpacity}"` : ''}${dash ? ` stroke-dasharray="${dash}"` : ''} />`;
     }
     case 'text': {
-      return `<text x="${X(shape.x)}" y="${Y(shape.y)}" font-family="${escapeXml(shape.fontFamily)}" font-size="${L(shape.fontSize)}" font-weight="${shape.bold ? 'bold' : 'normal'}" font-style="${shape.italic ? 'italic' : 'normal'}" fill="${shape.fill}" dominant-baseline="hanging">${escapeXml(shape.text)}</text>`;
+      return `<text x="${X(shape.x)}" y="${Y(shape.y)}" font-family="${escapeXml(shape.fontFamily)}" font-size="${L(shape.fontSize)}" font-weight="${shape.isBold ? 'bold' : 'normal'}" font-style="${shape.isItalic ? 'italic' : 'normal'}" fill="${shape.fill}" dominant-baseline="hanging">${escapeXml(shape.text)}</text>`;
     }
     case 'dimension': {
       const geometry = computeDimensionGeometry(
@@ -95,7 +95,7 @@ function renderShape(shape: TShape, ctx: TRenderContext): string {
         ctx.document.scale,
         ctx.document.units,
         shape.unit,
-        ctx.showDimensionUnit,
+        ctx.shouldShowDimensionUnit,
         ctx.document.shapes,
       );
       if (!geometry) {
@@ -105,7 +105,7 @@ function renderShape(shape: TShape, ctx: TRenderContext): string {
       const strokeW = L(DIMENSION_STROKE_WIDTH);
       const fontSize = L(DIMENSION_LABEL_FONT_SIZE);
       const labelText = escapeXml(
-        formatDimensionLabel(geometry.length, shape.unit, ctx.showDimensionUnit),
+        formatDimensionLabel(geometry.length, shape.unit, ctx.shouldShowDimensionUnit),
       );
       const textAnchor = geometry.label.align === 'center' ? 'middle' : geometry.label.align;
       const dominantBaseline = geometry.label.baseline === 'top' ? 'hanging' : 'text-after-edge';
@@ -160,7 +160,7 @@ function renderShape(shape: TShape, ctx: TRenderContext): string {
  * paper size, so nothing is ever clipped regardless of how large or spread out the drawing is.
  */
 export function renderDocumentToSvg(document: TDocument, options: TRenderSvgOptions = {}): string {
-  const showDimensionUnit = options.showDimensionUnit ?? false;
+  const shouldShowDimensionUnit = options.shouldShowDimensionUnit ?? false;
   const dimensionColor = options.dimensionColor ?? DEFAULT_DIMENSION_COLOR;
   const printableShapes = document.shapes.filter(shape => shape.type !== 'guide');
   const bounds = getUnionBounds(printableShapes, document.components);
@@ -179,7 +179,7 @@ export function renderDocumentToSvg(document: TDocument, options: TRenderSvgOpti
 
   const ctx: TRenderContext = {
     document,
-    showDimensionUnit,
+    shouldShowDimensionUnit,
     dimensionColor,
     mm,
     offsetXMm,

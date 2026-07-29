@@ -12,7 +12,7 @@ export function FileActions() {
   const loadDocument = useDocumentStore(state => state.loadDocument);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleOpen = async (e: ChangeEvent<HTMLInputElement>) => {
+  const onOpen = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) {
@@ -52,7 +52,7 @@ export function FileActions() {
         ref={inputRef}
         type="file"
         accept=".json,application/json"
-        onChange={handleOpen}
+        onChange={onOpen}
         style={{ display: 'none' }}
       />
     </>

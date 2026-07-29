@@ -15,7 +15,7 @@ export function ComponentActions() {
     return null;
   }
 
-  const handleCreate = () => {
+  const onCreate = () => {
     const instanceId = createComponent(selectedIds, name.trim() || 'Component');
     // Deferred: the instance's Konva node registers on mount, one render after this one — selecting
     // it a tick later (instead of in the same batch) lets the Transformer find it immediately.
@@ -44,7 +44,7 @@ export function ComponentActions() {
           />
         </Flex>
       </Text>
-      <Button type="button" onClick={handleCreate}>
+      <Button type="button" onClick={onCreate}>
         Group into component
       </Button>
     </Flex>

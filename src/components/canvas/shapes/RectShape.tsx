@@ -8,8 +8,8 @@ import type Konva from 'konva';
 
 type TRectShapeProps = {
   shape: Extract<TShape, { type: 'rect' }>;
-  draggable: boolean;
-  selected?: boolean;
+  isDraggable: boolean;
+  isSelected?: boolean;
   onSelect: () => void;
   onDragStart: () => void;
   onDragMove: (node: Konva.Node) => void;
@@ -19,8 +19,8 @@ type TRectShapeProps = {
 
 export function RectShape({
   shape,
-  draggable,
-  selected = false,
+  isDraggable,
+  isSelected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -36,13 +36,13 @@ export function RectShape({
       width={shape.w}
       height={shape.h}
       rotation={shape.rotation}
-      stroke={selected ? SELECTED_COLOR : shape.style.stroke}
+      stroke={isSelected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}
       opacity={shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1}
       perfectDrawEnabled={false}
       dash={shape.style.dash}
-      draggable={draggable}
+      draggable={isDraggable}
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}

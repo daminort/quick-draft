@@ -11,8 +11,8 @@ import type Konva from 'konva';
 
 type TArcShapeProps = {
   shape: Extract<TShape, { type: 'arc' }>;
-  interactive: boolean;
-  selected?: boolean;
+  isInteractive: boolean;
+  isSelected?: boolean;
   onSelect: () => void;
   onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   setNodeRef: (node: Konva.Path | null) => void;
@@ -20,8 +20,8 @@ type TArcShapeProps = {
 
 export function ArcShape({
   shape,
-  interactive,
-  selected = false,
+  isInteractive,
+  isSelected = false,
   onSelect,
   onMouseDown,
   setNodeRef,
@@ -33,7 +33,7 @@ export function ArcShape({
       x={0}
       y={0}
       data={computeArcPath(shape.cx, shape.cy, shape.r, shape.startAngle, shape.endAngle)}
-      stroke={selected ? SELECTED_COLOR : shape.style.stroke}
+      stroke={isSelected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}
       opacity={shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1}
@@ -42,7 +42,7 @@ export function ArcShape({
       hitStrokeWidth={HIT_STROKE_WIDTH}
       onClick={onSelect}
       onTap={onSelect}
-      onMouseDown={interactive ? onMouseDown : undefined}
+      onMouseDown={isInteractive ? onMouseDown : undefined}
     />
   );
 }

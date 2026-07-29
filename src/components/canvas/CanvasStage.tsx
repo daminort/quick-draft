@@ -67,11 +67,11 @@ export function CanvasStage() {
   const clearSelection = useSelectionStore(state => state.clear);
   const activeTool = useToolStore(state => state.activeTool);
   const setTool = useToolStore(state => state.setTool);
-  const guidesVisible = useUIStore(state => state.guidesVisible);
-  const dimensionsVisible = useUIStore(state => state.dimensionsVisible);
+  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
+  const areDimensionsVisible = useUIStore(state => state.areDimensionsVisible);
   const toggleDimensionsVisible = useUIStore(state => state.toggleDimensionsVisible);
-  const rulerVisible = useUIStore(state => state.rulerVisible);
-  const rulerGuidesVisible = useUIStore(state => state.rulerGuidesVisible);
+  const isRulerVisible = useUIStore(state => state.isRulerVisible);
+  const areRulerGuidesVisible = useUIStore(state => state.areRulerGuidesVisible);
   const documentScale = useDocumentStore(state => state.document.scale);
   const documentUnits = useDocumentStore(state => state.document.units);
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
@@ -81,7 +81,7 @@ export function CanvasStage() {
     shapeId: TShapeId;
   } | null>(null);
   const [emptyContextMenu, setEmptyContextMenu] = useState<{ x: number; y: number } | null>(null);
-  const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false);
+  const [isDeleteGuidesDialogOpen, setIsDeleteGuidesDialogOpen] = useState(false);
   const [editingTextId, setEditingTextId] = useState<TShapeId | null>(null);
   const originalTextRef = useRef<string | null>(null);
 
@@ -110,7 +110,7 @@ export function CanvasStage() {
   }, []);
 
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+    function onKeyDown(e: KeyboardEvent) {
       const tool = TOOL_HOTKEYS[e.code];
       if (!tool) {
         return;
@@ -126,12 +126,12 @@ export function CanvasStage() {
       setTool(tool);
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, [setTool]);
 
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+    function onKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Delete' && e.key !== 'Backspace') {
         return;
       }
@@ -148,12 +148,12 @@ export function CanvasStage() {
       clearSelection();
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, [selectedIds, removeShape, clearSelection]);
 
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+    function onKeyDown(e: KeyboardEvent) {
       if (e.code !== 'KeyZ') {
         return;
       }
@@ -169,12 +169,12 @@ export function CanvasStage() {
       useDocumentStore.temporal.getState().undo();
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+    function onKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Escape') {
         return;
       }
@@ -186,14 +186,14 @@ export function CanvasStage() {
       setTool('select');
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, [setTool]);
 
   const visibleShapes = shapes.filter(
     shape =>
-      (guidesVisible || shape.type !== 'guide') &&
-      (dimensionsVisible || shape.type !== 'dimension'),
+      (areGuidesVisible || shape.type !== 'guide') &&
+      (areDimensionsVisible || shape.type !== 'dimension'),
   );
 
   useEffect(() => {
@@ -250,7 +250,7 @@ export function CanvasStage() {
     setEditingTextId(null);
   }
 
-  function handleComponentDrop(e: React.DragEvent<HTMLDivElement>) {
+  function onComponentDrop(e: React.DragEvent<HTMLDivElement>) {
     const componentId = e.dataTransfer.getData(COMPONENT_DRAG_MIME_TYPE);
     if (!componentId || !components[componentId]) {
       return;
@@ -268,7 +268,7 @@ export function CanvasStage() {
     setTimeout(() => select([instanceId]), 0);
   }
 
-  function handleContextMenu(e: Konva.KonvaEventObject<PointerEvent>) {
+  function onContextMenu(e: Konva.KonvaEventObject<PointerEvent>) {
     e.evt.preventDefault();
     if (!isInteractive) {
       return;
@@ -291,7 +291,7 @@ export function CanvasStage() {
     setContextMenu({ x: e.evt.clientX, y: e.evt.clientY, shapeId });
   }
 
-  function handleComponentDragOver(e: React.DragEvent<HTMLDivElement>) {
+  function onComponentDragOver(e: React.DragEvent<HTMLDivElement>) {
     if (!e.dataTransfer.types.includes(COMPONENT_DRAG_MIME_TYPE)) {
       return;
     }
@@ -302,8 +302,8 @@ export function CanvasStage() {
   return (
     <Box
       ref={containerRef}
-      onDrop={handleComponentDrop}
-      onDragOver={handleComponentDragOver}
+      onDrop={onComponentDrop}
+      onDragOver={onComponentDragOver}
       width="100%"
       height="100%"
       position="relative"
@@ -318,36 +318,36 @@ export function CanvasStage() {
         scaleY={zoom.scale}
         x={zoom.x}
         y={zoom.y}
-        onWheel={zoom.handleWheel}
+        onWheel={zoom.onWheel}
         onMouseDown={e => {
-          if (pan.handleMouseDown(e)) {
+          if (pan.onMouseDown(e)) {
             return;
           }
-          selectTool.handleStageMouseDown(e);
-          drawingTool.handleMouseDown(e);
-          rulerTool.handleMouseDown(e);
+          selectTool.onStageMouseDown(e);
+          drawingTool.onMouseDown(e);
+          rulerTool.onMouseDown(e);
         }}
         onMouseMove={e => {
-          drawingTool.handleMouseMove(e);
-          rulerTool.handleMouseMove(e);
-          copyPasteTool.handleMouseMove(e);
-          if (rulerVisible && rulerGuidesVisible) {
+          drawingTool.onMouseMove(e);
+          rulerTool.onMouseMove(e);
+          copyPasteTool.onMouseMove(e);
+          if (isRulerVisible && areRulerGuidesVisible) {
             setCursorPos(e.target.getStage()?.getPointerPosition() ?? null);
           }
         }}
         onMouseLeave={() => setCursorPos(null)}
-        onMouseUp={drawingTool.handleMouseUp}
-        onContextMenu={handleContextMenu}
+        onMouseUp={drawingTool.onMouseUp}
+        onContextMenu={onContextMenu}
       >
         <Layer ref={staticLayerRef}>
           {visibleShapes.map(shape => (
             <ShapeRenderer
               key={shape.id}
               shape={shape}
-              interactive={isInteractive}
+              isInteractive={isInteractive}
               interaction={selectTool}
               viewBounds={viewBounds}
-              selected={selectedIds.includes(shape.id)}
+              isSelected={selectedIds.includes(shape.id)}
               editingTextId={editingTextId}
               onStartEditText={startEditText}
             />
@@ -357,7 +357,7 @@ export function CanvasStage() {
           {drawingTool.draftShape && (
             <ShapeRenderer
               shape={drawingTool.draftShape}
-              interactive={false}
+              isInteractive={false}
               interaction={selectTool}
               viewBounds={viewBounds}
             />
@@ -420,7 +420,7 @@ export function CanvasStage() {
           onCancel={cancelEditText}
         />
       )}
-      {rulerVisible && (
+      {isRulerVisible && (
         <CanvasRulers
           width={size.width}
           height={size.height}
@@ -429,7 +429,7 @@ export function CanvasStage() {
           offsetY={zoom.y}
           documentScale={documentScale}
           documentUnits={documentUnits}
-          cursor={rulerGuidesVisible ? cursorPos : null}
+          cursor={areRulerGuidesVisible ? cursorPos : null}
         />
       )}
       <ZoomControl
@@ -471,21 +471,21 @@ export function CanvasStage() {
             {
               label: 'Delete guides',
               icon: <Trash2 size={14} />,
-              onClick: () => setDeleteGuidesDialogOpen(true),
+              onClick: () => setIsDeleteGuidesDialogOpen(true),
             },
           ]}
         />
       )}
       <ConfirmDialog
-        open={deleteGuidesDialogOpen}
+        isOpen={isDeleteGuidesDialogOpen}
         title="Delete all guides"
         message="This will remove every guide from the canvas."
         confirmLabel="Delete"
         onConfirm={() => {
           clearGuides();
-          setDeleteGuidesDialogOpen(false);
+          setIsDeleteGuidesDialogOpen(false);
         }}
-        onCancel={() => setDeleteGuidesDialogOpen(false)}
+        onCancel={() => setIsDeleteGuidesDialogOpen(false)}
       />
     </Box>
   );

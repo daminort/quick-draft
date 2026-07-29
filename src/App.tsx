@@ -14,9 +14,9 @@ import { PrintView } from '~/components/print/PrintView';
 function App() {
   useRestoreDocument();
   useRestoreUISettings();
-  const settingsOpen = useUIStore(state => state.settingsOpen);
-  const libraryOpen = useUIStore(state => state.libraryOpen);
-  const printOpen = useUIStore(state => state.printOpen);
+  const isSettingsOpen = useUIStore(state => state.isSettingsOpen);
+  const isLibraryOpen = useUIStore(state => state.isLibraryOpen);
+  const isPrintOpen = useUIStore(state => state.isPrintOpen);
   const closePrint = useUIStore(state => state.closePrint);
 
   return (
@@ -26,15 +26,15 @@ function App() {
         <Box flexGrow="1" minWidth="0">
           <CanvasStage />
         </Box>
-        {settingsOpen ? (
+        {isSettingsOpen ? (
           <SettingsPanel />
-        ) : libraryOpen ? (
+        ) : isLibraryOpen ? (
           <ComponentLibrary />
         ) : (
           <PropertiesPanel />
         )}
       </Flex>
-      <PrintView open={printOpen} onClose={closePrint} />
+      <PrintView isOpen={isPrintOpen} onClose={closePrint} />
     </Flex>
   );
 }

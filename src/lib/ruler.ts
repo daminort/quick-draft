@@ -1,16 +1,16 @@
 type TPoint = { x: number; y: number };
 
 /**
- * Unit vector from `start` toward `point`. When `shiftLocked`, the vector is snapped to the
+ * Unit vector from `start` toward `point`. When `isShiftLocked`, the vector is snapped to the
  * dominant axis (horizontal or vertical) — same convention as the `line` tool's Shift handling
  * in useDrawingTool.ts. Falls back to pointing right/down when start and point coincide, so
  * callers always get a usable direction to multiply a typed length by.
  */
-export function rulerDirection(start: TPoint, point: TPoint, shiftLocked: boolean): TPoint {
+export function rulerDirection(start: TPoint, point: TPoint, isShiftLocked: boolean): TPoint {
   const dx = point.x - start.x;
   const dy = point.y - start.y;
 
-  if (shiftLocked) {
+  if (isShiftLocked) {
     return Math.abs(dx) > Math.abs(dy)
       ? { x: Math.sign(dx) || 1, y: 0 }
       : { x: 0, y: Math.sign(dy) || 1 };

@@ -5,7 +5,7 @@ import type { TShape, TShapeId, TShapePatch } from '~/types/document';
 import { MARQUEE_CLICK_THRESHOLD_PX } from '~/constants/canvas';
 
 import { collectSnapTargets, snapPoint, type TSnapTargets } from '~/lib/snap';
-import { getShapeBounds, boundsIntersect } from '~/lib/bounds';
+import { getShapeBounds, areBoundsIntersecting } from '~/lib/bounds';
 import { getShapeAnchor, translateShape } from '~/lib/shapeTransform';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
@@ -135,7 +135,7 @@ export function useSelectTool() {
   const updateShape = useDocumentStore(state => state.updateShape);
   const shapes = useDocumentStore(state => state.document.shapes);
   const components = useDocumentStore(state => state.document.components);
-  const guidesVisible = useUIStore(state => state.guidesVisible);
+  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const activeTool = useToolStore(state => state.activeTool);
   const viewScale = useViewStore(state => state.scale);
@@ -174,7 +174,7 @@ export function useSelectTool() {
 
   const selectShape = useCallback((id: TShapeId) => select([id]), [select]);
 
-  const handleStageMouseDown = useCallback(
+  const onStageMouseDown = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
       if (e.target !== e.target.getStage()) {
         return;
@@ -198,7 +198,7 @@ export function useSelectTool() {
     [activeTool, clearSelection],
   );
 
-  const handleDragStart = useCallback(
+  const onDragStart = useCallback(
     (shape: TShape) => {
       if (selectedIds.includes(shape.id) && selectedIds.length > 1) {
         groupDragOrigin.current = snapshotSelection();
@@ -215,10 +215,12 @@ export function useSelectTool() {
 
   const dragTargets = useCallback(
     (excludeIds: TShapeId[]): TSnapTargets => {
-      const visibleShapes = guidesVisible ? shapes : shapes.filter(shape => shape.type !== 'guide');
+      const visibleShapes = areGuidesVisible
+        ? shapes
+        : shapes.filter(shape => shape.type !== 'guide');
       return collectSnapTargets(visibleShapes, { excludeIds });
     },
-    [shapes, guidesVisible],
+    [shapes, areGuidesVisible],
   );
 
   /**
@@ -267,14 +269,14 @@ export function useSelectTool() {
     [updateShape, dragTargets, snapTolerance, viewScale],
   );
 
-  const handleDragMove = useCallback(
+  const onDragMove = useCallback(
     (shape: TShape, node: Konva.Node) => {
       setSnapIndicator(applyDrag(shape, node));
     },
     [applyDrag],
   );
 
-  const handleDragEnd = useCallback(
+  const onDragEnd = useCallback(
     (shape: TShape, node: Konva.Node) => {
       applyDrag(shape, node);
       groupDragOrigin.current = null;
@@ -285,7 +287,7 @@ export function useSelectTool() {
     [applyDrag],
   );
 
-  const handleManualMouseDown = useCallback(
+  const onManualMouseDown = useCallback(
     (shape: TShape, e: Konva.KonvaEventObject<MouseEvent>) => {
       const stage = e.target.getStage();
       const pointer = stage?.getRelativePointerPosition();
@@ -305,7 +307,7 @@ export function useSelectTool() {
   );
 
   useEffect(() => {
-    function handleWindowMouseMove() {
+    function onWindowMouseMove() {
       const drag = manualDrag.current;
       if (drag) {
         const pointer = drag.stage.getRelativePointerPosition();
@@ -363,7 +365,7 @@ export function useSelectTool() {
       });
     }
 
-    function handleWindowMouseUp(e: MouseEvent) {
+    function onWindowMouseUp(e: MouseEvent) {
       if (manualDrag.current) {
         manualDrag.current = null;
         manualGroupOrigin.current = null;
@@ -401,17 +403,17 @@ export function useSelectTool() {
       const ids = shapes
         .filter(shape => {
           const bounds = getShapeBounds(shape, components);
-          return bounds !== null && boundsIntersect(bounds, marqueeBounds);
+          return bounds !== null && areBoundsIntersecting(bounds, marqueeBounds);
         })
         .map(shape => shape.id);
       select(ids);
     }
 
-    window.addEventListener('mousemove', handleWindowMouseMove);
-    window.addEventListener('mouseup', handleWindowMouseUp);
+    window.addEventListener('mousemove', onWindowMouseMove);
+    window.addEventListener('mouseup', onWindowMouseUp);
     return () => {
-      window.removeEventListener('mousemove', handleWindowMouseMove);
-      window.removeEventListener('mouseup', handleWindowMouseUp);
+      window.removeEventListener('mousemove', onWindowMouseMove);
+      window.removeEventListener('mouseup', onWindowMouseUp);
     };
   }, [
     dragTargets,
@@ -428,11 +430,11 @@ export function useSelectTool() {
     registerNode,
     getNode,
     selectShape,
-    handleStageMouseDown,
-    handleDragStart,
-    handleDragMove,
-    handleDragEnd,
-    handleManualMouseDown,
+    onStageMouseDown,
+    onDragStart,
+    onDragMove,
+    onDragEnd,
+    onManualMouseDown,
     snapIndicator,
     marqueeRect,
   };

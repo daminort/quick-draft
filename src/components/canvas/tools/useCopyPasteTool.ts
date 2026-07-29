@@ -48,7 +48,7 @@ export function useCopyPasteTool() {
   const clipboard = useRef<TShape[]>([]);
   const pointer = useRef<TPoint | null>(null);
 
-  const handleMouseMove = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
+  const onMouseMove = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
     const stage = e.target.getStage();
     const next = stage?.getRelativePointerPosition();
     if (next) {
@@ -57,7 +57,7 @@ export function useCopyPasteTool() {
   }, []);
 
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+    function onKeyDown(e: KeyboardEvent) {
       if (!(e.ctrlKey || e.metaKey)) {
         return;
       }
@@ -107,14 +107,14 @@ export function useCopyPasteTool() {
 
       pasted.forEach(shape => addShape(shape));
       // Deferred: pasted nodes register their Konva ref one render after this one — selecting a
-      // tick later (as handleComponentDrop already does) lets the Transformer find them immediately.
+      // tick later (as onComponentDrop already does) lets the Transformer find them immediately.
       const pastedIds = pasted.map(shape => shape.id);
       setTimeout(() => select(pastedIds), 0);
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, [shapes, selectedIds, components, addShape, select]);
 
-  return { handleMouseMove };
+  return { onMouseMove };
 }

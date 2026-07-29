@@ -8,8 +8,8 @@ import type Konva from 'konva';
 
 type TCircleShapeProps = {
   shape: Extract<TShape, { type: 'circle' }>;
-  draggable: boolean;
-  selected?: boolean;
+  isDraggable: boolean;
+  isSelected?: boolean;
   onSelect: () => void;
   onDragStart: () => void;
   onDragMove: (node: Konva.Node) => void;
@@ -19,8 +19,8 @@ type TCircleShapeProps = {
 
 export function CircleShape({
   shape,
-  draggable,
-  selected = false,
+  isDraggable,
+  isSelected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -34,13 +34,13 @@ export function CircleShape({
       x={shape.cx}
       y={shape.cy}
       radius={shape.r}
-      stroke={selected ? SELECTED_COLOR : shape.style.stroke}
+      stroke={isSelected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}
       opacity={shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1}
       perfectDrawEnabled={false}
       dash={shape.style.dash}
-      draggable={draggable}
+      draggable={isDraggable}
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}

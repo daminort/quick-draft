@@ -67,8 +67,8 @@ export type TShape =
       text: string;
       fontFamily: string;
       fontSize: number;
-      bold: boolean;
-      italic: boolean;
+      isBold: boolean;
+      isItalic: boolean;
       fill: string;
       align: 'left' | 'center' | 'right';
     }

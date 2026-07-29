@@ -13,8 +13,8 @@ import type Konva from 'konva';
 
 type TComponentInstanceShapeProps = {
   shape: Extract<TShape, { type: 'component-instance' }>;
-  draggable: boolean;
-  selected?: boolean;
+  isDraggable: boolean;
+  isSelected?: boolean;
   onSelect: () => void;
   onDragStart: () => void;
   onDragMove: (node: Konva.Node) => void;
@@ -24,8 +24,8 @@ type TComponentInstanceShapeProps = {
 
 export function ComponentInstanceShape({
   shape,
-  draggable,
-  selected = false,
+  isDraggable,
+  isSelected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -46,7 +46,7 @@ export function ComponentInstanceShape({
       scaleX={shape.scale}
       scaleY={shape.scale}
       rotation={shape.rotation}
-      draggable={draggable}
+      draggable={isDraggable}
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}
@@ -57,10 +57,10 @@ export function ComponentInstanceShape({
         <ShapeRenderer
           key={childShape.id}
           shape={childShape}
-          interactive={false}
+          isInteractive={false}
           interaction={noopShapeInteraction}
           viewBounds={INNER_VIEW_BOUNDS}
-          selected={selected}
+          isSelected={isSelected}
         />
       ))}
     </Group>

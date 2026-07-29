@@ -5,10 +5,10 @@ import type Konva from 'konva';
 export type TShapeInteraction = {
   registerNode: (id: TShapeId, node: Konva.Node | null) => void;
   selectShape: (id: TShapeId) => void;
-  handleDragStart: (shape: TShape) => void;
-  handleDragMove: (shape: TShape, node: Konva.Node) => void;
-  handleDragEnd: (shape: TShape, node: Konva.Node) => void;
-  handleManualMouseDown: (shape: TShape, e: Konva.KonvaEventObject<MouseEvent>) => void;
+  onDragStart: (shape: TShape) => void;
+  onDragMove: (shape: TShape, node: Konva.Node) => void;
+  onDragEnd: (shape: TShape, node: Konva.Node) => void;
+  onManualMouseDown: (shape: TShape, e: Konva.KonvaEventObject<MouseEvent>) => void;
 };
 
 export type TViewBounds = {
@@ -22,8 +22,8 @@ export type TViewBounds = {
 export const noopShapeInteraction: TShapeInteraction = {
   registerNode: () => {},
   selectShape: () => {},
-  handleDragStart: () => {},
-  handleDragMove: () => {},
-  handleDragEnd: () => {},
-  handleManualMouseDown: () => {},
+  onDragStart: () => {},
+  onDragMove: () => {},
+  onDragEnd: () => {},
+  onManualMouseDown: () => {},
 };

@@ -20,22 +20,22 @@ export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handlePointerDown(e: MouseEvent) {
+    function onPointerDown(e: MouseEvent) {
       if (menuRef.current?.contains(e.target as Node)) {
         return;
       }
       onClose();
     }
-    function handleKeyDown(e: KeyboardEvent) {
+    function onKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         onClose();
       }
     }
-    window.addEventListener('mousedown', handlePointerDown);
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
     return () => {
-      window.removeEventListener('mousedown', handlePointerDown);
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousedown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, [onClose]);
 

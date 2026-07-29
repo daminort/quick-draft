@@ -16,7 +16,7 @@ export function useCanvasPan() {
       return;
     }
 
-    function handleWindowMouseMove(e: MouseEvent) {
+    function onWindowMouseMove(e: MouseEvent) {
       if (!lastPointer.current) {
         return;
       }
@@ -27,20 +27,20 @@ export function useCanvasPan() {
       setView({ scale, x: x + dx, y: y + dy });
     }
 
-    function handleWindowMouseUp() {
+    function onWindowMouseUp() {
       lastPointer.current = null;
       setIsPanning(false);
     }
 
-    window.addEventListener('mousemove', handleWindowMouseMove);
-    window.addEventListener('mouseup', handleWindowMouseUp);
+    window.addEventListener('mousemove', onWindowMouseMove);
+    window.addEventListener('mouseup', onWindowMouseUp);
     return () => {
-      window.removeEventListener('mousemove', handleWindowMouseMove);
-      window.removeEventListener('mouseup', handleWindowMouseUp);
+      window.removeEventListener('mousemove', onWindowMouseMove);
+      window.removeEventListener('mouseup', onWindowMouseUp);
     };
   }, [isPanning, setView]);
 
-  const handleMouseDown = useCallback((e: Konva.KonvaEventObject<MouseEvent>): boolean => {
+  const onMouseDown = useCallback((e: Konva.KonvaEventObject<MouseEvent>): boolean => {
     if (e.evt.button !== MIDDLE_MOUSE_BUTTON) {
       return false;
     }
@@ -50,5 +50,5 @@ export function useCanvasPan() {
     return true;
   }, []);
 
-  return { isPanning, handleMouseDown };
+  return { isPanning, onMouseDown };
 }

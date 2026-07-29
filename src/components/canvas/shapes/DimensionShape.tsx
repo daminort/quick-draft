@@ -19,8 +19,8 @@ import type Konva from 'konva';
 
 type TDimensionShapeProps = {
   shape: Extract<TShape, { type: 'dimension' }>;
-  selected?: boolean;
-  interactive: boolean;
+  isSelected?: boolean;
+  isInteractive: boolean;
   onSelect: () => void;
   onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   setNodeRef: (node: Konva.Group | null) => void;
@@ -28,8 +28,8 @@ type TDimensionShapeProps = {
 
 export function DimensionShape({
   shape,
-  selected = false,
-  interactive,
+  isSelected = false,
+  isInteractive,
   onSelect,
   onMouseDown,
   setNodeRef,
@@ -37,9 +37,9 @@ export function DimensionShape({
   const documentScale = useDocumentStore(state => state.document.scale);
   const documentUnits = useDocumentStore(state => state.document.units);
   const shapes = useDocumentStore(state => state.document.shapes);
-  const showUnit = useUIStore(state => state.showDimensionUnit);
+  const shouldShowUnit = useUIStore(state => state.shouldShowDimensionUnit);
   const dimensionColor = useUIStore(state => state.dimensionColor);
-  const color = selected ? SELECTED_COLOR : dimensionColor;
+  const color = isSelected ? SELECTED_COLOR : dimensionColor;
 
   const geometry = computeDimensionGeometry(
     shape.x1,
@@ -51,7 +51,7 @@ export function DimensionShape({
     documentScale,
     documentUnits,
     shape.unit,
-    showUnit,
+    shouldShowUnit,
     shapes,
   );
   if (!geometry) {
@@ -66,7 +66,7 @@ export function DimensionShape({
       y={0}
       onClick={onSelect}
       onTap={onSelect}
-      onMouseDown={interactive ? onMouseDown : undefined}
+      onMouseDown={isInteractive ? onMouseDown : undefined}
     >
       {geometry.extensionA && (
         <Line
@@ -121,7 +121,7 @@ export function DimensionShape({
       <Text
         x={geometry.label.x}
         y={geometry.label.y}
-        text={formatDimensionLabel(geometry.length, shape.unit, showUnit)}
+        text={formatDimensionLabel(geometry.length, shape.unit, shouldShowUnit)}
         fontSize={DIMENSION_LABEL_FONT_SIZE}
         fontStyle="italic"
         fill={color}

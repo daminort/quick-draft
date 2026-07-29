@@ -62,7 +62,7 @@ export function useDrawingTool() {
   const doc = useDocumentStore(state => state.document);
   const addShape = useDocumentStore(state => state.addShape);
   const selectShape = useSelectionStore(state => state.select);
-  const guidesVisible = useUIStore(state => state.guidesVisible);
+  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const viewScale = useViewStore(state => state.scale);
   const [draftShape, setDraftShapeState] = useState<TShape | null>(null);
@@ -94,7 +94,7 @@ export function useDrawingTool() {
 
   const snapCursor = useCallback(
     (point: TPoint): TPoint => {
-      const shapes = guidesVisible
+      const shapes = areGuidesVisible
         ? doc.shapes
         : doc.shapes.filter(shape => shape.type !== 'guide');
       const result = snapPoint(point, collectSnapTargets(shapes), snapTolerance / viewScale);
@@ -104,10 +104,10 @@ export function useDrawingTool() {
       });
       return { x: result.x, y: result.y };
     },
-    [doc.shapes, guidesVisible, snapTolerance, viewScale],
+    [doc.shapes, areGuidesVisible, snapTolerance, viewScale],
   );
 
-  const handleArcMouseDown = useCallback(
+  const onArcMouseDown = useCallback(
     (point: TPoint) => {
       if (!arcPhase.current) {
         const id = crypto.randomUUID();
@@ -149,7 +149,7 @@ export function useDrawingTool() {
     [addShape, setDraftShape],
   );
 
-  const handleDimensionMouseDown = useCallback(
+  const onDimensionMouseDown = useCallback(
     (point: TPoint) => {
       if (!dimensionPhase.current) {
         dimensionPointA.current = point;
@@ -182,7 +182,7 @@ export function useDrawingTool() {
     [doc.shapes, doc.units, setDraftShape],
   );
 
-  const handleMouseDown = useCallback(
+  const onMouseDown = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
       if (activeTool === 'select') {
         return;
@@ -194,12 +194,12 @@ export function useDrawingTool() {
       const point = snapCursor(getPointerPosition(stage));
 
       if (activeTool === 'arc') {
-        handleArcMouseDown(point);
+        onArcMouseDown(point);
         return;
       }
 
       if (activeTool === 'dimension') {
-        handleDimensionMouseDown(point);
+        onDimensionMouseDown(point);
         return;
       }
 
@@ -213,8 +213,8 @@ export function useDrawingTool() {
           text: DEFAULT_TEXT_CONTENT,
           fontFamily: DEFAULT_TEXT_FONT_FAMILY,
           fontSize: DEFAULT_TEXT_FONT_SIZE,
-          bold: false,
-          italic: false,
+          isBold: false,
+          isItalic: false,
           fill: DEFAULT_TEXT_COLOR,
           align: DEFAULT_TEXT_ALIGN,
         });
@@ -272,8 +272,8 @@ export function useDrawingTool() {
     },
     [
       activeTool,
-      handleArcMouseDown,
-      handleDimensionMouseDown,
+      onArcMouseDown,
+      onDimensionMouseDown,
       addShape,
       selectShape,
       setTool,
@@ -282,7 +282,7 @@ export function useDrawingTool() {
     ],
   );
 
-  const handleMouseMove = useCallback(
+  const onMouseMove = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
       const stage = e.target.getStage();
       if (!stage) {
@@ -359,7 +359,7 @@ export function useDrawingTool() {
     [activeTool, snapCursor, setDraftShape],
   );
 
-  const handleMouseUp = useCallback(() => {
+  const onMouseUp = useCallback(() => {
     if (activeTool === 'arc' || activeTool === 'guide') {
       return;
     }
@@ -382,8 +382,8 @@ export function useDrawingTool() {
   return {
     draftShape: activeTool === 'select' ? null : draftShape,
     snapIndicator,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
   };
 }

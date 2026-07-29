@@ -63,21 +63,21 @@ export function formatLength(length: number): string {
 function extensionSegment(
   point: TPoint,
   lineCoordinate: number,
-  alongX: boolean,
+  isAlongX: boolean,
 ): { x1: number; y1: number; x2: number; y2: number } {
-  const pointCoord = alongX ? point.x : point.y;
+  const pointCoord = isAlongX ? point.x : point.y;
   const direction = Math.sign(lineCoordinate - pointCoord) || 1;
   const gapCoord = pointCoord + direction * EXTENSION_GAP;
   const overshootCoord = lineCoordinate + direction * EXTENSION_OVERSHOOT;
 
-  return alongX
+  return isAlongX
     ? { x1: gapCoord, y1: point.y, x2: overshootCoord, y2: point.y }
     : { x1: point.x, y1: gapCoord, x2: point.x, y2: overshootCoord };
 }
 
 /** Whether `point` sits on the (finite) `segment`, checked as perpendicular distance to the
  * infinite line plus a bounding-box containment test — exact for collinear points. */
-function pointOnSegment(point: TPoint, segment: TSegment, epsilon: number): boolean {
+function isPointOnSegment(point: TPoint, segment: TSegment, epsilon: number): boolean {
   const dx = segment.x2 - segment.x1;
   const dy = segment.y2 - segment.y1;
   const lengthSq = dx * dx + dy * dy;
@@ -98,11 +98,11 @@ function pointOnSegment(point: TPoint, segment: TSegment, epsilon: number): bool
 
 /** True when `segment` (an extension line) lies entirely on one of `edges` (a shape's straight
  * sides), making it redundant to draw since the shape's own outline already marks that line. */
-function liesOnAnyEdge(segment: TSegment, edges: TSegment[]): boolean {
+function isSegmentOnAnyEdge(segment: TSegment, edges: TSegment[]): boolean {
   return edges.some(
     edge =>
-      pointOnSegment({ x: segment.x1, y: segment.y1 }, edge, EDGE_EPSILON) &&
-      pointOnSegment({ x: segment.x2, y: segment.y2 }, edge, EDGE_EPSILON),
+      isPointOnSegment({ x: segment.x1, y: segment.y1 }, edge, EDGE_EPSILON) &&
+      isPointOnSegment({ x: segment.x2, y: segment.y2 }, edge, EDGE_EPSILON),
   );
 }
 
@@ -169,9 +169,9 @@ function buildLabelAndLeader(
 export function formatDimensionLabel(
   length: number,
   dimensionUnit: TLengthUnit,
-  showUnit: boolean,
+  shouldShowUnit: boolean,
 ): string {
-  return showUnit ? `${formatLength(length)} ${dimensionUnit}` : formatLength(length);
+  return shouldShowUnit ? `${formatLength(length)} ${dimensionUnit}` : formatLength(length);
 }
 
 export function computeDimensionGeometry(
@@ -184,7 +184,7 @@ export function computeDimensionGeometry(
   documentScale: number,
   documentUnits: TLengthUnit,
   dimensionUnit: TLengthUnit,
-  showUnit: boolean,
+  shouldShowUnit: boolean,
   shapes: TShape[],
   fontSize: number = DIMENSION_LABEL_FONT_SIZE,
 ): TDimensionGeometry | null {
@@ -211,7 +211,7 @@ export function computeDimensionGeometry(
     normal,
     axis,
     isVertical ? LABEL_GAP_VERTICAL : LABEL_GAP_HORIZONTAL,
-    formatDimensionLabel(length, dimensionUnit, showUnit),
+    formatDimensionLabel(length, dimensionUnit, shouldShowUnit),
     fontSize,
   );
 
@@ -221,8 +221,8 @@ export function computeDimensionGeometry(
 
   return {
     arrowLine: { x1: lineA.x, y1: lineA.y, x2: lineB.x, y2: lineB.y },
-    extensionA: liesOnAnyEdge(extensionA, edges) ? null : extensionA,
-    extensionB: liesOnAnyEdge(extensionB, edges) ? null : extensionB,
+    extensionA: isSegmentOnAnyEdge(extensionA, edges) ? null : extensionA,
+    extensionB: isSegmentOnAnyEdge(extensionB, edges) ? null : extensionB,
     label,
     leader,
     length,

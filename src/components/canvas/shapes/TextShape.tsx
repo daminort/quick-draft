@@ -8,9 +8,9 @@ import type Konva from 'konva';
 
 type TTextShapeProps = {
   shape: Extract<TShape, { type: 'text' }>;
-  draggable: boolean;
-  selected?: boolean;
-  visible?: boolean;
+  isDraggable: boolean;
+  isSelected?: boolean;
+  isVisible?: boolean;
   onSelect: () => void;
   onDblClick?: () => void;
   onDragStart: () => void;
@@ -21,9 +21,9 @@ type TTextShapeProps = {
 
 export function TextShape({
   shape,
-  draggable,
-  selected = false,
-  visible = true,
+  isDraggable,
+  isSelected = false,
+  isVisible = true,
   onSelect,
   onDblClick,
   onDragStart,
@@ -32,7 +32,7 @@ export function TextShape({
   setNodeRef,
 }: TTextShapeProps) {
   const fontStyle =
-    [shape.bold && 'bold', shape.italic && 'italic'].filter(Boolean).join(' ') || 'normal';
+    [shape.isBold && 'bold', shape.isItalic && 'italic'].filter(Boolean).join(' ') || 'normal';
 
   return (
     <Text
@@ -45,9 +45,9 @@ export function TextShape({
       fontFamily={shape.fontFamily}
       fontSize={shape.fontSize}
       fontStyle={fontStyle}
-      fill={selected ? SELECTED_COLOR : shape.fill}
-      draggable={draggable}
-      visible={visible}
+      fill={isSelected ? SELECTED_COLOR : shape.fill}
+      draggable={isDraggable}
+      visible={isVisible}
       onClick={onSelect}
       onTap={onSelect}
       onDblClick={onDblClick}

@@ -12,8 +12,8 @@ import type Konva from 'konva';
 type TGuideShapeProps = {
   shape: Extract<TShape, { type: 'guide' }>;
   viewBounds: TViewBounds;
-  draggable: boolean;
-  selected?: boolean;
+  isDraggable: boolean;
+  isSelected?: boolean;
   onSelect: () => void;
   onDragStart: () => void;
   onDragMove: (node: Konva.Node) => void;
@@ -24,8 +24,8 @@ type TGuideShapeProps = {
 export function GuideShape({
   shape,
   viewBounds,
-  draggable,
-  selected = false,
+  isDraggable,
+  isSelected = false,
   onSelect,
   onDragStart,
   onDragMove,
@@ -35,12 +35,12 @@ export function GuideShape({
   const common = {
     ref: setNodeRef,
     id: shape.id,
-    stroke: selected ? SELECTED_COLOR : GUIDE_COLOR,
+    stroke: isSelected ? SELECTED_COLOR : GUIDE_COLOR,
     strokeWidth: 1,
     dash: GUIDE_DASH,
     hitStrokeWidth: HIT_STROKE_WIDTH,
-    listening: draggable,
-    draggable,
+    listening: isDraggable,
+    draggable: isDraggable,
     onClick: onSelect,
     onTap: onSelect,
     onDragStart,

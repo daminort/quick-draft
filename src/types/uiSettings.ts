@@ -1,10 +1,10 @@
 /** The subset of useUIStore state that's a user preference (vs. transient panel-open state) and gets autosaved to IndexedDB. */
 export type TPersistedUISettings = {
-  guidesVisible: boolean;
+  areGuidesVisible: boolean;
   snapTolerance: number;
-  showDimensionUnit: boolean;
-  dimensionsVisible: boolean;
+  shouldShowDimensionUnit: boolean;
+  areDimensionsVisible: boolean;
   dimensionColor: string;
-  rulerVisible: boolean;
-  rulerGuidesVisible: boolean;
+  isRulerVisible: boolean;
+  areRulerGuidesVisible: boolean;
 };

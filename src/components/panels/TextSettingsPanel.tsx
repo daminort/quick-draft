@@ -40,11 +40,11 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             type="button"
             title="Bold"
             aria-label="Bold"
-            aria-pressed={shape.bold}
+            aria-pressed={shape.isBold}
             variant="ghost"
             size="1"
-            style={shape.bold ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
-            onClick={() => updateShape(shape.id, { bold: !shape.bold })}
+            style={shape.isBold ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
+            onClick={() => updateShape(shape.id, { isBold: !shape.isBold })}
           >
             <Bold size={16} />
           </IconButton>
@@ -52,11 +52,11 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             type="button"
             title="Italic"
             aria-label="Italic"
-            aria-pressed={shape.italic}
+            aria-pressed={shape.isItalic}
             variant="ghost"
             size="1"
-            style={shape.italic ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
-            onClick={() => updateShape(shape.id, { italic: !shape.italic })}
+            style={shape.isItalic ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
+            onClick={() => updateShape(shape.id, { isItalic: !shape.isItalic })}
           >
             <Italic size={16} />
           </IconButton>

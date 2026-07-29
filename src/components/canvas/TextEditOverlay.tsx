@@ -43,7 +43,7 @@ export function TextEditOverlay({
   }, []);
 
   const fontStyle =
-    [shape.bold && 'bold', shape.italic && 'italic'].filter(Boolean).join(' ') || 'normal';
+    [shape.isBold && 'bold', shape.isItalic && 'italic'].filter(Boolean).join(' ') || 'normal';
 
   return (
     <div
@@ -70,7 +70,7 @@ export function TextEditOverlay({
         minWidth: '1em',
         fontFamily: shape.fontFamily,
         fontSize: shape.fontSize * scale,
-        fontWeight: shape.bold ? 'bold' : 'normal',
+        fontWeight: shape.isBold ? 'bold' : 'normal',
         fontStyle,
         textAlign: shape.align,
         color: shape.fill,

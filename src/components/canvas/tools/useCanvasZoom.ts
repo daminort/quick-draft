@@ -30,7 +30,7 @@ export function useCanvasZoom(stageSize: { width: number; height: number }) {
     [scale, x, y, setView],
   );
 
-  const handleWheel = useCallback(
+  const onWheel = useCallback(
     (e: Konva.KonvaEventObject<WheelEvent>) => {
       if (!e.evt.ctrlKey) {
         return;
@@ -57,5 +57,5 @@ export function useCanvasZoom(stageSize: { width: number; height: number }) {
     zoomAtPoint({ x: stageSize.width / 2, y: stageSize.height / 2 }, scale / BUTTON_SCALE_BY);
   }, [zoomAtPoint, scale, stageSize.width, stageSize.height]);
 
-  return { scale, x, y, handleWheel, zoomIn, zoomOut, resetZoom };
+  return { scale, x, y, onWheel, zoomIn, zoomOut, resetZoom };
 }

@@ -52,7 +52,7 @@ function ComponentPreview({ componentDef, components }: TComponentPreviewProps) 
             <ShapeRenderer
               key={shape.id}
               shape={shape}
-              interactive={false}
+              isInteractive={false}
               interaction={noopShapeInteraction}
               viewBounds={PREVIEW_VIEW_BOUNDS}
             />
@@ -71,7 +71,7 @@ export function ComponentLibrary() {
   const [deleteTarget, setDeleteTarget] = useState<TComponentDef | null>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDeleteConfirmed = () => {
+  const onDeleteConfirmed = () => {
     if (!deleteTarget) {
       return;
     }
@@ -83,7 +83,7 @@ export function ComponentLibrary() {
     setDeleteTarget(null);
   };
 
-  const handleImportLibrary = async (e: ChangeEvent<HTMLInputElement>) => {
+  const onImportLibrary = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
     if (!file) {
@@ -135,7 +135,7 @@ export function ComponentLibrary() {
           ref={importInputRef}
           type="file"
           accept=".json,application/json"
-          onChange={handleImportLibrary}
+          onChange={onImportLibrary}
           style={{ display: 'none' }}
         />
       </Flex>
@@ -193,7 +193,7 @@ export function ComponentLibrary() {
       </Flex>
 
       <ConfirmDialog
-        open={deleteTarget !== null}
+        isOpen={deleteTarget !== null}
         title="Delete component"
         message={
           deleteTarget
@@ -201,7 +201,7 @@ export function ComponentLibrary() {
             : ''
         }
         confirmLabel="Delete"
-        onConfirm={handleDeleteConfirmed}
+        onConfirm={onDeleteConfirmed}
         onCancel={() => setDeleteTarget(null)}
       />
     </Flex>

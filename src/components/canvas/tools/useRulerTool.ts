@@ -20,7 +20,7 @@ type TPoint = { x: number; y: number };
 export type TRulerState = {
   start: TPoint;
   point: TPoint;
-  shiftLocked: boolean;
+  isShiftLocked: boolean;
   /** Raw digits typed by the user, overriding the live mouse-driven length until cleared. */
   lengthOverride: string | null;
 };
@@ -40,7 +40,7 @@ export function useRulerTool() {
   const documentScale = useDocumentStore(state => state.document.scale);
   const shapes = useDocumentStore(state => state.document.shapes);
   const addShape = useDocumentStore(state => state.addShape);
-  const guidesVisible = useUIStore(state => state.guidesVisible);
+  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const viewScale = useViewStore(state => state.scale);
 
@@ -61,16 +61,18 @@ export function useRulerTool() {
 
   const snapCursor = useCallback(
     (point: TPoint): TPoint => {
-      const visibleShapes = guidesVisible ? shapes : shapes.filter(shape => shape.type !== 'guide');
+      const visibleShapes = areGuidesVisible
+        ? shapes
+        : shapes.filter(shape => shape.type !== 'guide');
       const result = snapPoint(point, collectSnapTargets(visibleShapes), snapTolerance / viewScale);
       return { x: result.x, y: result.y };
     },
-    [shapes, guidesVisible, snapTolerance, viewScale],
+    [shapes, areGuidesVisible, snapTolerance, viewScale],
   );
 
   const commit = useCallback(
-    (current: TRulerState, clickPoint: TPoint, shiftLocked: boolean) => {
-      const direction = rulerDirection(current.start, clickPoint, shiftLocked);
+    (current: TRulerState, clickPoint: TPoint, isShiftLocked: boolean) => {
+      const direction = rulerDirection(current.start, clickPoint, isShiftLocked);
       const length =
         current.lengthOverride !== null
           ? realToInternalLength(parseFloat(current.lengthOverride), documentScale)
@@ -89,7 +91,7 @@ export function useRulerTool() {
     [addShape, documentScale, setRuler],
   );
 
-  const handleMouseDown = useCallback(
+  const onMouseDown = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
       if (activeTool !== 'ruler') {
         return;
@@ -102,7 +104,7 @@ export function useRulerTool() {
       const current = rulerRef.current;
 
       if (!current) {
-        setRuler({ start: point, point, shiftLocked: e.evt.shiftKey, lengthOverride: null });
+        setRuler({ start: point, point, isShiftLocked: e.evt.shiftKey, lengthOverride: null });
         return;
       }
 
@@ -111,7 +113,7 @@ export function useRulerTool() {
     [activeTool, snapCursor, setRuler, commit],
   );
 
-  const handleMouseMove = useCallback(
+  const onMouseMove = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
       if (activeTool !== 'ruler') {
         return;
@@ -125,7 +127,7 @@ export function useRulerTool() {
         return;
       }
       const point = snapCursor(getPointerPosition(stage));
-      setRuler({ ...current, point, shiftLocked: e.evt.shiftKey });
+      setRuler({ ...current, point, isShiftLocked: e.evt.shiftKey });
     },
     [activeTool, snapCursor, setRuler],
   );
@@ -135,7 +137,7 @@ export function useRulerTool() {
       return;
     }
 
-    function handleKeyDown(e: KeyboardEvent) {
+    function onKeyDown(e: KeyboardEvent) {
       const current = rulerRef.current;
       if (!current) {
         return;
@@ -159,7 +161,7 @@ export function useRulerTool() {
           return;
         }
         e.preventDefault();
-        commit(current, current.point, current.shiftLocked);
+        commit(current, current.point, current.isShiftLocked);
         return;
       }
 
@@ -180,8 +182,8 @@ export function useRulerTool() {
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
   }, [activeTool, commit, setRuler]);
 
   const liveLength =
@@ -197,7 +199,7 @@ export function useRulerTool() {
   return {
     draftRuler: activeTool === 'ruler' ? ruler : null,
     liveLength,
-    handleMouseDown,
-    handleMouseMove,
+    onMouseDown,
+    onMouseMove,
   };
 }

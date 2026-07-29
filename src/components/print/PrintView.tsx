@@ -9,20 +9,20 @@ import { useUIStore } from '~/stores/useUIStore';
 import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg';
 
 type TPrintViewProps = {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
 };
 
-export function PrintView({ open, onClose }: TPrintViewProps) {
+export function PrintView({ isOpen, onClose }: TPrintViewProps) {
   const document = useDocumentStore(state => state.document);
-  const showDimensionUnit = useUIStore(state => state.showDimensionUnit);
+  const shouldShowDimensionUnit = useUIStore(state => state.shouldShowDimensionUnit);
   const dimensionColor = useUIStore(state => state.dimensionColor);
   const svg = useMemo(
-    () => renderDocumentToSvg(document, { showDimensionUnit, dimensionColor }),
-    [document, showDimensionUnit, dimensionColor],
+    () => renderDocumentToSvg(document, { shouldShowDimensionUnit, dimensionColor }),
+    [document, shouldShowDimensionUnit, dimensionColor],
   );
 
-  if (!open) {
+  if (!isOpen) {
     return null;
   }
 
