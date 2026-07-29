@@ -1,20 +1,23 @@
-import { Flex, Text, Select } from '@radix-ui/themes'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import type { Document } from '~/types/document'
-import { UNIT_OPTIONS } from '~/constants/ui'
+import { Flex, Text, Select } from '@radix-ui/themes';
+
+import type { Document } from '~/types/document';
+
+import { UNIT_OPTIONS } from '~/constants/ui';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
 
 export function UnitsControl() {
-  const units = useDocumentStore((state) => state.document.units)
-  const setUnits = useDocumentStore((state) => state.setUnits)
+  const units = useDocumentStore(state => state.document.units);
+  const setUnits = useDocumentStore(state => state.setUnits);
 
   return (
     <Text as="label" size="2">
       <Flex direction="column" gap="1">
         Measurement units
-        <Select.Root value={units} onValueChange={(value) => setUnits(value as Document['units'])}>
+        <Select.Root value={units} onValueChange={value => setUnits(value as Document['units'])}>
           <Select.Trigger />
           <Select.Content>
-            {UNIT_OPTIONS.map((unit) => (
+            {UNIT_OPTIONS.map(unit => (
               <Select.Item key={unit} value={unit}>
                 {unit}
               </Select.Item>
@@ -23,5 +26,5 @@ export function UnitsControl() {
         </Select.Root>
       </Flex>
     </Text>
-  )
+  );
 }

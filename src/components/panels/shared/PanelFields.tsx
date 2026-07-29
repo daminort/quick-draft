@@ -1,13 +1,15 @@
-import type { ReactNode } from 'react'
-import { Box, Checkbox, Flex, Slider, Text, TextField } from '@radix-ui/themes'
-import type { Style } from '~/types/document'
+import type { ReactNode } from 'react';
+
+import { Box, Checkbox, Flex, Slider, Text, TextField } from '@radix-ui/themes';
+
+import type { Style } from '~/types/document';
 
 /** Weight for section titles — only labels wrapped in `**` in .ai/TODO.md are bold. */
-export const LABEL_WEIGHT = { fontWeight: 600 } as const
+export const LABEL_WEIGHT = { fontWeight: 600 } as const;
 
 interface SectionProps {
-  title: string
-  children: ReactNode
+  title: string;
+  children: ReactNode;
 }
 
 export function Section({ title, children }: SectionProps) {
@@ -18,13 +20,13 @@ export function Section({ title, children }: SectionProps) {
       </Text>
       {children}
     </Flex>
-  )
+  );
 }
 
 interface CompactNumberInputProps {
-  value: number
-  min?: number
-  onChange: (value: number) => void
+  value: number;
+  min?: number;
+  onChange: (value: number) => void;
 }
 
 export function CompactNumberInput({ value, min, onChange }: CompactNumberInputProps) {
@@ -33,19 +35,21 @@ export function CompactNumberInput({ value, min, onChange }: CompactNumberInputP
       type="number"
       min={min}
       value={value}
-      onChange={(e) => {
-        const next = Number(e.target.value)
-        if (Number.isFinite(next)) onChange(next)
+      onChange={e => {
+        const next = Number(e.target.value);
+        if (Number.isFinite(next)) {
+          onChange(next);
+        }
       }}
     />
-  )
+  );
 }
 
 interface InlineFieldProps {
-  label: string
-  value: number
-  min?: number
-  onChange: (value: number) => void
+  label: string;
+  value: number;
+  min?: number;
+  onChange: (value: number) => void;
 }
 
 /** Renders `label: [ input ]` inline, e.g. paired "x: [ ]  y: [ ]" fields. */
@@ -57,12 +61,12 @@ export function InlineField({ label, value, min, onChange }: InlineFieldProps) {
       </Text>
       <CompactNumberInput value={value} min={min} onChange={onChange} />
     </Flex>
-  )
+  );
 }
 
 interface LabeledRowProps {
-  label: string
-  children: ReactNode
+  label: string;
+  children: ReactNode;
 }
 
 /**
@@ -79,26 +83,26 @@ export function LabeledRow({ label, children }: LabeledRowProps) {
         {children}
       </Flex>
     </Flex>
-  )
+  );
 }
 
 export function ColorInput({
   value,
   onChange,
 }: {
-  value: string
-  onChange: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
 }) {
   return (
     <Box>
-      <input type="color" value={value} onChange={(e) => onChange(e.target.value)} />
+      <input type="color" value={value} onChange={e => onChange(e.target.value)} />
     </Box>
-  )
+  );
 }
 
 interface StrokeSectionProps {
-  style: Style
-  onChange: (style: Style) => void
+  style: Style;
+  onChange: (style: Style) => void;
 }
 
 export function StrokeSection({ style, onChange }: StrokeSectionProps) {
@@ -108,23 +112,28 @@ export function StrokeSection({ style, onChange }: StrokeSectionProps) {
         <CompactNumberInput
           value={style.strokeWidth}
           min={1}
-          onChange={(value) => {
-            if (value > 0) onChange({ ...style, strokeWidth: value })
+          onChange={value => {
+            if (value > 0) {
+              onChange({ ...style, strokeWidth: value });
+            }
           }}
         />
-        <ColorInput value={style.stroke} onChange={(value) => onChange({ ...style, stroke: value })} />
+        <ColorInput
+          value={style.stroke}
+          onChange={value => onChange({ ...style, stroke: value })}
+        />
       </LabeledRow>
     </Section>
-  )
+  );
 }
 
 interface FillSectionProps {
-  style: Style
-  onChange: (style: Style) => void
+  style: Style;
+  onChange: (style: Style) => void;
 }
 
 export function FillSection({ style, onChange }: FillSectionProps) {
-  const enabled = style.fill !== undefined
+  const enabled = style.fill !== undefined;
 
   return (
     <Flex direction="column" gap="2">
@@ -132,7 +141,7 @@ export function FillSection({ style, onChange }: FillSectionProps) {
         <Flex align="center" gap="2">
           <Checkbox
             checked={enabled}
-            onCheckedChange={(checked) =>
+            onCheckedChange={checked =>
               onChange({ ...style, fill: checked ? (style.fill ?? '#ffffff') : undefined })
             }
           />
@@ -144,7 +153,7 @@ export function FillSection({ style, onChange }: FillSectionProps) {
           <LabeledRow label="Color">
             <ColorInput
               value={style.fill ?? '#ffffff'}
-              onChange={(value) => onChange({ ...style, fill: value })}
+              onChange={value => onChange({ ...style, fill: value })}
             />
           </LabeledRow>
           <LabeledRow label="Opacity">
@@ -159,5 +168,5 @@ export function FillSection({ style, onChange }: FillSectionProps) {
         </>
       )}
     </Flex>
-  )
+  );
 }

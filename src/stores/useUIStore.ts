@@ -1,60 +1,62 @@
-import { create } from 'zustand'
-import { SNAP_TOLERANCE_PX } from '~/constants/canvas'
-import { DEFAULT_DIMENSION_COLOR } from '~/constants/dimension'
-import { AUTOSAVE_DEBOUNCE_MS } from '~/constants/persistence'
-import { saveUISettings } from '~/lib/persistence/indexedDb'
-import type { PersistedUISettings } from '~/types/uiSettings'
+import { create } from 'zustand';
+
+import type { PersistedUISettings } from '~/types/uiSettings';
+
+import { SNAP_TOLERANCE_PX } from '~/constants/canvas';
+import { DEFAULT_DIMENSION_COLOR } from '~/constants/dimension';
+import { AUTOSAVE_DEBOUNCE_MS } from '~/constants/persistence';
+
+import { saveUISettings } from '~/lib/persistence/indexedDb';
 
 interface UIStore {
-  settingsOpen: boolean
-  toggleSettings: () => void
-  libraryOpen: boolean
-  toggleLibrary: () => void
-  guidesVisible: boolean
-  toggleGuidesVisible: () => void
-  snapTolerance: number
-  setSnapTolerance: (tolerance: number) => void
-  showDimensionUnit: boolean
-  toggleShowDimensionUnit: () => void
-  dimensionsVisible: boolean
-  toggleDimensionsVisible: () => void
-  dimensionColor: string
-  setDimensionColor: (color: string) => void
-  rulerVisible: boolean
-  toggleRulerVisible: () => void
-  rulerGuidesVisible: boolean
-  toggleRulerGuidesVisible: () => void
-  printOpen: boolean
-  openPrint: () => void
-  closePrint: () => void
-  hydrateSettings: (settings: Partial<PersistedUISettings>) => void
+  settingsOpen: boolean;
+  toggleSettings: () => void;
+  libraryOpen: boolean;
+  toggleLibrary: () => void;
+  guidesVisible: boolean;
+  toggleGuidesVisible: () => void;
+  snapTolerance: number;
+  setSnapTolerance: (tolerance: number) => void;
+  showDimensionUnit: boolean;
+  toggleShowDimensionUnit: () => void;
+  dimensionsVisible: boolean;
+  toggleDimensionsVisible: () => void;
+  dimensionColor: string;
+  setDimensionColor: (color: string) => void;
+  rulerVisible: boolean;
+  toggleRulerVisible: () => void;
+  rulerGuidesVisible: boolean;
+  toggleRulerGuidesVisible: () => void;
+  printOpen: boolean;
+  openPrint: () => void;
+  closePrint: () => void;
+  hydrateSettings: (settings: Partial<PersistedUISettings>) => void;
 }
 
-export const useUIStore = create<UIStore>()((set) => ({
+export const useUIStore = create<UIStore>()(set => ({
   settingsOpen: false,
-  toggleSettings: () => set((state) => ({ settingsOpen: !state.settingsOpen, libraryOpen: false })),
+  toggleSettings: () => set(state => ({ settingsOpen: !state.settingsOpen, libraryOpen: false })),
   libraryOpen: false,
-  toggleLibrary: () => set((state) => ({ libraryOpen: !state.libraryOpen, settingsOpen: false })),
+  toggleLibrary: () => set(state => ({ libraryOpen: !state.libraryOpen, settingsOpen: false })),
   guidesVisible: true,
-  toggleGuidesVisible: () => set((state) => ({ guidesVisible: !state.guidesVisible })),
+  toggleGuidesVisible: () => set(state => ({ guidesVisible: !state.guidesVisible })),
   snapTolerance: SNAP_TOLERANCE_PX,
-  setSnapTolerance: (tolerance) => set({ snapTolerance: Math.max(0, tolerance) }),
+  setSnapTolerance: tolerance => set({ snapTolerance: Math.max(0, tolerance) }),
   showDimensionUnit: false,
-  toggleShowDimensionUnit: () => set((state) => ({ showDimensionUnit: !state.showDimensionUnit })),
+  toggleShowDimensionUnit: () => set(state => ({ showDimensionUnit: !state.showDimensionUnit })),
   dimensionsVisible: true,
-  toggleDimensionsVisible: () => set((state) => ({ dimensionsVisible: !state.dimensionsVisible })),
+  toggleDimensionsVisible: () => set(state => ({ dimensionsVisible: !state.dimensionsVisible })),
   dimensionColor: DEFAULT_DIMENSION_COLOR,
-  setDimensionColor: (color) => set({ dimensionColor: color }),
+  setDimensionColor: color => set({ dimensionColor: color }),
   rulerVisible: false,
-  toggleRulerVisible: () => set((state) => ({ rulerVisible: !state.rulerVisible })),
+  toggleRulerVisible: () => set(state => ({ rulerVisible: !state.rulerVisible })),
   rulerGuidesVisible: false,
-  toggleRulerGuidesVisible: () =>
-    set((state) => ({ rulerGuidesVisible: !state.rulerGuidesVisible })),
+  toggleRulerGuidesVisible: () => set(state => ({ rulerGuidesVisible: !state.rulerGuidesVisible })),
   printOpen: false,
   openPrint: () => set({ printOpen: true }),
   closePrint: () => set({ printOpen: false }),
-  hydrateSettings: (settings) => set(settings),
-}))
+  hydrateSettings: settings => set(settings),
+}));
 
 function pickPersistedSettings(state: UIStore): PersistedUISettings {
   return {
@@ -65,13 +67,15 @@ function pickPersistedSettings(state: UIStore): PersistedUISettings {
     dimensionColor: state.dimensionColor,
     rulerVisible: state.rulerVisible,
     rulerGuidesVisible: state.rulerGuidesVisible,
-  }
+  };
 }
 
-let settingsAutosaveTimer: ReturnType<typeof setTimeout> | undefined
-useUIStore.subscribe((state) => {
-  if (settingsAutosaveTimer) clearTimeout(settingsAutosaveTimer)
+let settingsAutosaveTimer: ReturnType<typeof setTimeout> | undefined;
+useUIStore.subscribe(state => {
+  if (settingsAutosaveTimer) {
+    clearTimeout(settingsAutosaveTimer);
+  }
   settingsAutosaveTimer = setTimeout(() => {
-    void saveUISettings(pickPersistedSettings(state))
-  }, AUTOSAVE_DEBOUNCE_MS)
-})
+    void saveUISettings(pickPersistedSettings(state));
+  }, AUTOSAVE_DEBOUNCE_MS);
+});

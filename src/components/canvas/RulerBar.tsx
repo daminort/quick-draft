@@ -1,4 +1,5 @@
-import { Box } from '@radix-ui/themes'
+import { Box } from '@radix-ui/themes';
+
 import {
   RULER_BAR_THICKNESS as THICKNESS,
   RULER_BAR_MAJOR_TICK_TARGET_PX as MAJOR_TICK_TARGET_PX,
@@ -11,38 +12,40 @@ import {
   RULER_BAR_FONT_SIZE as FONT_SIZE,
   RULER_BAR_GUIDE_COLOR as GUIDE_COLOR,
   RULER_BAR_GUIDE_OPACITY as GUIDE_OPACITY,
-} from '~/constants/ruler'
+} from '~/constants/ruler';
 
-type LengthUnit = 'mm' | 'cm' | 'm'
+type LengthUnit = 'mm' | 'cm' | 'm';
 
 interface CanvasRulersProps {
-  width: number
-  height: number
-  scale: number
-  offsetX: number
-  offsetY: number
-  documentScale: number
-  documentUnits: LengthUnit
-  cursor?: { x: number; y: number } | null
+  width: number;
+  height: number;
+  scale: number;
+  offsetX: number;
+  offsetY: number;
+  documentScale: number;
+  documentUnits: LengthUnit;
+  cursor?: { x: number; y: number } | null;
 }
 
 interface Tick {
-  screenPos: number
-  isMajor: boolean
-  label: string
+  screenPos: number;
+  isMajor: boolean;
+  label: string;
 }
 
 /** Rounds `rawStep` up to the nearest "nice" 1-2-5 * 10^n number, standard for ruler/axis ticks. */
 function niceStep(rawStep: number): number {
-  if (!(rawStep > 0)) return 1
-  const exponent = Math.floor(Math.log10(rawStep))
-  const fraction = rawStep / 10 ** exponent
-  const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10
-  return niceFraction * 10 ** exponent
+  if (!(rawStep > 0)) {
+    return 1;
+  }
+  const exponent = Math.floor(Math.log10(rawStep));
+  const fraction = rawStep / 10 ** exponent;
+  const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10;
+  return niceFraction * 10 ** exponent;
 }
 
 function formatTickLabel(value: number): string {
-  return (Math.round(value * 100) / 100).toString()
+  return (Math.round(value * 100) / 100).toString();
 }
 
 function computeTicks(
@@ -51,25 +54,27 @@ function computeTicks(
   offset: number,
   documentScale: number,
 ): Tick[] {
-  const pixelsPerReal = scale / documentScale || 1
-  const majorStep = niceStep(MAJOR_TICK_TARGET_PX / pixelsPerReal)
-  const minorStep = majorStep / MINOR_TICKS_PER_MAJOR
+  const pixelsPerReal = scale / documentScale || 1;
+  const majorStep = niceStep(MAJOR_TICK_TARGET_PX / pixelsPerReal);
+  const minorStep = majorStep / MINOR_TICKS_PER_MAJOR;
 
-  const realStart = ((0 - offset) / scale) * documentScale
-  const realEnd = ((lengthPx - offset) / scale) * documentScale
+  const realStart = ((0 - offset) / scale) * documentScale;
+  const realEnd = ((lengthPx - offset) / scale) * documentScale;
 
-  const firstIndex = Math.floor(realStart / minorStep)
-  const lastIndex = Math.ceil(realEnd / minorStep)
+  const firstIndex = Math.floor(realStart / minorStep);
+  const lastIndex = Math.ceil(realEnd / minorStep);
 
-  const ticks: Tick[] = []
+  const ticks: Tick[] = [];
   for (let i = firstIndex; i <= lastIndex; i++) {
-    const realValue = i * minorStep
-    const screenPos = offset + (realValue / documentScale) * scale
-    if (screenPos < 0 || screenPos > lengthPx) continue
-    const isMajor = i % MINOR_TICKS_PER_MAJOR === 0
-    ticks.push({ screenPos, isMajor, label: isMajor ? formatTickLabel(realValue) : '' })
+    const realValue = i * minorStep;
+    const screenPos = offset + (realValue / documentScale) * scale;
+    if (screenPos < 0 || screenPos > lengthPx) {
+      continue;
+    }
+    const isMajor = i % MINOR_TICKS_PER_MAJOR === 0;
+    ticks.push({ screenPos, isMajor, label: isMajor ? formatTickLabel(realValue) : '' });
   }
-  return ticks
+  return ticks;
 }
 
 export function CanvasRulers({
@@ -82,9 +87,9 @@ export function CanvasRulers({
   documentUnits,
   cursor,
 }: CanvasRulersProps) {
-  const horizontalLength = Math.max(0, width - THICKNESS)
-  const horizontalTicks = computeTicks(horizontalLength, scale, offsetX - THICKNESS, documentScale)
-  const verticalTicks = computeTicks(height, scale, offsetY, documentScale)
+  const horizontalLength = Math.max(0, width - THICKNESS);
+  const horizontalTicks = computeTicks(horizontalLength, scale, offsetX - THICKNESS, documentScale);
+  const verticalTicks = computeTicks(height, scale, offsetY, documentScale);
 
   return (
     <Box style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
@@ -133,7 +138,7 @@ export function CanvasRulers({
           />
         ))}
         {horizontalTicks
-          .filter((tick) => tick.isMajor)
+          .filter(tick => tick.isMajor)
           .map((tick, i) => (
             <text
               key={i}
@@ -170,7 +175,7 @@ export function CanvasRulers({
           />
         ))}
         {verticalTicks
-          .filter((tick) => tick.isMajor)
+          .filter(tick => tick.isMajor)
           .map((tick, i) => (
             <text
               key={i}
@@ -196,5 +201,5 @@ export function CanvasRulers({
         </text>
       </svg>
     </Box>
-  )
+  );
 }

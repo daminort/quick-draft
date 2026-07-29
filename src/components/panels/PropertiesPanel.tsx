@@ -1,16 +1,19 @@
-import { Flex, Text } from '@radix-ui/themes'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { useSelectionStore } from '~/stores/useSelectionStore'
-import { GeometryPanel } from '~/components/panels/GeometryPanel'
-import { LineSettingsPanel } from '~/components/panels/LineSettingsPanel'
-import { RectSettingsPanel } from '~/components/panels/RectSettingsPanel'
-import { CircleSettingsPanel } from '~/components/panels/CircleSettingsPanel'
-import { ArcSettingsPanel } from '~/components/panels/ArcSettingsPanel'
-import { TextSettingsPanel } from '~/components/panels/TextSettingsPanel'
-import { DimensionSettingsPanel } from '~/components/panels/DimensionSettingsPanel'
-import { ComponentActions } from '~/components/panels/ComponentActions'
-import { LABEL_WEIGHT } from '~/components/panels/shared/PanelFields'
-import type { Shape } from '~/types/document'
+import { Flex, Text } from '@radix-ui/themes';
+
+import type { Shape } from '~/types/document';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
+import { useSelectionStore } from '~/stores/useSelectionStore';
+
+import { GeometryPanel } from '~/components/panels/GeometryPanel';
+import { LineSettingsPanel } from '~/components/panels/LineSettingsPanel';
+import { RectSettingsPanel } from '~/components/panels/RectSettingsPanel';
+import { CircleSettingsPanel } from '~/components/panels/CircleSettingsPanel';
+import { ArcSettingsPanel } from '~/components/panels/ArcSettingsPanel';
+import { TextSettingsPanel } from '~/components/panels/TextSettingsPanel';
+import { DimensionSettingsPanel } from '~/components/panels/DimensionSettingsPanel';
+import { ComponentActions } from '~/components/panels/ComponentActions';
+import { LABEL_WEIGHT } from '~/components/panels/shared/PanelFields';
 
 const SHAPE_TYPE_LABELS: Record<Shape['type'], string> = {
   line: 'Line',
@@ -21,33 +24,33 @@ const SHAPE_TYPE_LABELS: Record<Shape['type'], string> = {
   dimension: 'Dimension',
   guide: 'Guide',
   'component-instance': 'Component instance',
-}
+};
 
 function ShapeSettings({ shape }: { shape: Shape }) {
   switch (shape.type) {
     case 'line':
-      return <LineSettingsPanel shape={shape} />
+      return <LineSettingsPanel shape={shape} />;
     case 'rect':
-      return <RectSettingsPanel shape={shape} />
+      return <RectSettingsPanel shape={shape} />;
     case 'circle':
-      return <CircleSettingsPanel shape={shape} />
+      return <CircleSettingsPanel shape={shape} />;
     case 'arc':
-      return <ArcSettingsPanel shape={shape} />
+      return <ArcSettingsPanel shape={shape} />;
     case 'text':
-      return <TextSettingsPanel shape={shape} />
+      return <TextSettingsPanel shape={shape} />;
     case 'dimension':
-      return <DimensionSettingsPanel shape={shape} />
+      return <DimensionSettingsPanel shape={shape} />;
     case 'guide':
     case 'component-instance':
-      return <GeometryPanel shape={shape} />
+      return <GeometryPanel shape={shape} />;
     default:
-      return null
+      return null;
   }
 }
 
 export function PropertiesPanel() {
-  const selectedIds = useSelectionStore((state) => state.selectedIds)
-  const shapes = useDocumentStore((state) => state.document.shapes)
+  const selectedIds = useSelectionStore(state => state.selectedIds);
+  const shapes = useDocumentStore(state => state.document.shapes);
 
   if (selectedIds.length > 1) {
     return (
@@ -60,12 +63,16 @@ export function PropertiesPanel() {
       >
         <ComponentActions />
       </Flex>
-    )
+    );
   }
 
-  if (selectedIds.length !== 1) return null
-  const shape = shapes.find((candidate) => candidate.id === selectedIds[0])
-  if (!shape) return null
+  if (selectedIds.length !== 1) {
+    return null;
+  }
+  const shape = shapes.find(candidate => candidate.id === selectedIds[0]);
+  if (!shape) {
+    return null;
+  }
 
   return (
     <Flex
@@ -80,5 +87,5 @@ export function PropertiesPanel() {
       </Text>
       <ShapeSettings shape={shape} />
     </Flex>
-  )
+  );
 }

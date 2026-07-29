@@ -1,32 +1,35 @@
-import { useState } from 'react'
-import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes'
-import { UnitsControl } from '~/components/panels/UnitsControl'
-import { useUIStore } from '~/stores/useUIStore'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
+import { useState } from 'react';
+
+import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes';
+
+import { useUIStore } from '~/stores/useUIStore';
+import { useDocumentStore } from '~/stores/useDocumentStore';
+
+import { UnitsControl } from '~/components/panels/UnitsControl';
+import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
 export function SettingsPanel() {
-  const guidesVisible = useUIStore((state) => state.guidesVisible)
-  const toggleGuidesVisible = useUIStore((state) => state.toggleGuidesVisible)
-  const snapTolerance = useUIStore((state) => state.snapTolerance)
-  const setSnapTolerance = useUIStore((state) => state.setSnapTolerance)
-  const showDimensionUnit = useUIStore((state) => state.showDimensionUnit)
-  const toggleShowDimensionUnit = useUIStore((state) => state.toggleShowDimensionUnit)
-  const dimensionsVisible = useUIStore((state) => state.dimensionsVisible)
-  const toggleDimensionsVisible = useUIStore((state) => state.toggleDimensionsVisible)
-  const dimensionColor = useUIStore((state) => state.dimensionColor)
-  const setDimensionColor = useUIStore((state) => state.setDimensionColor)
-  const rulerVisible = useUIStore((state) => state.rulerVisible)
-  const toggleRulerVisible = useUIStore((state) => state.toggleRulerVisible)
-  const rulerGuidesVisible = useUIStore((state) => state.rulerGuidesVisible)
-  const toggleRulerGuidesVisible = useUIStore((state) => state.toggleRulerGuidesVisible)
-  const clearGuides = useDocumentStore((state) => state.clearGuides)
-  const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false)
+  const guidesVisible = useUIStore(state => state.guidesVisible);
+  const toggleGuidesVisible = useUIStore(state => state.toggleGuidesVisible);
+  const snapTolerance = useUIStore(state => state.snapTolerance);
+  const setSnapTolerance = useUIStore(state => state.setSnapTolerance);
+  const showDimensionUnit = useUIStore(state => state.showDimensionUnit);
+  const toggleShowDimensionUnit = useUIStore(state => state.toggleShowDimensionUnit);
+  const dimensionsVisible = useUIStore(state => state.dimensionsVisible);
+  const toggleDimensionsVisible = useUIStore(state => state.toggleDimensionsVisible);
+  const dimensionColor = useUIStore(state => state.dimensionColor);
+  const setDimensionColor = useUIStore(state => state.setDimensionColor);
+  const rulerVisible = useUIStore(state => state.rulerVisible);
+  const toggleRulerVisible = useUIStore(state => state.toggleRulerVisible);
+  const rulerGuidesVisible = useUIStore(state => state.rulerGuidesVisible);
+  const toggleRulerGuidesVisible = useUIStore(state => state.toggleRulerGuidesVisible);
+  const clearGuides = useDocumentStore(state => state.clearGuides);
+  const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false);
 
   const handleDeleteGuidesConfirmed = () => {
-    clearGuides()
-    setDeleteGuidesDialogOpen(false)
-  }
+    clearGuides();
+    setDeleteGuidesDialogOpen(false);
+  };
 
   return (
     <Flex
@@ -72,9 +75,11 @@ export function SettingsPanel() {
               type="number"
               min={0}
               value={snapTolerance}
-              onChange={(e) => {
-                const value = Number(e.target.value)
-                if (Number.isFinite(value)) setSnapTolerance(value)
+              onChange={e => {
+                const value = Number(e.target.value);
+                if (Number.isFinite(value)) {
+                  setSnapTolerance(value);
+                }
               }}
             />
           </Flex>
@@ -104,7 +109,7 @@ export function SettingsPanel() {
               <input
                 type="color"
                 value={dimensionColor}
-                onChange={(e) => setDimensionColor(e.target.value)}
+                onChange={e => setDimensionColor(e.target.value)}
               />
             </Box>
           </Flex>
@@ -138,5 +143,5 @@ export function SettingsPanel() {
         onCancel={() => setDeleteGuidesDialogOpen(false)}
       />
     </Flex>
-  )
+  );
 }

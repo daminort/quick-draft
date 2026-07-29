@@ -1,25 +1,30 @@
-import { useRef, type ChangeEvent } from 'react'
-import { IconButton } from '@radix-ui/themes'
-import { Save, FolderOpen } from 'lucide-react'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { exportDocumentToJsonFile, importDocumentFromJsonFile } from '~/lib/persistence/fileIO'
+import { useRef, type ChangeEvent } from 'react';
+
+import { IconButton } from '@radix-ui/themes';
+import { Save, FolderOpen } from 'lucide-react';
+
+import { exportDocumentToJsonFile, importDocumentFromJsonFile } from '~/lib/persistence/fileIO';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
 
 export function FileActions() {
-  const documentState = useDocumentStore((state) => state.document)
-  const loadDocument = useDocumentStore((state) => state.loadDocument)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const documentState = useDocumentStore(state => state.document);
+  const loadDocument = useDocumentStore(state => state.loadDocument);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleOpen = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    e.target.value = ''
-    if (!file) return
-    try {
-      const doc = await importDocumentFromJsonFile(file)
-      loadDocument(doc)
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Failed to open the file.')
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) {
+      return;
     }
-  }
+    try {
+      const doc = await importDocumentFromJsonFile(file);
+      loadDocument(doc);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Failed to open the file.');
+    }
+  };
 
   return (
     <>
@@ -51,5 +56,5 @@ export function FileActions() {
         style={{ display: 'none' }}
       />
     </>
-  )
+  );
 }

@@ -1,24 +1,29 @@
-import { Group, Line, Arrow, Text } from 'react-konva'
-import type Konva from 'konva'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { useUIStore } from '~/stores/useUIStore'
-import type { Shape } from '~/types/document'
-import { computeDimensionGeometry, formatDimensionLabel } from '~/lib/dimension'
+import { Group, Line, Arrow, Text } from 'react-konva';
+
+import type { Shape } from '~/types/document';
+
 import {
   DIMENSION_LABEL_FONT_SIZE,
   DIMENSION_STROKE_WIDTH,
   ARROW_SIZE,
-} from '~/constants/dimension'
-import { SELECTED_COLOR } from '~/constants/shapes'
-import { HIT_STROKE_WIDTH } from '~/constants/canvas'
+} from '~/constants/dimension';
+import { SELECTED_COLOR } from '~/constants/shapes';
+import { HIT_STROKE_WIDTH } from '~/constants/canvas';
+
+import { computeDimensionGeometry, formatDimensionLabel } from '~/lib/dimension';
+
+import { useUIStore } from '~/stores/useUIStore';
+import { useDocumentStore } from '~/stores/useDocumentStore';
+
+import type Konva from 'konva';
 
 interface DimensionShapeProps {
-  shape: Extract<Shape, { type: 'dimension' }>
-  selected?: boolean
-  interactive: boolean
-  onSelect: () => void
-  onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void
-  setNodeRef: (node: Konva.Group | null) => void
+  shape: Extract<Shape, { type: 'dimension' }>;
+  selected?: boolean;
+  interactive: boolean;
+  onSelect: () => void;
+  onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
+  setNodeRef: (node: Konva.Group | null) => void;
 }
 
 export function DimensionShape({
@@ -29,12 +34,12 @@ export function DimensionShape({
   onMouseDown,
   setNodeRef,
 }: DimensionShapeProps) {
-  const documentScale = useDocumentStore((state) => state.document.scale)
-  const documentUnits = useDocumentStore((state) => state.document.units)
-  const shapes = useDocumentStore((state) => state.document.shapes)
-  const showUnit = useUIStore((state) => state.showDimensionUnit)
-  const dimensionColor = useUIStore((state) => state.dimensionColor)
-  const color = selected ? SELECTED_COLOR : dimensionColor
+  const documentScale = useDocumentStore(state => state.document.scale);
+  const documentUnits = useDocumentStore(state => state.document.units);
+  const shapes = useDocumentStore(state => state.document.shapes);
+  const showUnit = useUIStore(state => state.showDimensionUnit);
+  const dimensionColor = useUIStore(state => state.dimensionColor);
+  const color = selected ? SELECTED_COLOR : dimensionColor;
 
   const geometry = computeDimensionGeometry(
     shape.x1,
@@ -48,8 +53,10 @@ export function DimensionShape({
     shape.unit,
     showUnit,
     shapes,
-  )
-  if (!geometry) return null
+  );
+  if (!geometry) {
+    return null;
+  }
 
   return (
     <Group
@@ -128,5 +135,5 @@ export function DimensionShape({
         offsetY={geometry.label.baseline === 'bottom' ? DIMENSION_LABEL_FONT_SIZE : 0}
       />
     </Group>
-  )
+  );
 }

@@ -1,17 +1,20 @@
-import { Rect } from 'react-konva'
-import type Konva from 'konva'
-import type { Shape } from '~/types/document'
-import { SELECTED_COLOR } from '~/constants/shapes'
+import { Rect } from 'react-konva';
+
+import type { Shape } from '~/types/document';
+
+import { SELECTED_COLOR } from '~/constants/shapes';
+
+import type Konva from 'konva';
 
 interface RectShapeProps {
-  shape: Extract<Shape, { type: 'rect' }>
-  draggable: boolean
-  selected?: boolean
-  onSelect: () => void
-  onDragStart: () => void
-  onDragMove: (node: Konva.Node) => void
-  onDragEnd: (node: Konva.Node) => void
-  setNodeRef: (node: Konva.Rect | null) => void
+  shape: Extract<Shape, { type: 'rect' }>;
+  draggable: boolean;
+  selected?: boolean;
+  onSelect: () => void;
+  onDragStart: () => void;
+  onDragMove: (node: Konva.Node) => void;
+  onDragEnd: (node: Konva.Node) => void;
+  setNodeRef: (node: Konva.Rect | null) => void;
 }
 
 export function RectShape({
@@ -43,8 +46,8 @@ export function RectShape({
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}
-      onDragMove={(e) => onDragMove(e.target)}
-      onDragEnd={(e) => onDragEnd(e.target)}
+      onDragMove={e => onDragMove(e.target)}
+      onDragEnd={e => onDragEnd(e.target)}
     />
-  )
+  );
 }

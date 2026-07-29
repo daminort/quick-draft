@@ -1,12 +1,14 @@
-import { Flex, Text, TextField, Select } from '@radix-ui/themes'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import type { Shape, ShapeId, ShapePatch } from '~/types/document'
+import { Flex, Text, TextField, Select } from '@radix-ui/themes';
+
+import type { Shape, ShapeId, ShapePatch } from '~/types/document';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
 
 interface NumberFieldProps {
-  label: string
-  value: number
-  min?: number
-  onChange: (value: number) => void
+  label: string;
+  value: number;
+  min?: number;
+  onChange: (value: number) => void;
 }
 
 function NumberField({ label, value, min, onChange }: NumberFieldProps) {
@@ -18,19 +20,21 @@ function NumberField({ label, value, min, onChange }: NumberFieldProps) {
           type="number"
           min={min}
           value={value}
-          onChange={(e) => {
-            const next = Number(e.target.value)
-            if (Number.isFinite(next)) onChange(next)
+          onChange={e => {
+            const next = Number(e.target.value);
+            if (Number.isFinite(next)) {
+              onChange(next);
+            }
           }}
         />
       </Flex>
     </Text>
-  )
+  );
 }
 
 interface GeometryFieldsProps {
-  shape: Extract<Shape, { type: 'guide' | 'component-instance' }>
-  updateShape: (id: ShapeId, patch: ShapePatch) => void
+  shape: Extract<Shape, { type: 'guide' | 'component-instance' }>;
+  updateShape: (id: ShapeId, patch: ShapePatch) => void;
 }
 
 function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
@@ -43,7 +47,7 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
               Orientation
               <Select.Root
                 value={shape.orientation}
-                onValueChange={(value) =>
+                onValueChange={value =>
                   updateShape(shape.id, {
                     orientation: value as 'h' | 'v' | 'angle',
                   })
@@ -61,58 +65,50 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
           <NumberField
             label="Position"
             value={shape.position}
-            onChange={(v) => updateShape(shape.id, { position: v })}
+            onChange={v => updateShape(shape.id, { position: v })}
           />
           {shape.orientation === 'angle' && (
             <NumberField
               label="Angle"
               value={shape.angle ?? 0}
-              onChange={(v) => updateShape(shape.id, { angle: v })}
+              onChange={v => updateShape(shape.id, { angle: v })}
             />
           )}
         </>
-      )
+      );
     case 'component-instance':
       return (
         <>
-          <NumberField
-            label="X"
-            value={shape.x}
-            onChange={(v) => updateShape(shape.id, { x: v })}
-          />
-          <NumberField
-            label="Y"
-            value={shape.y}
-            onChange={(v) => updateShape(shape.id, { y: v })}
-          />
+          <NumberField label="X" value={shape.x} onChange={v => updateShape(shape.id, { x: v })} />
+          <NumberField label="Y" value={shape.y} onChange={v => updateShape(shape.id, { y: v })} />
           <NumberField
             label="Scale"
             value={shape.scale}
             min={0.01}
-            onChange={(v) => updateShape(shape.id, { scale: v })}
+            onChange={v => updateShape(shape.id, { scale: v })}
           />
           <NumberField
             label="Rotation"
             value={shape.rotation}
-            onChange={(v) => updateShape(shape.id, { rotation: v })}
+            onChange={v => updateShape(shape.id, { rotation: v })}
           />
         </>
-      )
+      );
     default:
-      return null
+      return null;
   }
 }
 
 interface GeometryPanelProps {
-  shape: Extract<Shape, { type: 'guide' | 'component-instance' }>
+  shape: Extract<Shape, { type: 'guide' | 'component-instance' }>;
 }
 
 export function GeometryPanel({ shape }: GeometryPanelProps) {
-  const updateShape = useDocumentStore((state) => state.updateShape)
+  const updateShape = useDocumentStore(state => state.updateShape);
 
   return (
     <Flex direction="column" gap="2">
       <GeometryFields shape={shape} updateShape={updateShape} />
     </Flex>
-  )
+  );
 }

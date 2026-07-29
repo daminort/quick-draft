@@ -1,5 +1,9 @@
-import { Flex } from '@radix-ui/themes'
-import { useDocumentStore } from '~/stores/useDocumentStore'
+import { Flex } from '@radix-ui/themes';
+
+import type { Shape } from '~/types/document';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
+
 import {
   Section,
   LabeledRow,
@@ -7,22 +11,29 @@ import {
   CompactNumberInput,
   StrokeSection,
   FillSection,
-} from '~/components/panels/shared/PanelFields'
-import type { Shape } from '~/types/document'
+} from '~/components/panels/shared/PanelFields';
 
 interface ArcSettingsPanelProps {
-  shape: Extract<Shape, { type: 'arc' }>
+  shape: Extract<Shape, { type: 'arc' }>;
 }
 
 export function ArcSettingsPanel({ shape }: ArcSettingsPanelProps) {
-  const updateShape = useDocumentStore((state) => state.updateShape)
+  const updateShape = useDocumentStore(state => state.updateShape);
 
   return (
     <Flex direction="column" gap="4">
       <Section title="Center">
         <Flex gap="3">
-          <InlineField label="x" value={shape.cx} onChange={(v) => updateShape(shape.id, { cx: v })} />
-          <InlineField label="y" value={shape.cy} onChange={(v) => updateShape(shape.id, { cy: v })} />
+          <InlineField
+            label="x"
+            value={shape.cx}
+            onChange={v => updateShape(shape.id, { cx: v })}
+          />
+          <InlineField
+            label="y"
+            value={shape.cy}
+            onChange={v => updateShape(shape.id, { cy: v })}
+          />
         </Flex>
       </Section>
 
@@ -31,7 +42,7 @@ export function ArcSettingsPanel({ shape }: ArcSettingsPanelProps) {
           <CompactNumberInput
             value={shape.r}
             min={0}
-            onChange={(v) => updateShape(shape.id, { r: v })}
+            onChange={v => updateShape(shape.id, { r: v })}
           />
         </LabeledRow>
       </Section>
@@ -40,20 +51,20 @@ export function ArcSettingsPanel({ shape }: ArcSettingsPanelProps) {
         <LabeledRow label="start">
           <CompactNumberInput
             value={shape.startAngle}
-            onChange={(v) => updateShape(shape.id, { startAngle: v })}
+            onChange={v => updateShape(shape.id, { startAngle: v })}
           />
         </LabeledRow>
         <LabeledRow label="end">
           <CompactNumberInput
             value={shape.endAngle}
-            onChange={(v) => updateShape(shape.id, { endAngle: v })}
+            onChange={v => updateShape(shape.id, { endAngle: v })}
           />
         </LabeledRow>
       </Section>
 
-      <StrokeSection style={shape.style} onChange={(style) => updateShape(shape.id, { style })} />
+      <StrokeSection style={shape.style} onChange={style => updateShape(shape.id, { style })} />
 
-      <FillSection style={shape.style} onChange={(style) => updateShape(shape.id, { style })} />
+      <FillSection style={shape.style} onChange={style => updateShape(shape.id, { style })} />
     </Flex>
-  )
+  );
 }

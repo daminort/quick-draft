@@ -1,25 +1,30 @@
-import { useMemo } from 'react'
-import { Flex, Box, Button } from '@radix-ui/themes'
-import { Printer, X } from 'lucide-react'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { useUIStore } from '~/stores/useUIStore'
-import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg'
+import { useMemo } from 'react';
+
+import { Flex, Box, Button } from '@radix-ui/themes';
+import { Printer, X } from 'lucide-react';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
+import { useUIStore } from '~/stores/useUIStore';
+
+import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg';
 
 interface PrintViewProps {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
 }
 
 export function PrintView({ open, onClose }: PrintViewProps) {
-  const document = useDocumentStore((state) => state.document)
-  const showDimensionUnit = useUIStore((state) => state.showDimensionUnit)
-  const dimensionColor = useUIStore((state) => state.dimensionColor)
+  const document = useDocumentStore(state => state.document);
+  const showDimensionUnit = useUIStore(state => state.showDimensionUnit);
+  const dimensionColor = useUIStore(state => state.dimensionColor);
   const svg = useMemo(
     () => renderDocumentToSvg(document, { showDimensionUnit, dimensionColor }),
     [document, showDimensionUnit, dimensionColor],
-  )
+  );
 
-  if (!open) return null
+  if (!open) {
+    return null;
+  }
 
   return (
     <Flex
@@ -54,5 +59,5 @@ export function PrintView({ open, onClose }: PrintViewProps) {
       </Flex>
       <Box className="print-page" flexShrink="0" dangerouslySetInnerHTML={{ __html: svg }} />
     </Flex>
-  )
+  );
 }

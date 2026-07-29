@@ -1,38 +1,43 @@
-import { useEffect, useRef } from 'react'
-import type { ReactNode } from 'react'
-import { Box, Flex, Button } from '@radix-ui/themes'
+import { useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
+
+import { Box, Flex, Button } from '@radix-ui/themes';
 
 export interface ContextMenuItem {
-  label: string
-  icon: ReactNode
-  onClick: () => void
+  label: string;
+  icon: ReactNode;
+  onClick: () => void;
 }
 
 interface ContextMenuProps {
-  x: number
-  y: number
-  items: ContextMenuItem[]
-  onClose: () => void
+  x: number;
+  y: number;
+  items: ContextMenuItem[];
+  onClose: () => void;
 }
 
 export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handlePointerDown(e: MouseEvent) {
-      if (menuRef.current?.contains(e.target as Node)) return
-      onClose()
+      if (menuRef.current?.contains(e.target as Node)) {
+        return;
+      }
+      onClose();
     }
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose();
+      }
     }
-    window.addEventListener('mousedown', handlePointerDown)
-    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('mousedown', handlePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('mousedown', handlePointerDown)
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [onClose])
+      window.removeEventListener('mousedown', handlePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
   return (
     <Box
@@ -52,7 +57,7 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
       }}
     >
       <Flex direction="column" gap="1">
-        {items.map((item) => (
+        {items.map(item => (
           <Button
             key={item.label}
             type="button"
@@ -61,8 +66,8 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
             color="gray"
             style={{ justifyContent: 'flex-start' }}
             onClick={() => {
-              item.onClick()
-              onClose()
+              item.onClick();
+              onClose();
             }}
           >
             <Flex align="center" gap="2">
@@ -73,5 +78,5 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
         ))}
       </Flex>
     </Box>
-  )
+  );
 }

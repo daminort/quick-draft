@@ -1,23 +1,29 @@
-import { useState } from 'react'
-import { Flex, Text, TextField, Button } from '@radix-ui/themes'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { useSelectionStore } from '~/stores/useSelectionStore'
+import { useState } from 'react';
+
+import { Flex, Text, TextField, Button } from '@radix-ui/themes';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
+import { useSelectionStore } from '~/stores/useSelectionStore';
 
 export function ComponentActions() {
-  const selectedIds = useSelectionStore((state) => state.selectedIds)
-  const select = useSelectionStore((state) => state.select)
-  const createComponent = useDocumentStore((state) => state.createComponent)
-  const [name, setName] = useState('')
+  const selectedIds = useSelectionStore(state => state.selectedIds);
+  const select = useSelectionStore(state => state.select);
+  const createComponent = useDocumentStore(state => state.createComponent);
+  const [name, setName] = useState('');
 
-  if (selectedIds.length <= 1) return null
+  if (selectedIds.length <= 1) {
+    return null;
+  }
 
   const handleCreate = () => {
-    const instanceId = createComponent(selectedIds, name.trim() || 'Component')
+    const instanceId = createComponent(selectedIds, name.trim() || 'Component');
     // Deferred: the instance's Konva node registers on mount, one render after this one — selecting
     // it a tick later (instead of in the same batch) lets the Transformer find it immediately.
-    if (instanceId) setTimeout(() => select([instanceId]), 0)
-    setName('')
-  }
+    if (instanceId) {
+      setTimeout(() => select([instanceId]), 0);
+    }
+    setName('');
+  };
 
   return (
     <Flex direction="column" gap="2">
@@ -34,7 +40,7 @@ export function ComponentActions() {
             type="text"
             value={name}
             placeholder="Component"
-            onChange={(e) => setName(e.target.value)}
+            onChange={e => setName(e.target.value)}
           />
         </Flex>
       </Text>
@@ -42,5 +48,5 @@ export function ComponentActions() {
         Group into component
       </Button>
     </Flex>
-  )
+  );
 }

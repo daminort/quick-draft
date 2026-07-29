@@ -1,22 +1,14 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
 
 export type Tool =
-  | 'select'
-  | 'line'
-  | 'rect'
-  | 'circle'
-  | 'arc'
-  | 'text'
-  | 'guide'
-  | 'dimension'
-  | 'ruler'
+  'select' | 'line' | 'rect' | 'circle' | 'arc' | 'text' | 'guide' | 'dimension' | 'ruler';
 
 interface ToolStore {
-  activeTool: Tool
-  setTool: (tool: Tool) => void
+  activeTool: Tool;
+  setTool: (tool: Tool) => void;
 }
 
-export const useToolStore = create<ToolStore>()((set) => ({
+export const useToolStore = create<ToolStore>()(set => ({
   activeTool: 'select',
-  setTool: (tool) => set({ activeTool: tool }),
-}))
+  setTool: tool => set({ activeTool: tool }),
+}));

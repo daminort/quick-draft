@@ -1,23 +1,25 @@
-import type Konva from 'konva'
-import type { Shape, ShapeId } from '~/types/document'
-import type { ShapeInteraction, ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
-import { LineShape } from '~/components/canvas/shapes/LineShape'
-import { RectShape } from '~/components/canvas/shapes/RectShape'
-import { CircleShape } from '~/components/canvas/shapes/CircleShape'
-import { ArcShape } from '~/components/canvas/shapes/ArcShape'
-import { TextShape } from '~/components/canvas/shapes/TextShape'
-import { GuideShape } from '~/components/canvas/shapes/GuideShape'
-import { DimensionShape } from '~/components/canvas/shapes/DimensionShape'
-import { ComponentInstanceShape } from '~/components/canvas/shapes/ComponentInstanceShape'
+import type { Shape, ShapeId } from '~/types/document';
+
+import type { ShapeInteraction, ViewBounds } from '~/components/canvas/shapes/ShapeInteraction';
+import { LineShape } from '~/components/canvas/shapes/LineShape';
+import { RectShape } from '~/components/canvas/shapes/RectShape';
+import { CircleShape } from '~/components/canvas/shapes/CircleShape';
+import { ArcShape } from '~/components/canvas/shapes/ArcShape';
+import { TextShape } from '~/components/canvas/shapes/TextShape';
+import { GuideShape } from '~/components/canvas/shapes/GuideShape';
+import { DimensionShape } from '~/components/canvas/shapes/DimensionShape';
+import { ComponentInstanceShape } from '~/components/canvas/shapes/ComponentInstanceShape';
+
+import type Konva from 'konva';
 
 interface ShapeRendererProps {
-  shape: Shape
-  interactive: boolean
-  interaction: ShapeInteraction
-  viewBounds: ViewBounds
-  selected?: boolean
-  editingTextId?: ShapeId | null
-  onStartEditText?: (id: ShapeId) => void
+  shape: Shape;
+  interactive: boolean;
+  interaction: ShapeInteraction;
+  viewBounds: ViewBounds;
+  selected?: boolean;
+  editingTextId?: ShapeId | null;
+  onStartEditText?: (id: ShapeId) => void;
 }
 
 export function ShapeRenderer({
@@ -37,15 +39,15 @@ export function ShapeRenderer({
     onDragMove: (node: Konva.Node) => interaction.handleDragMove(shape, node),
     onDragEnd: (node: Konva.Node) => interaction.handleDragEnd(shape, node),
     setNodeRef: (node: Konva.Node | null) => interaction.registerNode(shape.id, node),
-  }
+  };
 
   switch (shape.type) {
     case 'line':
-      return <LineShape shape={shape} {...shared} />
+      return <LineShape shape={shape} {...shared} />;
     case 'rect':
-      return <RectShape shape={shape} {...shared} />
+      return <RectShape shape={shape} {...shared} />;
     case 'circle':
-      return <CircleShape shape={shape} {...shared} />
+      return <CircleShape shape={shape} {...shared} />;
     case 'arc':
       return (
         <ArcShape
@@ -53,10 +55,10 @@ export function ShapeRenderer({
           interactive={interactive}
           selected={selected}
           onSelect={shared.onSelect}
-          onMouseDown={(e) => interaction.handleManualMouseDown(shape, e)}
+          onMouseDown={e => interaction.handleManualMouseDown(shape, e)}
           setNodeRef={shared.setNodeRef}
         />
-      )
+      );
     case 'text':
       return (
         <TextShape
@@ -65,9 +67,9 @@ export function ShapeRenderer({
           visible={editingTextId !== shape.id}
           onDblClick={interactive ? () => onStartEditText?.(shape.id) : undefined}
         />
-      )
+      );
     case 'guide':
-      return <GuideShape shape={shape} viewBounds={viewBounds} {...shared} />
+      return <GuideShape shape={shape} viewBounds={viewBounds} {...shared} />;
     case 'dimension':
       return (
         <DimensionShape
@@ -75,13 +77,13 @@ export function ShapeRenderer({
           selected={selected}
           interactive={interactive}
           onSelect={shared.onSelect}
-          onMouseDown={(e) => interaction.handleManualMouseDown(shape, e)}
+          onMouseDown={e => interaction.handleManualMouseDown(shape, e)}
           setNodeRef={shared.setNodeRef}
         />
-      )
+      );
     case 'component-instance':
-      return <ComponentInstanceShape shape={shape} {...shared} />
+      return <ComponentInstanceShape shape={shape} {...shared} />;
     default:
-      return null
+      return null;
   }
 }

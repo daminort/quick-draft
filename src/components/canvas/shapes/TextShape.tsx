@@ -1,19 +1,22 @@
-import { Text } from 'react-konva'
-import type Konva from 'konva'
-import type { Shape } from '~/types/document'
-import { SELECTED_COLOR } from '~/constants/shapes'
+import { Text } from 'react-konva';
+
+import type { Shape } from '~/types/document';
+
+import { SELECTED_COLOR } from '~/constants/shapes';
+
+import type Konva from 'konva';
 
 interface TextShapeProps {
-  shape: Extract<Shape, { type: 'text' }>
-  draggable: boolean
-  selected?: boolean
-  visible?: boolean
-  onSelect: () => void
-  onDblClick?: () => void
-  onDragStart: () => void
-  onDragMove: (node: Konva.Node) => void
-  onDragEnd: (node: Konva.Node) => void
-  setNodeRef: (node: Konva.Text | null) => void
+  shape: Extract<Shape, { type: 'text' }>;
+  draggable: boolean;
+  selected?: boolean;
+  visible?: boolean;
+  onSelect: () => void;
+  onDblClick?: () => void;
+  onDragStart: () => void;
+  onDragMove: (node: Konva.Node) => void;
+  onDragEnd: (node: Konva.Node) => void;
+  setNodeRef: (node: Konva.Text | null) => void;
 }
 
 export function TextShape({
@@ -29,7 +32,7 @@ export function TextShape({
   setNodeRef,
 }: TextShapeProps) {
   const fontStyle =
-    [shape.bold && 'bold', shape.italic && 'italic'].filter(Boolean).join(' ') || 'normal'
+    [shape.bold && 'bold', shape.italic && 'italic'].filter(Boolean).join(' ') || 'normal';
 
   return (
     <Text
@@ -50,8 +53,8 @@ export function TextShape({
       onDblClick={onDblClick}
       onDblTap={onDblClick}
       onDragStart={onDragStart}
-      onDragMove={(e) => onDragMove(e.target)}
-      onDragEnd={(e) => onDragEnd(e.target)}
+      onDragMove={e => onDragMove(e.target)}
+      onDragEnd={e => onDragEnd(e.target)}
     />
-  )
+  );
 }

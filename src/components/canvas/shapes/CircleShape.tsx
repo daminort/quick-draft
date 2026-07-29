@@ -1,17 +1,20 @@
-import { Circle } from 'react-konva'
-import type Konva from 'konva'
-import type { Shape } from '~/types/document'
-import { SELECTED_COLOR } from '~/constants/shapes'
+import { Circle } from 'react-konva';
+
+import type { Shape } from '~/types/document';
+
+import { SELECTED_COLOR } from '~/constants/shapes';
+
+import type Konva from 'konva';
 
 interface CircleShapeProps {
-  shape: Extract<Shape, { type: 'circle' }>
-  draggable: boolean
-  selected?: boolean
-  onSelect: () => void
-  onDragStart: () => void
-  onDragMove: (node: Konva.Node) => void
-  onDragEnd: (node: Konva.Node) => void
-  setNodeRef: (node: Konva.Circle | null) => void
+  shape: Extract<Shape, { type: 'circle' }>;
+  draggable: boolean;
+  selected?: boolean;
+  onSelect: () => void;
+  onDragStart: () => void;
+  onDragMove: (node: Konva.Node) => void;
+  onDragEnd: (node: Konva.Node) => void;
+  setNodeRef: (node: Konva.Circle | null) => void;
 }
 
 export function CircleShape({
@@ -41,8 +44,8 @@ export function CircleShape({
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}
-      onDragMove={(e) => onDragMove(e.target)}
-      onDragEnd={(e) => onDragEnd(e.target)}
+      onDragMove={e => onDragMove(e.target)}
+      onDragEnd={e => onDragEnd(e.target)}
     />
-  )
+  );
 }

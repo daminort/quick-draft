@@ -1,27 +1,30 @@
-import { Flex } from '@radix-ui/themes'
-import { useDocumentStore } from '~/stores/useDocumentStore'
+import { Flex } from '@radix-ui/themes';
+
+import type { Shape } from '~/types/document';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
+
 import {
   Section,
   InlineField,
   CompactNumberInput,
   StrokeSection,
   FillSection,
-} from '~/components/panels/shared/PanelFields'
-import type { Shape } from '~/types/document'
+} from '~/components/panels/shared/PanelFields';
 
 interface RectSettingsPanelProps {
-  shape: Extract<Shape, { type: 'rect' }>
+  shape: Extract<Shape, { type: 'rect' }>;
 }
 
 export function RectSettingsPanel({ shape }: RectSettingsPanelProps) {
-  const updateShape = useDocumentStore((state) => state.updateShape)
+  const updateShape = useDocumentStore(state => state.updateShape);
 
   return (
     <Flex direction="column" gap="4">
       <Section title="Position">
         <Flex gap="3">
-          <InlineField label="x" value={shape.x} onChange={(v) => updateShape(shape.id, { x: v })} />
-          <InlineField label="y" value={shape.y} onChange={(v) => updateShape(shape.id, { y: v })} />
+          <InlineField label="x" value={shape.x} onChange={v => updateShape(shape.id, { x: v })} />
+          <InlineField label="y" value={shape.y} onChange={v => updateShape(shape.id, { y: v })} />
         </Flex>
       </Section>
 
@@ -31,13 +34,13 @@ export function RectSettingsPanel({ shape }: RectSettingsPanelProps) {
             label="w"
             value={shape.w}
             min={0}
-            onChange={(v) => updateShape(shape.id, { w: v })}
+            onChange={v => updateShape(shape.id, { w: v })}
           />
           <InlineField
             label="h"
             value={shape.h}
             min={0}
-            onChange={(v) => updateShape(shape.id, { h: v })}
+            onChange={v => updateShape(shape.id, { h: v })}
           />
         </Flex>
       </Section>
@@ -45,13 +48,13 @@ export function RectSettingsPanel({ shape }: RectSettingsPanelProps) {
       <Section title="Rotation">
         <CompactNumberInput
           value={shape.rotation}
-          onChange={(v) => updateShape(shape.id, { rotation: v })}
+          onChange={v => updateShape(shape.id, { rotation: v })}
         />
       </Section>
 
-      <StrokeSection style={shape.style} onChange={(style) => updateShape(shape.id, { style })} />
+      <StrokeSection style={shape.style} onChange={style => updateShape(shape.id, { style })} />
 
-      <FillSection style={shape.style} onChange={(style) => updateShape(shape.id, { style })} />
+      <FillSection style={shape.style} onChange={style => updateShape(shape.id, { style })} />
     </Flex>
-  )
+  );
 }

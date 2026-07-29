@@ -1,14 +1,17 @@
-import { Flex, Select } from '@radix-ui/themes'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { Section, LabeledRow, CompactNumberInput } from '~/components/panels/shared/PanelFields'
-import type { Shape } from '~/types/document'
+import { Flex, Select } from '@radix-ui/themes';
+
+import type { Shape } from '~/types/document';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
+
+import { Section, LabeledRow, CompactNumberInput } from '~/components/panels/shared/PanelFields';
 
 interface DimensionSettingsPanelProps {
-  shape: Extract<Shape, { type: 'dimension' }>
+  shape: Extract<Shape, { type: 'dimension' }>;
 }
 
 export function DimensionSettingsPanel({ shape }: DimensionSettingsPanelProps) {
-  const updateShape = useDocumentStore((state) => state.updateShape)
+  const updateShape = useDocumentStore(state => state.updateShape);
 
   return (
     <Flex direction="column" gap="4">
@@ -16,21 +19,21 @@ export function DimensionSettingsPanel({ shape }: DimensionSettingsPanelProps) {
         <LabeledRow label="Start">
           <CompactNumberInput
             value={shape.x1}
-            onChange={(v) => updateShape(shape.id, { x1: v, bindingA: null })}
+            onChange={v => updateShape(shape.id, { x1: v, bindingA: null })}
           />
           <CompactNumberInput
             value={shape.y1}
-            onChange={(v) => updateShape(shape.id, { y1: v, bindingA: null })}
+            onChange={v => updateShape(shape.id, { y1: v, bindingA: null })}
           />
         </LabeledRow>
         <LabeledRow label="End">
           <CompactNumberInput
             value={shape.x2}
-            onChange={(v) => updateShape(shape.id, { x2: v, bindingB: null })}
+            onChange={v => updateShape(shape.id, { x2: v, bindingB: null })}
           />
           <CompactNumberInput
             value={shape.y2}
-            onChange={(v) => updateShape(shape.id, { y2: v, bindingB: null })}
+            onChange={v => updateShape(shape.id, { y2: v, bindingB: null })}
           />
         </LabeledRow>
       </Section>
@@ -38,7 +41,7 @@ export function DimensionSettingsPanel({ shape }: DimensionSettingsPanelProps) {
       <Section title="Unit">
         <Select.Root
           value={shape.unit}
-          onValueChange={(value) => updateShape(shape.id, { unit: value as 'mm' | 'cm' | 'm' })}
+          onValueChange={value => updateShape(shape.id, { unit: value as 'mm' | 'cm' | 'm' })}
         >
           <Select.Trigger />
           <Select.Content>
@@ -49,5 +52,5 @@ export function DimensionSettingsPanel({ shape }: DimensionSettingsPanelProps) {
         </Select.Root>
       </Section>
     </Flex>
-  )
+  );
 }

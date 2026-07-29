@@ -1,17 +1,21 @@
-import { Path } from 'react-konva'
-import type Konva from 'konva'
-import type { Shape } from '~/types/document'
-import { computeArcPath } from '~/lib/arcPath'
-import { SELECTED_COLOR } from '~/constants/shapes'
-import { HIT_STROKE_WIDTH } from '~/constants/canvas'
+import { Path } from 'react-konva';
+
+import type { Shape } from '~/types/document';
+
+import { SELECTED_COLOR } from '~/constants/shapes';
+import { HIT_STROKE_WIDTH } from '~/constants/canvas';
+
+import { computeArcPath } from '~/lib/arcPath';
+
+import type Konva from 'konva';
 
 interface ArcShapeProps {
-  shape: Extract<Shape, { type: 'arc' }>
-  interactive: boolean
-  selected?: boolean
-  onSelect: () => void
-  onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void
-  setNodeRef: (node: Konva.Path | null) => void
+  shape: Extract<Shape, { type: 'arc' }>;
+  interactive: boolean;
+  selected?: boolean;
+  onSelect: () => void;
+  onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
+  setNodeRef: (node: Konva.Path | null) => void;
 }
 
 export function ArcShape({
@@ -40,5 +44,5 @@ export function ArcShape({
       onTap={onSelect}
       onMouseDown={interactive ? onMouseDown : undefined}
     />
-  )
+  );
 }

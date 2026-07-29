@@ -1,46 +1,54 @@
-import { useRef, useState, type ChangeEvent } from 'react'
-import { Stage, Layer, Group } from 'react-konva'
-import { Flex, Text, Button, IconButton } from '@radix-ui/themes'
-import { Trash2, Download, Upload } from 'lucide-react'
-import { useDocumentStore } from '~/stores/useDocumentStore'
-import { useSelectionStore } from '~/stores/useSelectionStore'
-import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
-import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction'
-import { getUnionBounds } from '~/lib/bounds'
-import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
-import {
-  exportComponentLibraryToJsonFile,
-  importComponentLibraryFromJsonFile,
-} from '~/lib/persistence/fileIO'
-import type { ComponentDef } from '~/types/document'
-import { COMPONENT_DRAG_MIME_TYPE } from '~/constants/fileIO'
+import { useRef, useState, type ChangeEvent } from 'react';
+
+import { Stage, Layer, Group } from 'react-konva';
+import { Flex, Text, Button, IconButton } from '@radix-ui/themes';
+import { Trash2, Download, Upload } from 'lucide-react';
+
+import type { ComponentDef } from '~/types/document';
+
+import { COMPONENT_DRAG_MIME_TYPE } from '~/constants/fileIO';
 import {
   COMPONENT_PREVIEW_SIZE as PREVIEW_SIZE,
   COMPONENT_PREVIEW_PADDING as PREVIEW_PADDING,
   LARGE_VIEW_BOUNDS as PREVIEW_VIEW_BOUNDS,
-} from '~/constants/componentLibrary'
+} from '~/constants/componentLibrary';
+
+import { getUnionBounds } from '~/lib/bounds';
+import {
+  exportComponentLibraryToJsonFile,
+  importComponentLibraryFromJsonFile,
+} from '~/lib/persistence/fileIO';
+
+import { useDocumentStore } from '~/stores/useDocumentStore';
+import { useSelectionStore } from '~/stores/useSelectionStore';
+
+import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
+import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction';
+import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
 interface ComponentPreviewProps {
-  componentDef: ComponentDef
-  components: Record<string, ComponentDef>
+  componentDef: ComponentDef;
+  components: Record<string, ComponentDef>;
 }
 
 function ComponentPreview({ componentDef, components }: ComponentPreviewProps) {
-  const bounds = getUnionBounds(componentDef.shapes, components)
-  const width = bounds ? Math.max(1, bounds.x2 - bounds.x1) : 1
-  const height = bounds ? Math.max(1, bounds.y2 - bounds.y1) : 1
-  const innerSize = PREVIEW_SIZE - PREVIEW_PADDING * 2
-  const scale = bounds ? Math.min(innerSize / width, innerSize / height) : 1
-  const offsetX = bounds ? PREVIEW_PADDING + (innerSize - width * scale) / 2 - bounds.x1 * scale : 0
+  const bounds = getUnionBounds(componentDef.shapes, components);
+  const width = bounds ? Math.max(1, bounds.x2 - bounds.x1) : 1;
+  const height = bounds ? Math.max(1, bounds.y2 - bounds.y1) : 1;
+  const innerSize = PREVIEW_SIZE - PREVIEW_PADDING * 2;
+  const scale = bounds ? Math.min(innerSize / width, innerSize / height) : 1;
+  const offsetX = bounds
+    ? PREVIEW_PADDING + (innerSize - width * scale) / 2 - bounds.x1 * scale
+    : 0;
   const offsetY = bounds
     ? PREVIEW_PADDING + (innerSize - height * scale) / 2 - bounds.y1 * scale
-    : 0
+    : 0;
 
   return (
     <Stage width={PREVIEW_SIZE} height={PREVIEW_SIZE} listening={false}>
       <Layer>
         <Group x={offsetX} y={offsetY} scaleX={scale} scaleY={scale}>
-          {componentDef.shapes.map((shape) => (
+          {componentDef.shapes.map(shape => (
             <ShapeRenderer
               key={shape.id}
               shape={shape}
@@ -52,38 +60,42 @@ function ComponentPreview({ componentDef, components }: ComponentPreviewProps) {
         </Group>
       </Layer>
     </Stage>
-  )
+  );
 }
 
 export function ComponentLibrary() {
-  const components = useDocumentStore((state) => state.document.components)
-  const removeComponent = useDocumentStore((state) => state.removeComponent)
-  const importComponents = useDocumentStore((state) => state.importComponents)
-  const entries = Object.values(components)
-  const [deleteTarget, setDeleteTarget] = useState<ComponentDef | null>(null)
-  const importInputRef = useRef<HTMLInputElement>(null)
+  const components = useDocumentStore(state => state.document.components);
+  const removeComponent = useDocumentStore(state => state.removeComponent);
+  const importComponents = useDocumentStore(state => state.importComponents);
+  const entries = Object.values(components);
+  const [deleteTarget, setDeleteTarget] = useState<ComponentDef | null>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const handleDeleteConfirmed = () => {
-    if (!deleteTarget) return
-    const replacedBy = removeComponent(deleteTarget.id)
+    if (!deleteTarget) {
+      return;
+    }
+    const replacedBy = removeComponent(deleteTarget.id);
     // Swap any selected instance of the deleted component for the freestanding shapes it became.
-    const selectedIds = useSelectionStore.getState().selectedIds
-    const nextSelection = selectedIds.flatMap((id) => replacedBy[id] ?? [id])
-    useSelectionStore.getState().select(nextSelection)
-    setDeleteTarget(null)
-  }
+    const selectedIds = useSelectionStore.getState().selectedIds;
+    const nextSelection = selectedIds.flatMap(id => replacedBy[id] ?? [id]);
+    useSelectionStore.getState().select(nextSelection);
+    setDeleteTarget(null);
+  };
 
   const handleImportLibrary = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    e.target.value = ''
-    if (!file) return
-    try {
-      const defs = await importComponentLibraryFromJsonFile(file)
-      importComponents(defs)
-    } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Failed to import the library.')
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) {
+      return;
     }
-  }
+    try {
+      const defs = await importComponentLibraryFromJsonFile(file);
+      importComponents(defs);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Failed to import the library.');
+    }
+  };
 
   return (
     <Flex
@@ -134,16 +146,16 @@ export function ComponentLibrary() {
         </Text>
       )}
       <Flex direction="column" gap="2">
-        {entries.map((componentDef) => (
+        {entries.map(componentDef => (
           <Flex
             key={componentDef.id}
             align="center"
             gap="2"
             p="1"
             draggable
-            onDragStart={(e) => {
-              e.dataTransfer.setData(COMPONENT_DRAG_MIME_TYPE, componentDef.id)
-              e.dataTransfer.effectAllowed = 'copy'
+            onDragStart={e => {
+              e.dataTransfer.setData(COMPONENT_DRAG_MIME_TYPE, componentDef.id);
+              e.dataTransfer.effectAllowed = 'copy';
             }}
             title={`Drag onto the canvas to insert an instance of "${componentDef.name}"`}
             style={{
@@ -193,5 +205,5 @@ export function ComponentLibrary() {
         onCancel={() => setDeleteTarget(null)}
       />
     </Flex>
-  )
+  );
 }
