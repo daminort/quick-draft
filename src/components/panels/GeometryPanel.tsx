@@ -1,17 +1,17 @@
 import { Flex, Text, TextField, Select } from '@radix-ui/themes';
 
-import type { Shape, ShapeId, ShapePatch } from '~/types/document';
+import type { TShape, TShapeId, TShapePatch } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
-interface NumberFieldProps {
+type TNumberFieldProps = {
   label: string;
   value: number;
   min?: number;
   onChange: (value: number) => void;
-}
+};
 
-function NumberField({ label, value, min, onChange }: NumberFieldProps) {
+function NumberField({ label, value, min, onChange }: TNumberFieldProps) {
   return (
     <Text as="label" size="2">
       <Flex direction="column" gap="1">
@@ -32,12 +32,12 @@ function NumberField({ label, value, min, onChange }: NumberFieldProps) {
   );
 }
 
-interface GeometryFieldsProps {
-  shape: Extract<Shape, { type: 'guide' | 'component-instance' }>;
-  updateShape: (id: ShapeId, patch: ShapePatch) => void;
-}
+type TGeometryFieldsProps = {
+  shape: Extract<TShape, { type: 'guide' | 'component-instance' }>;
+  updateShape: (id: TShapeId, patch: TShapePatch) => void;
+};
 
-function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
+function GeometryFields({ shape, updateShape }: TGeometryFieldsProps) {
   switch (shape.type) {
     case 'guide':
       return (
@@ -99,11 +99,11 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
   }
 }
 
-interface GeometryPanelProps {
-  shape: Extract<Shape, { type: 'guide' | 'component-instance' }>;
-}
+type TGeometryPanelProps = {
+  shape: Extract<TShape, { type: 'guide' | 'component-instance' }>;
+};
 
-export function GeometryPanel({ shape }: GeometryPanelProps) {
+export function GeometryPanel({ shape }: TGeometryPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
   return (

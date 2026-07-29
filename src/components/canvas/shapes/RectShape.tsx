@@ -1,13 +1,13 @@
 import { Rect } from 'react-konva';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { SELECTED_COLOR } from '~/constants/shapes';
 
 import type Konva from 'konva';
 
-interface RectShapeProps {
-  shape: Extract<Shape, { type: 'rect' }>;
+type TRectShapeProps = {
+  shape: Extract<TShape, { type: 'rect' }>;
   draggable: boolean;
   selected?: boolean;
   onSelect: () => void;
@@ -15,7 +15,7 @@ interface RectShapeProps {
   onDragMove: (node: Konva.Node) => void;
   onDragEnd: (node: Konva.Node) => void;
   setNodeRef: (node: Konva.Rect | null) => void;
-}
+};
 
 export function RectShape({
   shape,
@@ -26,7 +26,7 @@ export function RectShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: RectShapeProps) {
+}: TRectShapeProps) {
   return (
     <Rect
       ref={setNodeRef}

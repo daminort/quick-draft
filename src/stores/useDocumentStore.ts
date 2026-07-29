@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { temporal } from 'zundo';
 
-import type { ComponentDef, Document, Shape, ShapeId, ShapePatch } from '~/types/document';
+import type { TComponentDef, TDocument, TShape, TShapeId, TShapePatch } from '~/types/document';
 
 import { AUTOSAVE_DEBOUNCE_MS } from '~/constants/persistence';
 
@@ -10,42 +10,42 @@ import { translateShape, flattenComponentInstance } from '~/lib/shapeTransform';
 import { resyncDimensionBindings } from '~/lib/dimensionBinding';
 import { saveCurrentDocument } from '~/lib/persistence/indexedDb';
 
-interface DocumentStore {
-  document: Document;
-  addShape: (shape: Shape) => void;
-  updateShape: (id: ShapeId, patch: ShapePatch) => void;
-  removeShape: (id: ShapeId) => void;
-  bringToFront: (id: ShapeId) => void;
-  sendToBack: (id: ShapeId) => void;
+type TDocumentStore = {
+  document: TDocument;
+  addShape: (shape: TShape) => void;
+  updateShape: (id: TShapeId, patch: TShapePatch) => void;
+  removeShape: (id: TShapeId) => void;
+  bringToFront: (id: TShapeId) => void;
+  sendToBack: (id: TShapeId) => void;
   clear: () => void;
   clearGuides: () => void;
-  setUnits: (units: Document['units']) => void;
-  createComponent: (shapeIds: ShapeId[], name: string) => ShapeId | null;
-  addComponentInstance: (componentId: string, x: number, y: number) => ShapeId;
+  setUnits: (units: TDocument['units']) => void;
+  createComponent: (shapeIds: TShapeId[], name: string) => TShapeId | null;
+  addComponentInstance: (componentId: string, x: number, y: number) => TShapeId;
   /**
    * Removes a component definition from the library. Existing instances are not deleted — each is
    * baked into independent shapes in place, so canvas content never disappears when the library
    * entry does. Returns a map from each replaced instance's old id to its new shapes' ids.
    */
-  removeComponent: (componentId: string) => Record<ShapeId, ShapeId[]>;
+  removeComponent: (componentId: string) => Record<TShapeId, TShapeId[]>;
   /** Replaces the whole document (e.g. loading a .json file or restoring an autosave) as a fresh
    * snapshot rather than an undoable edit — the undo history is reset along with it. */
-  loadDocument: (doc: Document) => void;
+  loadDocument: (doc: TDocument) => void;
   /**
    * Merges imported component definitions into the library. An id that already exists locally is
    * kept as a separate entry under a freshly generated id, rather than silently overwriting it.
    */
-  importComponents: (defs: ComponentDef[]) => void;
-}
+  importComponents: (defs: TComponentDef[]) => void;
+};
 
-const initialDocument: Document = {
+const initialDocument: TDocument = {
   shapes: [],
   components: {},
   units: 'mm',
   scale: 1,
 };
 
-export const useDocumentStore = create<DocumentStore>()(
+export const useDocumentStore = create<TDocumentStore>()(
   temporal((set, get) => ({
     document: initialDocument,
     addShape: shape =>
@@ -55,7 +55,7 @@ export const useDocumentStore = create<DocumentStore>()(
     updateShape: (id, patch) =>
       set(state => {
         const shapes = state.document.shapes.map(shape =>
-          shape.id === id ? ({ ...shape, ...patch } as Shape) : shape,
+          shape.id === id ? ({ ...shape, ...patch } as TShape) : shape,
         );
         return { document: { ...state.document, shapes: resyncDimensionBindings(shapes) } };
       }),
@@ -126,14 +126,14 @@ export const useDocumentStore = create<DocumentStore>()(
       const bounds = getUnionBounds(shapes, document.components);
       const anchor = bounds ? { x: bounds.x1, y: bounds.y1 } : { x: 0, y: 0 };
       const componentShapes = shapes.map(
-        shape => ({ ...shape, ...translateShape(shape, -anchor.x, -anchor.y) }) as Shape,
+        shape => ({ ...shape, ...translateShape(shape, -anchor.x, -anchor.y) }) as TShape,
       );
 
       const componentId = crypto.randomUUID();
-      const componentDef: ComponentDef = { id: componentId, name, shapes: componentShapes };
+      const componentDef: TComponentDef = { id: componentId, name, shapes: componentShapes };
 
       const instanceId = crypto.randomUUID();
-      const instance: Shape = {
+      const instance: TShape = {
         id: instanceId,
         type: 'component-instance',
         componentId,
@@ -158,7 +158,7 @@ export const useDocumentStore = create<DocumentStore>()(
     },
     addComponentInstance: (componentId, x, y) => {
       const instanceId = crypto.randomUUID();
-      const instance: Shape = {
+      const instance: TShape = {
         id: instanceId,
         type: 'component-instance',
         componentId,
@@ -178,7 +178,7 @@ export const useDocumentStore = create<DocumentStore>()(
       const components = { ...document.components };
       delete components[componentId];
 
-      const replacedBy: Record<ShapeId, ShapeId[]> = {};
+      const replacedBy: Record<TShapeId, TShapeId[]> = {};
       const shapes = document.shapes.flatMap(shape => {
         if (shape.type === 'component-instance' && shape.componentId === componentId) {
           const flattened = componentDef ? flattenComponentInstance(shape, componentDef) : [];

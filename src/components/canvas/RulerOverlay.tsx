@@ -16,14 +16,14 @@ import { rulerDirection, rulerEndpoint, internalToRealLength } from '~/lib/ruler
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
-import type { RulerState } from '~/components/canvas/tools/useRulerTool';
+import type { TRulerState } from '~/components/canvas/tools/useRulerTool';
 
-interface RulerOverlayProps {
-  ruler: RulerState;
+type TRulerOverlayProps = {
+  ruler: TRulerState;
   scale: number;
-}
+};
 
-export function RulerOverlay({ ruler, scale }: RulerOverlayProps) {
+export function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
   const documentScale = useDocumentStore(state => state.document.scale);
   const documentUnits = useDocumentStore(state => state.document.units);
 

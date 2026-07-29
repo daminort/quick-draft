@@ -1,4 +1,4 @@
-type Point = { x: number; y: number };
+type TPoint = { x: number; y: number };
 
 /**
  * Unit vector from `start` toward `point`. When `shiftLocked`, the vector is snapped to the
@@ -6,7 +6,7 @@ type Point = { x: number; y: number };
  * in useDrawingTool.ts. Falls back to pointing right/down when start and point coincide, so
  * callers always get a usable direction to multiply a typed length by.
  */
-export function rulerDirection(start: Point, point: Point, shiftLocked: boolean): Point {
+export function rulerDirection(start: TPoint, point: TPoint, shiftLocked: boolean): TPoint {
   const dx = point.x - start.x;
   const dy = point.y - start.y;
 
@@ -23,7 +23,7 @@ export function rulerDirection(start: Point, point: Point, shiftLocked: boolean)
   return { x: dx / distance, y: dy / distance };
 }
 
-export function rulerEndpoint(start: Point, direction: Point, internalLength: number): Point {
+export function rulerEndpoint(start: TPoint, direction: TPoint, internalLength: number): TPoint {
   return { x: start.x + direction.x * internalLength, y: start.y + direction.y * internalLength };
 }
 

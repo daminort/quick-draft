@@ -14,24 +14,24 @@ import {
   RULER_BAR_GUIDE_OPACITY as GUIDE_OPACITY,
 } from '~/constants/ruler';
 
-type LengthUnit = 'mm' | 'cm' | 'm';
+type TLengthUnit = 'mm' | 'cm' | 'm';
 
-interface CanvasRulersProps {
+type TCanvasRulersProps = {
   width: number;
   height: number;
   scale: number;
   offsetX: number;
   offsetY: number;
   documentScale: number;
-  documentUnits: LengthUnit;
+  documentUnits: TLengthUnit;
   cursor?: { x: number; y: number } | null;
-}
+};
 
-interface Tick {
+type TTick = {
   screenPos: number;
   isMajor: boolean;
   label: string;
-}
+};
 
 /** Rounds `rawStep` up to the nearest "nice" 1-2-5 * 10^n number, standard for ruler/axis ticks. */
 function niceStep(rawStep: number): number {
@@ -53,7 +53,7 @@ function computeTicks(
   scale: number,
   offset: number,
   documentScale: number,
-): Tick[] {
+): TTick[] {
   const pixelsPerReal = scale / documentScale || 1;
   const majorStep = niceStep(MAJOR_TICK_TARGET_PX / pixelsPerReal);
   const minorStep = majorStep / MINOR_TICKS_PER_MAJOR;
@@ -64,7 +64,7 @@ function computeTicks(
   const firstIndex = Math.floor(realStart / minorStep);
   const lastIndex = Math.ceil(realEnd / minorStep);
 
-  const ticks: Tick[] = [];
+  const ticks: TTick[] = [];
   for (let i = firstIndex; i <= lastIndex; i++) {
     const realValue = i * minorStep;
     const screenPos = offset + (realValue / documentScale) * scale;
@@ -86,7 +86,7 @@ export function CanvasRulers({
   documentScale,
   documentUnits,
   cursor,
-}: CanvasRulersProps) {
+}: TCanvasRulersProps) {
   const horizontalLength = Math.max(0, width - THICKNESS);
   const horizontalTicks = computeTicks(horizontalLength, scale, offsetX - THICKNESS, documentScale);
   const verticalTicks = computeTicks(height, scale, offsetY, documentScale);

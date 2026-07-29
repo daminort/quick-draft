@@ -1,4 +1,4 @@
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import {
   DIMENSION_LABEL_FONT_SIZE,
@@ -13,19 +13,19 @@ import {
   EDGE_EPSILON,
 } from '~/constants/dimension';
 
-import { listShapeEdges, type Segment } from '~/lib/bounds';
+import { listShapeEdges, type TSegment } from '~/lib/bounds';
 
-type LengthUnit = 'mm' | 'cm' | 'm';
-type Point = { x: number; y: number };
-export type DimensionAxis = 'horizontal' | 'vertical';
+type TLengthUnit = 'mm' | 'cm' | 'm';
+type TPoint = { x: number; y: number };
+export type TDimensionAxis = 'horizontal' | 'vertical';
 
-export interface DimensionGeometry {
+export type TDimensionGeometry = {
   /** Main dimension line, rendered with arrowheads on both ends. */
   arrowLine: { x1: number; y1: number; x2: number; y2: number };
   /** Null when the extension line would run entirely along a shape's own edge — drawing it there
    * would just double that edge's outline. */
-  extensionA: Segment | null;
-  extensionB: Segment | null;
+  extensionA: TSegment | null;
+  extensionB: TSegment | null;
   label: {
     x: number;
     y: number;
@@ -38,13 +38,13 @@ export interface DimensionGeometry {
   /** Short connector drawn when the label had to be moved outside the dimension line. */
   leader: { x1: number; y1: number; x2: number; y2: number } | null;
   length: number;
-}
+};
 
 export function convertLength(
   internalDistance: number,
   documentScale: number,
-  fromUnit: LengthUnit,
-  toUnit: LengthUnit,
+  fromUnit: TLengthUnit,
+  toUnit: TLengthUnit,
 ): number {
   const realLength = internalDistance * documentScale;
   const lengthInMm = realLength * UNIT_TO_MM[fromUnit];
@@ -61,7 +61,7 @@ export function formatLength(length: number): string {
  * point and overshoots the dimension line slightly, per standard drafting convention.
  */
 function extensionSegment(
-  point: Point,
+  point: TPoint,
   lineCoordinate: number,
   alongX: boolean,
 ): { x1: number; y1: number; x2: number; y2: number } {
@@ -77,7 +77,7 @@ function extensionSegment(
 
 /** Whether `point` sits on the (finite) `segment`, checked as perpendicular distance to the
  * infinite line plus a bounding-box containment test — exact for collinear points. */
-function pointOnSegment(point: Point, segment: Segment, epsilon: number): boolean {
+function pointOnSegment(point: TPoint, segment: TSegment, epsilon: number): boolean {
   const dx = segment.x2 - segment.x1;
   const dy = segment.y2 - segment.y1;
   const lengthSq = dx * dx + dy * dy;
@@ -98,7 +98,7 @@ function pointOnSegment(point: Point, segment: Segment, epsilon: number): boolea
 
 /** True when `segment` (an extension line) lies entirely on one of `edges` (a shape's straight
  * sides), making it redundant to draw since the shape's own outline already marks that line. */
-function liesOnAnyEdge(segment: Segment, edges: Segment[]): boolean {
+function liesOnAnyEdge(segment: TSegment, edges: TSegment[]): boolean {
   return edges.some(
     edge =>
       pointOnSegment({ x: segment.x1, y: segment.y1 }, edge, EDGE_EPSILON) &&
@@ -111,14 +111,14 @@ function estimateTextWidth(text: string, fontSize: number): number {
 }
 
 function buildLabelAndLeader(
-  a: Point,
-  b: Point,
-  normal: Point,
-  axis: DimensionAxis,
+  a: TPoint,
+  b: TPoint,
+  normal: TPoint,
+  axis: TDimensionAxis,
   labelGap: number,
   labelText: string,
   fontSize: number,
-): { label: DimensionGeometry['label']; leader: DimensionGeometry['leader'] } {
+): { label: TDimensionGeometry['label']; leader: TDimensionGeometry['leader'] } {
   const lineLength = Math.hypot(b.x - a.x, b.y - a.y);
   const direction =
     lineLength === 0
@@ -131,9 +131,9 @@ function buildLabelAndLeader(
   // for a vertical dimension the label sits beside the line (left or right of it) and must be
   // aligned accordingly; for a horizontal one it stays centered above/below, where the growth
   // direction doesn't matter.
-  const align: DimensionGeometry['label']['align'] =
+  const align: TDimensionGeometry['label']['align'] =
     axis === 'vertical' ? (normal.x >= 0 ? 'start' : 'end') : 'center';
-  const baseline: DimensionGeometry['label']['baseline'] =
+  const baseline: TDimensionGeometry['label']['baseline'] =
     axis === 'horizontal' && normal.y >= 0 ? 'top' : 'bottom';
 
   if (lineLength >= textWidth + TEXT_PADDING) {
@@ -168,7 +168,7 @@ function buildLabelAndLeader(
 
 export function formatDimensionLabel(
   length: number,
-  dimensionUnit: LengthUnit,
+  dimensionUnit: TLengthUnit,
   showUnit: boolean,
 ): string {
   return showUnit ? `${formatLength(length)} ${dimensionUnit}` : formatLength(length);
@@ -179,15 +179,15 @@ export function computeDimensionGeometry(
   y1: number,
   x2: number,
   y2: number,
-  axis: DimensionAxis,
+  axis: TDimensionAxis,
   offset: number,
   documentScale: number,
-  documentUnits: LengthUnit,
-  dimensionUnit: LengthUnit,
+  documentUnits: TLengthUnit,
+  dimensionUnit: TLengthUnit,
   showUnit: boolean,
-  shapes: Shape[],
+  shapes: TShape[],
   fontSize: number = DIMENSION_LABEL_FONT_SIZE,
-): DimensionGeometry | null {
+): TDimensionGeometry | null {
   const isVertical = axis === 'vertical';
   const refLength = isVertical ? Math.abs(y2 - y1) : Math.abs(x2 - x1);
   if (refLength === 0) {
@@ -195,14 +195,14 @@ export function computeDimensionGeometry(
   }
 
   const lineCoordinate = isVertical ? x2 + offset : y2 + offset;
-  const lineA: Point = isVertical ? { x: lineCoordinate, y: y1 } : { x: x1, y: lineCoordinate };
-  const lineB: Point = isVertical ? { x: lineCoordinate, y: y2 } : { x: x2, y: lineCoordinate };
+  const lineA: TPoint = isVertical ? { x: lineCoordinate, y: y1 } : { x: x1, y: lineCoordinate };
+  const lineB: TPoint = isVertical ? { x: lineCoordinate, y: y2 } : { x: x2, y: lineCoordinate };
   // Label offset direction follows which side the extension lines start from, continuing
   // outward past the dimension line: right of the line when the points sit to its left
   // (offset > 0) and vice versa for vertical dimensions; below the line when the points sit
   // above it (offset > 0) and vice versa for horizontal ones.
   const sign = Math.sign(offset) || -1;
-  const normal: Point = isVertical ? { x: sign, y: 0 } : { x: 0, y: sign };
+  const normal: TPoint = isVertical ? { x: sign, y: 0 } : { x: 0, y: sign };
 
   const length = convertLength(refLength, documentScale, documentUnits, dimensionUnit);
   const { label, leader } = buildLabelAndLeader(

@@ -1,6 +1,6 @@
 import { Path } from 'react-konva';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { SELECTED_COLOR } from '~/constants/shapes';
 import { HIT_STROKE_WIDTH } from '~/constants/canvas';
@@ -9,14 +9,14 @@ import { computeArcPath } from '~/lib/arcPath';
 
 import type Konva from 'konva';
 
-interface ArcShapeProps {
-  shape: Extract<Shape, { type: 'arc' }>;
+type TArcShapeProps = {
+  shape: Extract<TShape, { type: 'arc' }>;
   interactive: boolean;
   selected?: boolean;
   onSelect: () => void;
   onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   setNodeRef: (node: Konva.Path | null) => void;
-}
+};
 
 export function ArcShape({
   shape,
@@ -25,7 +25,7 @@ export function ArcShape({
   onSelect,
   onMouseDown,
   setNodeRef,
-}: ArcShapeProps) {
+}: TArcShapeProps) {
   return (
     <Path
       ref={setNodeRef}

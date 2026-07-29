@@ -1,4 +1,4 @@
-import type { ComponentDef, Document } from '~/types/document';
+import type { TComponentDef, TDocument } from '~/types/document';
 
 import { DEFAULT_DOCUMENT_FILENAME, DEFAULT_COMPONENT_LIBRARY_FILENAME } from '~/constants/fileIO';
 
@@ -11,12 +11,12 @@ export function downloadBlob(blob: Blob, fileName: string): void {
   URL.revokeObjectURL(url);
 }
 
-export function exportDocumentToJsonFile(doc: Document): void {
+export function exportDocumentToJsonFile(doc: TDocument): void {
   const json = JSON.stringify(doc, null, 2);
   downloadBlob(new Blob([json], { type: 'application/json' }), DEFAULT_DOCUMENT_FILENAME);
 }
 
-function isDocumentShape(value: unknown): value is Document {
+function isDocumentShape(value: unknown): value is TDocument {
   if (!value || typeof value !== 'object') {
     return false;
   }
@@ -40,7 +40,7 @@ function parseJsonFile(file: File): Promise<unknown> {
   });
 }
 
-export async function importDocumentFromJsonFile(file: File): Promise<Document> {
+export async function importDocumentFromJsonFile(file: File): Promise<TDocument> {
   const parsed = await parseJsonFile(file);
   if (!isDocumentShape(parsed)) {
     throw new Error(
@@ -50,12 +50,12 @@ export async function importDocumentFromJsonFile(file: File): Promise<Document> 
   return parsed;
 }
 
-export function exportComponentLibraryToJsonFile(components: Record<string, ComponentDef>): void {
+export function exportComponentLibraryToJsonFile(components: Record<string, TComponentDef>): void {
   const json = JSON.stringify(components, null, 2);
   downloadBlob(new Blob([json], { type: 'application/json' }), DEFAULT_COMPONENT_LIBRARY_FILENAME);
 }
 
-function isComponentDef(value: unknown): value is ComponentDef {
+function isComponentDef(value: unknown): value is TComponentDef {
   if (!value || typeof value !== 'object') {
     return false;
   }
@@ -67,7 +67,7 @@ function isComponentDef(value: unknown): value is ComponentDef {
   );
 }
 
-export async function importComponentLibraryFromJsonFile(file: File): Promise<ComponentDef[]> {
+export async function importComponentLibraryFromJsonFile(file: File): Promise<TComponentDef[]> {
   const parsed = await parseJsonFile(file);
   if (!parsed || typeof parsed !== 'object') {
     throw new Error(`"${file.name}" doesn't look like a component library file.`);

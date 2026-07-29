@@ -1,7 +1,7 @@
 import { Flex, IconButton, Select, TextArea } from '@radix-ui/themes';
 import { Bold, Italic, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { FONT_FAMILIES } from '~/constants/ui';
 
@@ -14,15 +14,15 @@ import {
   ColorInput,
 } from '~/components/panels/shared/PanelFields';
 
-interface TextSettingsPanelProps {
-  shape: Extract<Shape, { type: 'text' }>;
-}
+type TTextSettingsPanelProps = {
+  shape: Extract<TShape, { type: 'text' }>;
+};
 
 // Keep `variant="ghost"` at all times (see Toolbar.tsx for why switching to `soft` on activation
 // shifts the button) and fake the active look with a plain background instead.
 const ACTIVE_TEXT_BUTTON_STYLE = { backgroundColor: 'var(--accent-a3)' };
 
-export function TextSettingsPanel({ shape }: TextSettingsPanelProps) {
+export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
   return (

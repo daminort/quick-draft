@@ -3,20 +3,20 @@ import type { ReactNode } from 'react';
 
 import { Box, Flex, Button } from '@radix-ui/themes';
 
-export interface ContextMenuItem {
+export type TContextMenuItem = {
   label: string;
   icon: ReactNode;
   onClick: () => void;
-}
+};
 
-interface ContextMenuProps {
+type TContextMenuProps = {
   x: number;
   y: number;
-  items: ContextMenuItem[];
+  items: TContextMenuItem[];
   onClose: () => void;
-}
+};
 
-export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
+export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

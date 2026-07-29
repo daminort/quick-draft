@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
@@ -11,11 +11,11 @@ import {
   StrokeSection,
 } from '~/components/panels/shared/PanelFields';
 
-interface LineSettingsPanelProps {
-  shape: Extract<Shape, { type: 'line' }>;
-}
+type TLineSettingsPanelProps = {
+  shape: Extract<TShape, { type: 'line' }>;
+};
 
-export function LineSettingsPanel({ shape }: LineSettingsPanelProps) {
+export function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
   return (

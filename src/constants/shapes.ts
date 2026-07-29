@@ -1,4 +1,4 @@
-import type { Style } from '~/types/document';
+import type { TStyle } from '~/types/document';
 
 /** Highlight color for a selected shape's stroke/fill. Used in: components/canvas/shapes/TextShape.tsx, CircleShape.tsx, RectShape.tsx, LineShape.tsx, ArcShape.tsx, GuideShape.tsx, DimensionShape.tsx */
 export const SELECTED_COLOR = '#1d4ed8';
@@ -13,7 +13,7 @@ export const GUIDE_DASH = [4, 4];
 export const GUIDE_REACH = 100000;
 
 /** Default stroke style applied to newly drawn rect/line/circle/arc shapes. Used in: components/canvas/tools/useDrawingTool.ts */
-export const DEFAULT_SHAPE_STYLE: Style = { stroke: '#1a1a1a', strokeWidth: 1 };
+export const DEFAULT_SHAPE_STYLE: TStyle = { stroke: '#1a1a1a', strokeWidth: 1 };
 
 /** Default fill color for newly created text shapes. Used in: components/canvas/tools/useDrawingTool.ts */
 export const DEFAULT_TEXT_COLOR = '#1a1a1a';

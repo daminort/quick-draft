@@ -1,5 +1,5 @@
-import type { Document } from '~/types/document';
-import type { PersistedUISettings } from '~/types/uiSettings';
+import type { TDocument } from '~/types/document';
+import type { TPersistedUISettings } from '~/types/uiSettings';
 
 import {
   DB_NAME,
@@ -51,7 +51,7 @@ async function getValue<T>(storeName: string, key: string): Promise<T | null> {
 }
 
 /** Autosaves the whole document under a single fixed key — this app has no multi-document support. */
-export async function saveCurrentDocument(doc: Document): Promise<void> {
+export async function saveCurrentDocument(doc: TDocument): Promise<void> {
   try {
     await putValue(STORE_NAME, CURRENT_KEY, doc);
   } catch (error) {
@@ -59,9 +59,9 @@ export async function saveCurrentDocument(doc: Document): Promise<void> {
   }
 }
 
-export async function loadCurrentDocument(): Promise<Document | null> {
+export async function loadCurrentDocument(): Promise<TDocument | null> {
   try {
-    return await getValue<Document>(STORE_NAME, CURRENT_KEY);
+    return await getValue<TDocument>(STORE_NAME, CURRENT_KEY);
   } catch (error) {
     console.error('Failed to load autosaved document', error);
     return null;
@@ -69,7 +69,7 @@ export async function loadCurrentDocument(): Promise<Document | null> {
 }
 
 /** Autosaves the UI settings (guides/dimensions/ruler preferences) under a single fixed key. */
-export async function saveUISettings(settings: PersistedUISettings): Promise<void> {
+export async function saveUISettings(settings: TPersistedUISettings): Promise<void> {
   try {
     await putValue(SETTINGS_STORE_NAME, SETTINGS_KEY, settings);
   } catch (error) {
@@ -77,9 +77,9 @@ export async function saveUISettings(settings: PersistedUISettings): Promise<voi
   }
 }
 
-export async function loadUISettings(): Promise<Partial<PersistedUISettings> | null> {
+export async function loadUISettings(): Promise<Partial<TPersistedUISettings> | null> {
   try {
-    return await getValue<Partial<PersistedUISettings>>(SETTINGS_STORE_NAME, SETTINGS_KEY);
+    return await getValue<Partial<TPersistedUISettings>>(SETTINGS_STORE_NAME, SETTINGS_KEY);
   } catch (error) {
     console.error('Failed to load autosaved UI settings', error);
     return null;

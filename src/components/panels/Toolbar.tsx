@@ -17,7 +17,7 @@ import {
   Printer,
 } from 'lucide-react';
 
-import { useToolStore, type Tool } from '~/stores/useToolStore';
+import { useToolStore, type TTool } from '~/stores/useToolStore';
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { useSelectionStore } from '~/stores/useSelectionStore';
 import { useUIStore } from '~/stores/useUIStore';
@@ -25,7 +25,7 @@ import { useUIStore } from '~/stores/useUIStore';
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 import { FileActions } from '~/components/panels/FileActions';
 
-const TOOLS: { tool: Tool; label: string; Icon: typeof MousePointer2 }[] = [
+const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
   { tool: 'select', label: 'Select', Icon: MousePointer2 },
   { tool: 'line', label: 'Line (L)', Icon: PencilLine },
   { tool: 'rect', label: 'Rectangle (R)', Icon: Square },

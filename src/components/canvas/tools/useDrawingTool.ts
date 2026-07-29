@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import {
   DEFAULT_SHAPE_STYLE,
@@ -24,22 +24,22 @@ import { useViewStore } from '~/stores/useViewStore';
 
 import type Konva from 'konva';
 
-type Point = { x: number; y: number };
-type ArcPhase = 'radius' | 'angle';
-type DimensionPhase = 'second-point';
-type SnapIndicator = { x: number | null; y: number | null };
+type TPoint = { x: number; y: number };
+type TArcPhase = 'radius' | 'angle';
+type TDimensionPhase = 'second-point';
+type TSnapIndicator = { x: number | null; y: number | null };
 
-const NO_SNAP: SnapIndicator = { x: null, y: null };
+const NO_SNAP: TSnapIndicator = { x: null, y: null };
 
-function getPointerPosition(stage: Konva.Stage): Point {
+function getPointerPosition(stage: Konva.Stage): TPoint {
   return stage.getRelativePointerPosition() ?? { x: 0, y: 0 };
 }
 
-function angleBetween(center: Point, point: Point): number {
+function angleBetween(center: TPoint, point: TPoint): number {
   return (Math.atan2(point.y - center.y, point.x - center.x) * 180) / Math.PI;
 }
 
-function hasSize(shape: Shape): boolean {
+function hasSize(shape: TShape): boolean {
   switch (shape.type) {
     case 'line':
       return shape.x1 !== shape.x2 || shape.y1 !== shape.y2;
@@ -65,20 +65,20 @@ export function useDrawingTool() {
   const guidesVisible = useUIStore(state => state.guidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const viewScale = useViewStore(state => state.scale);
-  const [draftShape, setDraftShapeState] = useState<Shape | null>(null);
-  const [snapIndicator, setSnapIndicator] = useState<SnapIndicator>(NO_SNAP);
-  const draftShapeRef = useRef<Shape | null>(null);
-  const startPoint = useRef<Point | null>(null);
-  const arcPhase = useRef<ArcPhase | null>(null);
-  const dimensionPhase = useRef<DimensionPhase | null>(null);
-  const dimensionPointA = useRef<Point | null>(null);
+  const [draftShape, setDraftShapeState] = useState<TShape | null>(null);
+  const [snapIndicator, setSnapIndicator] = useState<TSnapIndicator>(NO_SNAP);
+  const draftShapeRef = useRef<TShape | null>(null);
+  const startPoint = useRef<TPoint | null>(null);
+  const arcPhase = useRef<TArcPhase | null>(null);
+  const dimensionPhase = useRef<TDimensionPhase | null>(null);
+  const dimensionPointA = useRef<TPoint | null>(null);
 
   // Plain setter (not a functional updater) so the "current draft" is always read from
   // draftShapeRef instead — React 18 StrictMode intentionally invokes functional setState
   // updaters twice in development, and every handler below that commits a shape (addShape/
   // selectShape/setTool) used to live inside one, which could fire those side effects twice
   // per gesture and produce duplicate shapes.
-  const setDraftShape = useCallback((value: Shape | null) => {
+  const setDraftShape = useCallback((value: TShape | null) => {
     draftShapeRef.current = value;
     setDraftShapeState(value);
   }, []);
@@ -93,7 +93,7 @@ export function useDrawingTool() {
   }, [activeTool, setDraftShape]);
 
   const snapCursor = useCallback(
-    (point: Point): Point => {
+    (point: TPoint): TPoint => {
       const shapes = guidesVisible
         ? doc.shapes
         : doc.shapes.filter(shape => shape.type !== 'guide');
@@ -108,7 +108,7 @@ export function useDrawingTool() {
   );
 
   const handleArcMouseDown = useCallback(
-    (point: Point) => {
+    (point: TPoint) => {
       if (!arcPhase.current) {
         const id = crypto.randomUUID();
         arcPhase.current = 'radius';
@@ -150,7 +150,7 @@ export function useDrawingTool() {
   );
 
   const handleDimensionMouseDown = useCallback(
-    (point: Point) => {
+    (point: TPoint) => {
       if (!dimensionPhase.current) {
         dimensionPointA.current = point;
         dimensionPhase.current = 'second-point';

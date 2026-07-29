@@ -2,17 +2,17 @@ import type { ReactNode } from 'react';
 
 import { Box, Checkbox, Flex, Slider, Text, TextField } from '@radix-ui/themes';
 
-import type { Style } from '~/types/document';
+import type { TStyle } from '~/types/document';
 
 /** Weight for section titles — only labels wrapped in `**` in .ai/TODO.md are bold. */
 export const LABEL_WEIGHT = { fontWeight: 600 } as const;
 
-interface SectionProps {
+type TSectionProps = {
   title: string;
   children: ReactNode;
-}
+};
 
-export function Section({ title, children }: SectionProps) {
+export function Section({ title, children }: TSectionProps) {
   return (
     <Flex direction="column" gap="2">
       <Text as="div" size="2" style={LABEL_WEIGHT}>
@@ -23,13 +23,13 @@ export function Section({ title, children }: SectionProps) {
   );
 }
 
-interface CompactNumberInputProps {
+type TCompactNumberInputProps = {
   value: number;
   min?: number;
   onChange: (value: number) => void;
-}
+};
 
-export function CompactNumberInput({ value, min, onChange }: CompactNumberInputProps) {
+export function CompactNumberInput({ value, min, onChange }: TCompactNumberInputProps) {
   return (
     <TextField.Root
       type="number"
@@ -45,15 +45,15 @@ export function CompactNumberInput({ value, min, onChange }: CompactNumberInputP
   );
 }
 
-interface InlineFieldProps {
+type TInlineFieldProps = {
   label: string;
   value: number;
   min?: number;
   onChange: (value: number) => void;
-}
+};
 
 /** Renders `label: [ input ]` inline, e.g. paired "x: [ ]  y: [ ]" fields. */
-export function InlineField({ label, value, min, onChange }: InlineFieldProps) {
+export function InlineField({ label, value, min, onChange }: TInlineFieldProps) {
   return (
     <Flex align="center" gap="1" flexGrow="1">
       <Text as="label" size="2">
@@ -64,16 +64,16 @@ export function InlineField({ label, value, min, onChange }: InlineFieldProps) {
   );
 }
 
-interface LabeledRowProps {
+type TLabeledRowProps = {
   label: string;
   children: ReactNode;
-}
+};
 
 /**
  * Renders `label: input input…` inline on one row, e.g. "Start: [X] [Y]".
  * The label has a fixed width so inputs in stacked rows (Start/End, …) line up vertically.
  */
-export function LabeledRow({ label, children }: LabeledRowProps) {
+export function LabeledRow({ label, children }: TLabeledRowProps) {
   return (
     <Flex align="center" gap="2">
       <Text as="div" size="2" style={{ width: '56px', flexShrink: 0, whiteSpace: 'nowrap' }}>
@@ -100,12 +100,12 @@ export function ColorInput({
   );
 }
 
-interface StrokeSectionProps {
-  style: Style;
-  onChange: (style: Style) => void;
-}
+type TStrokeSectionProps = {
+  style: TStyle;
+  onChange: (style: TStyle) => void;
+};
 
-export function StrokeSection({ style, onChange }: StrokeSectionProps) {
+export function StrokeSection({ style, onChange }: TStrokeSectionProps) {
   return (
     <Section title="Stroke">
       <LabeledRow label="Width">
@@ -127,12 +127,12 @@ export function StrokeSection({ style, onChange }: StrokeSectionProps) {
   );
 }
 
-interface FillSectionProps {
-  style: Style;
-  onChange: (style: Style) => void;
-}
+type TFillSectionProps = {
+  style: TStyle;
+  onChange: (style: TStyle) => void;
+};
 
-export function FillSection({ style, onChange }: FillSectionProps) {
+export function FillSection({ style, onChange }: TFillSectionProps) {
   const enabled = style.fill !== undefined;
 
   return (

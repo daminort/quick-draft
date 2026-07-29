@@ -1,16 +1,16 @@
 import { Flex, Select } from '@radix-ui/themes';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
 import { Section, LabeledRow, CompactNumberInput } from '~/components/panels/shared/PanelFields';
 
-interface DimensionSettingsPanelProps {
-  shape: Extract<Shape, { type: 'dimension' }>;
-}
+type TDimensionSettingsPanelProps = {
+  shape: Extract<TShape, { type: 'dimension' }>;
+};
 
-export function DimensionSettingsPanel({ shape }: DimensionSettingsPanelProps) {
+export function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
   return (

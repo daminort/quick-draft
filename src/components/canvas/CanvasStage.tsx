@@ -4,7 +4,7 @@ import { Stage, Layer, Line, Rect } from 'react-konva';
 import { Box } from '@radix-ui/themes';
 import { ArrowUpToLine, ArrowDownFromLine, RulerDimensionLine, Trash2 } from 'lucide-react';
 
-import type { ShapeId } from '~/types/document';
+import type { TShapeId } from '~/types/document';
 
 import { COMPONENT_DRAG_MIME_TYPE } from '~/constants/fileIO';
 import {
@@ -16,7 +16,7 @@ import {
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { useSelectionStore } from '~/stores/useSelectionStore';
-import { useToolStore, type Tool } from '~/stores/useToolStore';
+import { useToolStore, type TTool } from '~/stores/useToolStore';
 import { useUIStore } from '~/stores/useUIStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
@@ -38,7 +38,7 @@ import type Konva from 'konva';
 
 // Keyed by e.code (physical key position), not e.key, so the shortcut still matches when a
 // non-Latin keyboard layout (e.g. Cyrillic) is active and e.key would report a different character.
-const TOOL_HOTKEYS: Partial<Record<string, Tool>> = {
+const TOOL_HOTKEYS: Partial<Record<string, TTool>> = {
   KeyG: 'guide',
   KeyL: 'line',
   KeyR: 'rect',
@@ -78,11 +78,11 @@ export function CanvasStage() {
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
-    shapeId: ShapeId;
+    shapeId: TShapeId;
   } | null>(null);
   const [emptyContextMenu, setEmptyContextMenu] = useState<{ x: number; y: number } | null>(null);
   const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false);
-  const [editingTextId, setEditingTextId] = useState<ShapeId | null>(null);
+  const [editingTextId, setEditingTextId] = useState<TShapeId | null>(null);
   const originalTextRef = useRef<string | null>(null);
 
   const drawingTool = useDrawingTool();
@@ -224,7 +224,7 @@ export function CanvasStage() {
     bottom: (size.height - zoom.y) / zoom.scale,
   };
 
-  function startEditText(id: ShapeId) {
+  function startEditText(id: TShapeId) {
     const shape = shapes.find(s => s.id === id);
     if (!shape || shape.type !== 'text') {
       return;

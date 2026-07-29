@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
@@ -13,11 +13,11 @@ import {
   FillSection,
 } from '~/components/panels/shared/PanelFields';
 
-interface ArcSettingsPanelProps {
-  shape: Extract<Shape, { type: 'arc' }>;
-}
+type TArcSettingsPanelProps = {
+  shape: Extract<TShape, { type: 'arc' }>;
+};
 
-export function ArcSettingsPanel({ shape }: ArcSettingsPanelProps) {
+export function ArcSettingsPanel({ shape }: TArcSettingsPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
   return (

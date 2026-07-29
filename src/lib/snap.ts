@@ -1,23 +1,23 @@
-import type { Shape, ShapeId } from '~/types/document';
+import type { TShape, TShapeId } from '~/types/document';
 
 import { SNAP_TOLERANCE_PX } from '~/constants/canvas';
 
-export interface SnapTargets {
+export type TSnapTargets = {
   xs: number[];
   ys: number[];
-}
+};
 
-export interface SnapResult {
+export type TSnapResult = {
   x: number;
   y: number;
   snappedX: boolean;
   snappedY: boolean;
-}
+};
 
 export function collectSnapTargets(
-  shapes: Shape[],
-  options: { excludeIds?: ShapeId[] } = {},
-): SnapTargets {
+  shapes: TShape[],
+  options: { excludeIds?: TShapeId[] } = {},
+): TSnapTargets {
   const xs: number[] = [];
   const ys: number[] = [];
   const addPoint = (x: number, y: number) => {
@@ -85,9 +85,9 @@ function closest(value: number, candidates: number[], tolerance: number): number
 
 export function snapPoint(
   point: { x: number; y: number },
-  targets: SnapTargets,
+  targets: TSnapTargets,
   tolerancePx: number = SNAP_TOLERANCE_PX,
-): SnapResult {
+): TSnapResult {
   const snappedX = closest(point.x, targets.xs, tolerancePx);
   const snappedY = closest(point.y, targets.ys, tolerancePx);
 

@@ -1,13 +1,13 @@
 import { Text } from 'react-konva';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { SELECTED_COLOR } from '~/constants/shapes';
 
 import type Konva from 'konva';
 
-interface TextShapeProps {
-  shape: Extract<Shape, { type: 'text' }>;
+type TTextShapeProps = {
+  shape: Extract<TShape, { type: 'text' }>;
   draggable: boolean;
   selected?: boolean;
   visible?: boolean;
@@ -17,7 +17,7 @@ interface TextShapeProps {
   onDragMove: (node: Konva.Node) => void;
   onDragEnd: (node: Konva.Node) => void;
   setNodeRef: (node: Konva.Text | null) => void;
-}
+};
 
 export function TextShape({
   shape,
@@ -30,7 +30,7 @@ export function TextShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: TextShapeProps) {
+}: TTextShapeProps) {
   const fontStyle =
     [shape.bold && 'bold', shape.italic && 'italic'].filter(Boolean).join(' ') || 'normal';
 

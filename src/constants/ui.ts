@@ -1,4 +1,4 @@
-import type { Document } from '~/types/document';
+import type { TDocument } from '~/types/document';
 
 /** Font choices offered in the text shape's font-family dropdown. Used in: components/panels/TextPanel.tsx */
 export const FONT_FAMILIES = [
@@ -11,4 +11,4 @@ export const FONT_FAMILIES = [
 ];
 
 /** Measurement unit choices offered in the document's units dropdown. Used in: components/panels/UnitsControl.tsx */
-export const UNIT_OPTIONS: Document['units'][] = ['mm', 'cm', 'm'];
+export const UNIT_OPTIONS: TDocument['units'][] = ['mm', 'cm', 'm'];

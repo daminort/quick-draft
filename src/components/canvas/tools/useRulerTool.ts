@@ -15,17 +15,17 @@ import { useViewStore } from '~/stores/useViewStore';
 
 import type Konva from 'konva';
 
-type Point = { x: number; y: number };
+type TPoint = { x: number; y: number };
 
-export interface RulerState {
-  start: Point;
-  point: Point;
+export type TRulerState = {
+  start: TPoint;
+  point: TPoint;
   shiftLocked: boolean;
   /** Raw digits typed by the user, overriding the live mouse-driven length until cleared. */
   lengthOverride: string | null;
-}
+};
 
-function getPointerPosition(stage: Konva.Stage): Point {
+function getPointerPosition(stage: Konva.Stage): TPoint {
   return stage.getRelativePointerPosition() ?? { x: 0, y: 0 };
 }
 
@@ -44,13 +44,13 @@ export function useRulerTool() {
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const viewScale = useViewStore(state => state.scale);
 
-  const [ruler, setRulerState] = useState<RulerState | null>(null);
-  const rulerRef = useRef<RulerState | null>(null);
+  const [ruler, setRulerState] = useState<TRulerState | null>(null);
+  const rulerRef = useRef<TRulerState | null>(null);
 
   // Mirror state into a ref, same reasoning as useDrawingTool's draftShapeRef: handlers below need
   // to read the latest value synchronously (StrictMode double-invokes functional updaters, which
   // would otherwise risk committing the two guides twice for one gesture).
-  const setRuler = useCallback((value: RulerState | null) => {
+  const setRuler = useCallback((value: TRulerState | null) => {
     rulerRef.current = value;
     setRulerState(value);
   }, []);
@@ -60,7 +60,7 @@ export function useRulerTool() {
   }, [activeTool, setRuler]);
 
   const snapCursor = useCallback(
-    (point: Point): Point => {
+    (point: TPoint): TPoint => {
       const visibleShapes = guidesVisible ? shapes : shapes.filter(shape => shape.type !== 'guide');
       const result = snapPoint(point, collectSnapTargets(visibleShapes), snapTolerance / viewScale);
       return { x: result.x, y: result.y };
@@ -69,7 +69,7 @@ export function useRulerTool() {
   );
 
   const commit = useCallback(
-    (current: RulerState, clickPoint: Point, shiftLocked: boolean) => {
+    (current: TRulerState, clickPoint: TPoint, shiftLocked: boolean) => {
       const direction = rulerDirection(current.start, clickPoint, shiftLocked);
       const length =
         current.lengthOverride !== null

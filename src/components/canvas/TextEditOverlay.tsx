@@ -1,18 +1,18 @@
 import { useEffect, useRef } from 'react';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { TEXT_EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
 
-interface TextEditOverlayProps {
-  shape: Extract<Shape, { type: 'text' }>;
+type TTextEditOverlayProps = {
+  shape: Extract<TShape, { type: 'text' }>;
   scale: number;
   offsetX: number;
   offsetY: number;
   onChange: (text: string) => void;
   onCommit: () => void;
   onCancel: () => void;
-}
+};
 
 export function TextEditOverlay({
   shape,
@@ -22,7 +22,7 @@ export function TextEditOverlay({
   onChange,
   onCommit,
   onCancel,
-}: TextEditOverlayProps) {
+}: TTextEditOverlayProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   // Seeded once on mount so re-renders triggered by our own onChange calls don't reset the

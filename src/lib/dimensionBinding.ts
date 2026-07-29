@@ -1,15 +1,15 @@
-import type { DimensionBinding, Shape, ShapePointKey } from '~/types/document';
+import type { TDimensionBinding, TShape, TShapePointKey } from '~/types/document';
 
 import { BINDING_EPSILON } from '~/constants/dimension';
 
 import { rotatePoint } from '~/lib/bounds';
 
-type Point = { x: number; y: number };
+type TPoint = { x: number; y: number };
 
 /** Points on a shape that a dimension's endpoint can bind to. Mirrors the point set offered by
  * collectSnapTargets, but keyed per-shape (and rotation-aware for rects) so a binding can be
  * resolved back to a live coordinate later. Guides and dimensions have no bindable points. */
-export function listBindablePoints(shape: Shape): { key: ShapePointKey; point: Point }[] {
+export function listBindablePoints(shape: TShape): { key: TShapePointKey; point: TPoint }[] {
   switch (shape.type) {
     case 'line':
       return [
@@ -18,7 +18,7 @@ export function listBindablePoints(shape: Shape): { key: ShapePointKey; point: P
       ];
     case 'rect': {
       const origin = { x: shape.x, y: shape.y };
-      const corners: { key: ShapePointKey; local: Point }[] = [
+      const corners: { key: TShapePointKey; local: TPoint }[] = [
         { key: 'tl', local: { x: 0, y: 0 } },
         { key: 'tr', local: { x: shape.w, y: 0 } },
         { key: 'br', local: { x: shape.w, y: shape.h } },
@@ -41,13 +41,13 @@ export function listBindablePoints(shape: Shape): { key: ShapePointKey; point: P
 }
 
 /** Resolves a binding's point key back to a live coordinate on its current shape state. */
-export function getBoundPoint(shape: Shape, key: ShapePointKey): Point | null {
+export function getBoundPoint(shape: TShape, key: TShapePointKey): TPoint | null {
   const found = listBindablePoints(shape).find(candidate => candidate.key === key);
   return found ? found.point : null;
 }
 
 /** Finds the shape+point that exactly matches `point` (already snapped by the caller), if any. */
-export function findBindingForPoint(shapes: Shape[], point: Point): DimensionBinding | null {
+export function findBindingForPoint(shapes: TShape[], point: TPoint): TDimensionBinding | null {
   for (const shape of shapes) {
     for (const candidate of listBindablePoints(shape)) {
       if (
@@ -66,7 +66,7 @@ export function findBindingForPoint(shapes: Shape[], point: Point): DimensionBin
  * any shape mutation so a dimension whose extension lines are bound to a point follows that point
  * (and keeps its length up to date) whenever the owning shape moves, resizes, or rotates.
  */
-export function resyncDimensionBindings(shapes: Shape[]): Shape[] {
+export function resyncDimensionBindings(shapes: TShape[]): TShape[] {
   let changed = false;
 
   const next = shapes.map(shape => {
@@ -77,7 +77,7 @@ export function resyncDimensionBindings(shapes: Shape[]): Shape[] {
       return shape;
     }
 
-    let patch: Partial<Extract<Shape, { type: 'dimension' }>> = {};
+    let patch: Partial<Extract<TShape, { type: 'dimension' }>> = {};
 
     if (shape.bindingA) {
       const target = shapes.find(candidate => candidate.id === shape.bindingA!.shapeId);

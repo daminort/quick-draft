@@ -1,13 +1,13 @@
 import { Circle } from 'react-konva';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { SELECTED_COLOR } from '~/constants/shapes';
 
 import type Konva from 'konva';
 
-interface CircleShapeProps {
-  shape: Extract<Shape, { type: 'circle' }>;
+type TCircleShapeProps = {
+  shape: Extract<TShape, { type: 'circle' }>;
   draggable: boolean;
   selected?: boolean;
   onSelect: () => void;
@@ -15,7 +15,7 @@ interface CircleShapeProps {
   onDragMove: (node: Konva.Node) => void;
   onDragEnd: (node: Konva.Node) => void;
   setNodeRef: (node: Konva.Circle | null) => void;
-}
+};
 
 export function CircleShape({
   shape,
@@ -26,7 +26,7 @@ export function CircleShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: CircleShapeProps) {
+}: TCircleShapeProps) {
   return (
     <Circle
       ref={setNodeRef}

@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
@@ -12,11 +12,11 @@ import {
   FillSection,
 } from '~/components/panels/shared/PanelFields';
 
-interface RectSettingsPanelProps {
-  shape: Extract<Shape, { type: 'rect' }>;
-}
+type TRectSettingsPanelProps = {
+  shape: Extract<TShape, { type: 'rect' }>;
+};
 
-export function RectSettingsPanel({ shape }: RectSettingsPanelProps) {
+export function RectSettingsPanel({ shape }: TRectSettingsPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
   return (

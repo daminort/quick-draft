@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import type { Shape, ShapeId } from '~/types/document';
+import type { TShape, TShapeId } from '~/types/document';
 
 import { getUnionBounds } from '~/lib/bounds';
 import { translateShape } from '~/lib/shapeTransform';
@@ -10,7 +10,7 @@ import { useSelectionStore } from '~/stores/useSelectionStore';
 
 import type Konva from 'konva';
 
-type Point = { x: number; y: number };
+type TPoint = { x: number; y: number };
 
 function isEditableTarget(target: EventTarget | null): boolean {
   const el = target as HTMLElement | null;
@@ -23,7 +23,7 @@ function isEditableTarget(target: EventTarget | null): boolean {
 /** Remaps a pasted dimension's bindings onto the pasted copies of their targets, or drops the
  * binding when its target wasn't copied along with it (rather than letting it keep tracking the
  * original shape's position). */
-function remapDimensionBindings(shape: Shape, idMap: Map<ShapeId, ShapeId>): Shape {
+function remapDimensionBindings(shape: TShape, idMap: Map<TShapeId, TShapeId>): TShape {
   if (shape.type !== 'dimension') {
     return shape;
   }
@@ -45,8 +45,8 @@ export function useCopyPasteTool() {
   const selectedIds = useSelectionStore(state => state.selectedIds);
   const select = useSelectionStore(state => state.select);
 
-  const clipboard = useRef<Shape[]>([]);
-  const pointer = useRef<Point | null>(null);
+  const clipboard = useRef<TShape[]>([]);
+  const pointer = useRef<TPoint | null>(null);
 
   const handleMouseMove = useCallback((e: Konva.KonvaEventObject<MouseEvent>) => {
     const stage = e.target.getStage();
@@ -96,12 +96,12 @@ export function useCopyPasteTool() {
       const dx = point.x - anchor.x;
       const dy = point.y - anchor.y;
 
-      const idMap = new Map<ShapeId, ShapeId>(
+      const idMap = new Map<TShapeId, TShapeId>(
         clipboard.current.map(shape => [shape.id, crypto.randomUUID()]),
       );
       const pasted = clipboard.current.map(shape => {
         const translated = translateShape(shape, dx, dy);
-        const moved = { ...shape, ...translated, id: idMap.get(shape.id)! } as Shape;
+        const moved = { ...shape, ...translated, id: idMap.get(shape.id)! } as TShape;
         return remapDimensionBindings(moved, idMap);
       });
 

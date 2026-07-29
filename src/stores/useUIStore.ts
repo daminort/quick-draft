@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { PersistedUISettings } from '~/types/uiSettings';
+import type { TPersistedUISettings } from '~/types/uiSettings';
 
 import { SNAP_TOLERANCE_PX } from '~/constants/canvas';
 import { DEFAULT_DIMENSION_COLOR } from '~/constants/dimension';
@@ -8,7 +8,7 @@ import { AUTOSAVE_DEBOUNCE_MS } from '~/constants/persistence';
 
 import { saveUISettings } from '~/lib/persistence/indexedDb';
 
-interface UIStore {
+type TUIStore = {
   settingsOpen: boolean;
   toggleSettings: () => void;
   libraryOpen: boolean;
@@ -30,10 +30,10 @@ interface UIStore {
   printOpen: boolean;
   openPrint: () => void;
   closePrint: () => void;
-  hydrateSettings: (settings: Partial<PersistedUISettings>) => void;
-}
+  hydrateSettings: (settings: Partial<TPersistedUISettings>) => void;
+};
 
-export const useUIStore = create<UIStore>()(set => ({
+export const useUIStore = create<TUIStore>()(set => ({
   settingsOpen: false,
   toggleSettings: () => set(state => ({ settingsOpen: !state.settingsOpen, libraryOpen: false })),
   libraryOpen: false,
@@ -58,7 +58,7 @@ export const useUIStore = create<UIStore>()(set => ({
   hydrateSettings: settings => set(settings),
 }));
 
-function pickPersistedSettings(state: UIStore): PersistedUISettings {
+function pickPersistedSettings(state: TUIStore): TPersistedUISettings {
   return {
     guidesVisible: state.guidesVisible,
     snapTolerance: state.snapTolerance,

@@ -3,14 +3,14 @@ import { Minus, Plus } from 'lucide-react';
 
 import { MIN_SCALE, MAX_SCALE } from '~/constants/canvas';
 
-interface ZoomControlProps {
+type TZoomControlProps = {
   scale: number;
   onZoomIn: () => void;
   onZoomOut: () => void;
   onReset: () => void;
-}
+};
 
-export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: ZoomControlProps) {
+export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomControlProps) {
   return (
     <Flex
       align="center"

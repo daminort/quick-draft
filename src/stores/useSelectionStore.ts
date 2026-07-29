@@ -1,15 +1,15 @@
 import { create } from 'zustand';
 
-import type { ShapeId } from '~/types/document';
+import type { TShapeId } from '~/types/document';
 
-interface SelectionStore {
-  selectedIds: ShapeId[];
-  select: (ids: ShapeId[]) => void;
-  toggle: (id: ShapeId) => void;
+type TSelectionStore = {
+  selectedIds: TShapeId[];
+  select: (ids: TShapeId[]) => void;
+  toggle: (id: TShapeId) => void;
   clear: () => void;
-}
+};
 
-export const useSelectionStore = create<SelectionStore>()(set => ({
+export const useSelectionStore = create<TSelectionStore>()(set => ({
   selectedIds: [],
   select: ids => set({ selectedIds: ids }),
   toggle: id =>

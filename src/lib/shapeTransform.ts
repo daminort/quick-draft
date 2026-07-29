@@ -1,9 +1,9 @@
-import type { ComponentDef, Shape, ShapePatch } from '~/types/document';
+import type { TComponentDef, TShape, TShapePatch } from '~/types/document';
 
-type Point = { x: number; y: number };
+type TPoint = { x: number; y: number };
 
 /** A representative anchor coordinate per shape type, used to measure how far a shape moved. */
-export function getShapeAnchor(shape: Shape): Point {
+export function getShapeAnchor(shape: TShape): TPoint {
   switch (shape.type) {
     case 'rect':
     case 'text':
@@ -23,7 +23,7 @@ export function getShapeAnchor(shape: Shape): Point {
 }
 
 /** Patch that rigidly translates a shape by (dx, dy), independent of any snapping. */
-export function translateShape(shape: Shape, dx: number, dy: number): ShapePatch {
+export function translateShape(shape: TShape, dx: number, dy: number): TShapePatch {
   switch (shape.type) {
     case 'line':
       return { x1: shape.x1 + dx, y1: shape.y1 + dy, x2: shape.x2 + dx, y2: shape.y2 + dy };
@@ -48,12 +48,12 @@ export function translateShape(shape: Shape, dx: number, dy: number): ShapePatch
 
 /** Maps a component-local point through an instance's scale → rotate → translate transform. */
 function transformPoint(
-  point: Point,
+  point: TPoint,
   x: number,
   y: number,
   scale: number,
   rotationDeg: number,
-): Point {
+): TPoint {
   const rad = (rotationDeg * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
@@ -68,12 +68,12 @@ function transformPoint(
  * a component instance's contents into independent shapes (e.g. when its definition is deleted).
  */
 function transformShape(
-  shape: Shape,
+  shape: TShape,
   x: number,
   y: number,
   scale: number,
   rotation: number,
-): Shape {
+): TShape {
   switch (shape.type) {
     case 'line': {
       const p1 = transformPoint({ x: shape.x1, y: shape.y1 }, x, y, scale, rotation);
@@ -156,9 +156,9 @@ function transformShape(
  * instead of vanishing along with it.
  */
 export function flattenComponentInstance(
-  instance: Extract<Shape, { type: 'component-instance' }>,
-  componentDef: ComponentDef,
-): Shape[] {
+  instance: Extract<TShape, { type: 'component-instance' }>,
+  componentDef: TComponentDef,
+): TShape[] {
   return componentDef.shapes.map(shape => ({
     ...transformShape(shape, instance.x, instance.y, instance.scale, instance.rotation),
     id: crypto.randomUUID(),

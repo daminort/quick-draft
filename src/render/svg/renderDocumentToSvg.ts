@@ -1,4 +1,4 @@
-import type { Document, Shape } from '~/types/document';
+import type { TDocument, TShape } from '~/types/document';
 
 import { PAGE_MARGIN_MM, EMPTY_PAGE_SIZE_MM } from '~/constants/print';
 import {
@@ -14,20 +14,20 @@ import { computeDimensionGeometry, convertLength, formatDimensionLabel } from '~
 import { getUnionBounds } from '~/lib/bounds';
 import { flattenComponentInstance } from '~/lib/shapeTransform';
 
-export interface RenderSvgOptions {
+export type TRenderSvgOptions = {
   showDimensionUnit?: boolean;
   dimensionColor?: string;
-}
+};
 
-interface RenderContext {
-  document: Document;
+type TRenderContext = {
+  document: TDocument;
   showDimensionUnit: boolean;
   dimensionColor: string;
   /** Converts a raw document-space value (length, radius, font size, ...) to mm. */
   mm: (value: number) => number;
   offsetXMm: number;
   offsetYMm: number;
-}
+};
 
 function escapeXml(text: string): string {
   return text
@@ -41,7 +41,7 @@ function round(value: number): number {
   return Number.isFinite(value) ? Math.round(value * 1000) / 1000 : 0;
 }
 
-function renderShape(shape: Shape, ctx: RenderContext): string {
+function renderShape(shape: TShape, ctx: TRenderContext): string {
   const X = (v: number) => round(ctx.mm(v) + ctx.offsetXMm);
   const Y = (v: number) => round(ctx.mm(v) + ctx.offsetYMm);
   const L = (v: number) => round(ctx.mm(v));
@@ -159,7 +159,7 @@ function renderShape(shape: Shape, ctx: RenderContext): string {
  * to the bottom-right corner of the bottom-right-most one, plus a margin — rather than a fixed
  * paper size, so nothing is ever clipped regardless of how large or spread out the drawing is.
  */
-export function renderDocumentToSvg(document: Document, options: RenderSvgOptions = {}): string {
+export function renderDocumentToSvg(document: TDocument, options: TRenderSvgOptions = {}): string {
   const showDimensionUnit = options.showDimensionUnit ?? false;
   const dimensionColor = options.dimensionColor ?? DEFAULT_DIMENSION_COLOR;
   const printableShapes = document.shapes.filter(shape => shape.type !== 'guide');
@@ -177,7 +177,7 @@ export function renderDocumentToSvg(document: Document, options: RenderSvgOption
   const offsetXMm = PAGE_MARGIN_MM - (bounds ? mm(bounds.x1) : 0);
   const offsetYMm = PAGE_MARGIN_MM - (bounds ? mm(bounds.y1) : 0);
 
-  const ctx: RenderContext = {
+  const ctx: TRenderContext = {
     document,
     showDimensionUnit,
     dimensionColor,

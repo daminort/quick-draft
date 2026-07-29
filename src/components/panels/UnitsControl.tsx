@@ -1,6 +1,6 @@
 import { Flex, Text, Select } from '@radix-ui/themes';
 
-import type { Document } from '~/types/document';
+import type { TDocument } from '~/types/document';
 
 import { UNIT_OPTIONS } from '~/constants/ui';
 
@@ -14,7 +14,7 @@ export function UnitsControl() {
     <Text as="label" size="2">
       <Flex direction="column" gap="1">
         Measurement units
-        <Select.Root value={units} onValueChange={value => setUnits(value as Document['units'])}>
+        <Select.Root value={units} onValueChange={value => setUnits(value as TDocument['units'])}>
           <Select.Trigger />
           <Select.Content>
             {UNIT_OPTIONS.map(unit => (

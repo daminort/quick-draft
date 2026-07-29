@@ -1,6 +1,6 @@
 import { Flex, Text } from '@radix-ui/themes';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { useSelectionStore } from '~/stores/useSelectionStore';
@@ -15,7 +15,7 @@ import { DimensionSettingsPanel } from '~/components/panels/DimensionSettingsPan
 import { ComponentActions } from '~/components/panels/ComponentActions';
 import { LABEL_WEIGHT } from '~/components/panels/shared/PanelFields';
 
-const SHAPE_TYPE_LABELS: Record<Shape['type'], string> = {
+const SHAPE_TYPE_LABELS: Record<TShape['type'], string> = {
   line: 'Line',
   rect: 'Rectangle',
   circle: 'Circle',
@@ -26,7 +26,7 @@ const SHAPE_TYPE_LABELS: Record<Shape['type'], string> = {
   'component-instance': 'Component instance',
 };
 
-function ShapeSettings({ shape }: { shape: Shape }) {
+function ShapeSettings({ shape }: { shape: TShape }) {
   switch (shape.type) {
     case 'line':
       return <LineSettingsPanel shape={shape} />;

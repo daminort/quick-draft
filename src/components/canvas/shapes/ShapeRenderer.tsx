@@ -1,6 +1,6 @@
-import type { Shape, ShapeId } from '~/types/document';
+import type { TShape, TShapeId } from '~/types/document';
 
-import type { ShapeInteraction, ViewBounds } from '~/components/canvas/shapes/ShapeInteraction';
+import type { TShapeInteraction, TViewBounds } from '~/components/canvas/shapes/ShapeInteraction';
 import { LineShape } from '~/components/canvas/shapes/LineShape';
 import { RectShape } from '~/components/canvas/shapes/RectShape';
 import { CircleShape } from '~/components/canvas/shapes/CircleShape';
@@ -12,15 +12,15 @@ import { ComponentInstanceShape } from '~/components/canvas/shapes/ComponentInst
 
 import type Konva from 'konva';
 
-interface ShapeRendererProps {
-  shape: Shape;
+type TShapeRendererProps = {
+  shape: TShape;
   interactive: boolean;
-  interaction: ShapeInteraction;
-  viewBounds: ViewBounds;
+  interaction: TShapeInteraction;
+  viewBounds: TViewBounds;
   selected?: boolean;
-  editingTextId?: ShapeId | null;
-  onStartEditText?: (id: ShapeId) => void;
-}
+  editingTextId?: TShapeId | null;
+  onStartEditText?: (id: TShapeId) => void;
+};
 
 export function ShapeRenderer({
   shape,
@@ -30,7 +30,7 @@ export function ShapeRenderer({
   selected = false,
   editingTextId = null,
   onStartEditText,
-}: ShapeRendererProps) {
+}: TShapeRendererProps) {
   const shared = {
     draggable: interactive,
     selected,

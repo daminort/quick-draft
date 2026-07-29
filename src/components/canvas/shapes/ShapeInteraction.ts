@@ -1,25 +1,25 @@
-import type { Shape, ShapeId } from '~/types/document';
+import type { TShape, TShapeId } from '~/types/document';
 
 import type Konva from 'konva';
 
-export interface ShapeInteraction {
-  registerNode: (id: ShapeId, node: Konva.Node | null) => void;
-  selectShape: (id: ShapeId) => void;
-  handleDragStart: (shape: Shape) => void;
-  handleDragMove: (shape: Shape, node: Konva.Node) => void;
-  handleDragEnd: (shape: Shape, node: Konva.Node) => void;
-  handleManualMouseDown: (shape: Shape, e: Konva.KonvaEventObject<MouseEvent>) => void;
-}
+export type TShapeInteraction = {
+  registerNode: (id: TShapeId, node: Konva.Node | null) => void;
+  selectShape: (id: TShapeId) => void;
+  handleDragStart: (shape: TShape) => void;
+  handleDragMove: (shape: TShape, node: Konva.Node) => void;
+  handleDragEnd: (shape: TShape, node: Konva.Node) => void;
+  handleManualMouseDown: (shape: TShape, e: Konva.KonvaEventObject<MouseEvent>) => void;
+};
 
-export interface ViewBounds {
+export type TViewBounds = {
   left: number;
   top: number;
   right: number;
   bottom: number;
-}
+};
 
 /** Renders shapes read-only: no click/drag handlers attached, nodes not registered anywhere. */
-export const noopShapeInteraction: ShapeInteraction = {
+export const noopShapeInteraction: TShapeInteraction = {
   registerNode: () => {},
   selectShape: () => {},
   handleDragStart: () => {},

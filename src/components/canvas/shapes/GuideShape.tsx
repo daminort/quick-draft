@@ -1,17 +1,17 @@
 import { Line } from 'react-konva';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { SELECTED_COLOR, GUIDE_COLOR, GUIDE_DASH, GUIDE_REACH } from '~/constants/shapes';
 import { HIT_STROKE_WIDTH } from '~/constants/canvas';
 
-import type { ViewBounds } from '~/components/canvas/shapes/ShapeInteraction';
+import type { TViewBounds } from '~/components/canvas/shapes/ShapeInteraction';
 
 import type Konva from 'konva';
 
-interface GuideShapeProps {
-  shape: Extract<Shape, { type: 'guide' }>;
-  viewBounds: ViewBounds;
+type TGuideShapeProps = {
+  shape: Extract<TShape, { type: 'guide' }>;
+  viewBounds: TViewBounds;
   draggable: boolean;
   selected?: boolean;
   onSelect: () => void;
@@ -19,7 +19,7 @@ interface GuideShapeProps {
   onDragMove: (node: Konva.Node) => void;
   onDragEnd: (node: Konva.Node) => void;
   setNodeRef: (node: Konva.Line | null) => void;
-}
+};
 
 export function GuideShape({
   shape,
@@ -31,7 +31,7 @@ export function GuideShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: GuideShapeProps) {
+}: TGuideShapeProps) {
   const common = {
     ref: setNodeRef,
     id: shape.id,

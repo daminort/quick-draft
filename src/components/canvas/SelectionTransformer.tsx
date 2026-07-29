@@ -2,18 +2,18 @@ import { useEffect, useRef } from 'react';
 
 import { Transformer } from 'react-konva';
 
-import type { Shape, ShapePatch } from '~/types/document';
+import type { TShape, TShapePatch } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
 import type Konva from 'konva';
 
-interface SelectionTransformerProps {
-  shape: Shape | null;
+type TSelectionTransformerProps = {
+  shape: TShape | null;
   node: Konva.Node | null;
-}
+};
 
-function computeTransformPatch(shape: Shape, node: Konva.Node): ShapePatch {
+function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
   switch (shape.type) {
     case 'rect': {
       const scaleX = node.scaleX();
@@ -61,7 +61,7 @@ function computeTransformPatch(shape: Shape, node: Konva.Node): ShapePatch {
   }
 }
 
-export function SelectionTransformer({ shape, node }: SelectionTransformerProps) {
+export function SelectionTransformer({ shape, node }: TSelectionTransformerProps) {
   const transformerRef = useRef<Konva.Transformer>(null);
   const updateShape = useDocumentStore(state => state.updateShape);
 

@@ -8,12 +8,12 @@ import { useUIStore } from '~/stores/useUIStore';
 
 import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg';
 
-interface PrintViewProps {
+type TPrintViewProps = {
   open: boolean;
   onClose: () => void;
-}
+};
 
-export function PrintView({ open, onClose }: PrintViewProps) {
+export function PrintView({ open, onClose }: TPrintViewProps) {
   const document = useDocumentStore(state => state.document);
   const showDimensionUnit = useUIStore(state => state.showDimensionUnit);
   const dimensionColor = useUIStore(state => state.dimensionColor);

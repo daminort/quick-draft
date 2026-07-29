@@ -1,17 +1,17 @@
 import { create } from 'zustand';
 
-interface ViewState {
+type TViewState = {
   scale: number;
   x: number;
   y: number;
-}
+};
 
-interface ViewStore extends ViewState {
-  setView: (view: ViewState) => void;
+type TViewStore = TViewState & {
+  setView: (view: TViewState) => void;
   resetZoom: () => void;
-}
+};
 
-export const useViewStore = create<ViewStore>()(set => ({
+export const useViewStore = create<TViewStore>()(set => ({
   scale: 1,
   x: 0,
   y: 0,

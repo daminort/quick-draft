@@ -1,13 +1,13 @@
-import type { ComponentDef, Shape } from '~/types/document';
+import type { TComponentDef, TShape } from '~/types/document';
 
 import { GUIDE_SPAN, TEXT_CHAR_WIDTH_RATIO } from '~/constants/shapes';
 
-export interface Bounds {
+export type TBounds = {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-}
+};
 
 export function rotatePoint(
   point: { x: number; y: number },
@@ -24,10 +24,10 @@ export function rotatePoint(
 
 /** Union of all shapes' bounds, used to place a new component's local anchor / preview scale. */
 export function getUnionBounds(
-  shapes: Shape[],
-  components: Record<string, ComponentDef> = {},
-): Bounds | null {
-  let union: Bounds | null = null;
+  shapes: TShape[],
+  components: Record<string, TComponentDef> = {},
+): TBounds | null {
+  let union: TBounds | null = null;
   for (const shape of shapes) {
     const bounds = getShapeBounds(shape, components);
     if (!bounds) {
@@ -47,9 +47,9 @@ export function getUnionBounds(
 
 /** Axis-aligned bounding box for a shape, used for marquee-selection hit testing. */
 export function getShapeBounds(
-  shape: Shape,
-  components: Record<string, ComponentDef> = {},
-): Bounds | null {
+  shape: TShape,
+  components: Record<string, TComponentDef> = {},
+): TBounds | null {
   switch (shape.type) {
     case 'line':
       return {
@@ -135,21 +135,21 @@ export function getShapeBounds(
   }
 }
 
-export function boundsIntersect(a: Bounds, b: Bounds): boolean {
+export function boundsIntersect(a: TBounds, b: TBounds): boolean {
   return a.x1 <= b.x2 && a.x2 >= b.x1 && a.y1 <= b.y2 && a.y2 >= b.y1;
 }
 
-export interface Segment {
+export type TSegment = {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-}
+};
 
 /** Straight edges of a shape, used to detect when a dimension's extension line runs along one of
  * them and would just double the shape's own outline. Curved shapes (circle, arc) have no straight
  * edges to coincide with, so they contribute none. */
-export function listShapeEdges(shape: Shape): Segment[] {
+export function listShapeEdges(shape: TShape): TSegment[] {
   switch (shape.type) {
     case 'line':
       return [{ x1: shape.x1, y1: shape.y1, x2: shape.x2, y2: shape.y2 }];

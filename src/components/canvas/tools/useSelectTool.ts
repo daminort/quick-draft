@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { Shape, ShapeId, ShapePatch } from '~/types/document';
+import type { TShape, TShapeId, TShapePatch } from '~/types/document';
 
 import { MARQUEE_CLICK_THRESHOLD_PX } from '~/constants/canvas';
 
-import { collectSnapTargets, snapPoint, type SnapTargets } from '~/lib/snap';
+import { collectSnapTargets, snapPoint, type TSnapTargets } from '~/lib/snap';
 import { getShapeBounds, boundsIntersect } from '~/lib/bounds';
 import { getShapeAnchor, translateShape } from '~/lib/shapeTransform';
 
@@ -16,17 +16,17 @@ import { useViewStore } from '~/stores/useViewStore';
 
 import type Konva from 'konva';
 
-type Point = { x: number; y: number };
-type SnapIndicator = { x: number | null; y: number | null };
-const NO_SNAP: SnapIndicator = { x: null, y: null };
-export type MarqueeRect = { x: number; y: number; width: number; height: number };
+type TPoint = { x: number; y: number };
+type TSnapIndicator = { x: number | null; y: number | null };
+const NO_SNAP: TSnapIndicator = { x: null, y: null };
+export type TMarqueeRect = { x: number; y: number; width: number; height: number };
 
 function computeDragResult(
-  shape: Shape,
+  shape: TShape,
   node: Konva.Node,
-  targets: SnapTargets,
+  targets: TSnapTargets,
   tolerance: number,
-): { patch: ShapePatch; indicator: SnapIndicator } {
+): { patch: TShapePatch; indicator: TSnapIndicator } {
   switch (shape.type) {
     case 'rect':
     case 'text':
@@ -90,11 +90,11 @@ function computeDragResult(
  * dependency on Konva's internal drag/position bookkeeping at all.
  */
 function computeManualDragPatch(
-  shape: Shape,
-  delta: Point,
-  targets: SnapTargets,
+  shape: TShape,
+  delta: TPoint,
+  targets: TSnapTargets,
   tolerance: number,
-): { patch: ShapePatch; indicator: SnapIndicator } {
+): { patch: TShapePatch; indicator: TSnapIndicator } {
   switch (shape.type) {
     case 'arc': {
       const snapped = snapPoint(
@@ -119,17 +119,17 @@ function computeManualDragPatch(
   }
 }
 
-interface ManualDrag {
-  origin: Shape;
-  startPointer: Point;
+type TManualDrag = {
+  origin: TShape;
+  startPointer: TPoint;
   stage: Konva.Stage;
-}
+};
 
-interface MarqueeDrag {
+type TMarqueeDrag = {
   stage: Konva.Stage;
-  startPointer: Point;
-  startClientPointer: Point;
-}
+  startPointer: TPoint;
+  startClientPointer: TPoint;
+};
 
 export function useSelectTool() {
   const updateShape = useDocumentStore(state => state.updateShape);
@@ -142,17 +142,17 @@ export function useSelectTool() {
   const select = useSelectionStore(state => state.select);
   const selectedIds = useSelectionStore(state => state.selectedIds);
   const clearSelection = useSelectionStore(state => state.clear);
-  const nodeRefs = useRef(new Map<ShapeId, Konva.Node>());
-  const manualDrag = useRef<ManualDrag | null>(null);
-  const marqueeDrag = useRef<MarqueeDrag | null>(null);
-  const groupDragOrigin = useRef<Map<ShapeId, Shape> | null>(null);
-  const groupDragAnchorId = useRef<ShapeId | null>(null);
-  const manualGroupOrigin = useRef<Map<ShapeId, Shape> | null>(null);
-  const [snapIndicator, setSnapIndicator] = useState<SnapIndicator>(NO_SNAP);
-  const [marqueeRect, setMarqueeRect] = useState<MarqueeRect | null>(null);
+  const nodeRefs = useRef(new Map<TShapeId, Konva.Node>());
+  const manualDrag = useRef<TManualDrag | null>(null);
+  const marqueeDrag = useRef<TMarqueeDrag | null>(null);
+  const groupDragOrigin = useRef<Map<TShapeId, TShape> | null>(null);
+  const groupDragAnchorId = useRef<TShapeId | null>(null);
+  const manualGroupOrigin = useRef<Map<TShapeId, TShape> | null>(null);
+  const [snapIndicator, setSnapIndicator] = useState<TSnapIndicator>(NO_SNAP);
+  const [marqueeRect, setMarqueeRect] = useState<TMarqueeRect | null>(null);
 
-  const snapshotSelection = useCallback((): Map<ShapeId, Shape> => {
-    const snapshot = new Map<ShapeId, Shape>();
+  const snapshotSelection = useCallback((): Map<TShapeId, TShape> => {
+    const snapshot = new Map<TShapeId, TShape>();
     for (const id of selectedIds) {
       const found = shapes.find(s => s.id === id);
       if (found) {
@@ -162,7 +162,7 @@ export function useSelectTool() {
     return snapshot;
   }, [selectedIds, shapes]);
 
-  const registerNode = useCallback((id: ShapeId, node: Konva.Node | null) => {
+  const registerNode = useCallback((id: TShapeId, node: Konva.Node | null) => {
     if (node) {
       nodeRefs.current.set(id, node);
     } else {
@@ -170,9 +170,9 @@ export function useSelectTool() {
     }
   }, []);
 
-  const getNode = useCallback((id: ShapeId) => nodeRefs.current.get(id) ?? null, []);
+  const getNode = useCallback((id: TShapeId) => nodeRefs.current.get(id) ?? null, []);
 
-  const selectShape = useCallback((id: ShapeId) => select([id]), [select]);
+  const selectShape = useCallback((id: TShapeId) => select([id]), [select]);
 
   const handleStageMouseDown = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -199,7 +199,7 @@ export function useSelectTool() {
   );
 
   const handleDragStart = useCallback(
-    (shape: Shape) => {
+    (shape: TShape) => {
       if (selectedIds.includes(shape.id) && selectedIds.length > 1) {
         groupDragOrigin.current = snapshotSelection();
         groupDragAnchorId.current = shape.id;
@@ -214,7 +214,7 @@ export function useSelectTool() {
   );
 
   const dragTargets = useCallback(
-    (excludeIds: ShapeId[]): SnapTargets => {
+    (excludeIds: TShapeId[]): TSnapTargets => {
       const visibleShapes = guidesVisible ? shapes : shapes.filter(shape => shape.type !== 'guide');
       return collectSnapTargets(visibleShapes, { excludeIds });
     },
@@ -228,7 +228,7 @@ export function useSelectTool() {
    * per-frame patches never compound rounding error.
    */
   const applyDrag = useCallback(
-    (shape: Shape, node: Konva.Node): SnapIndicator => {
+    (shape: TShape, node: Konva.Node): TSnapIndicator => {
       const origin = groupDragOrigin.current;
       if (origin && origin.size > 1 && groupDragAnchorId.current === shape.id) {
         const anchorOrigin = origin.get(shape.id);
@@ -242,7 +242,7 @@ export function useSelectTool() {
           snapTolerance / viewScale,
         );
         const anchorStart = getShapeAnchor(anchorOrigin);
-        const anchorNow = getShapeAnchor({ ...anchorOrigin, ...patch } as Shape);
+        const anchorNow = getShapeAnchor({ ...anchorOrigin, ...patch } as TShape);
         const dx = anchorNow.x - anchorStart.x;
         const dy = anchorNow.y - anchorStart.y;
         updateShape(shape.id, patch);
@@ -268,14 +268,14 @@ export function useSelectTool() {
   );
 
   const handleDragMove = useCallback(
-    (shape: Shape, node: Konva.Node) => {
+    (shape: TShape, node: Konva.Node) => {
       setSnapIndicator(applyDrag(shape, node));
     },
     [applyDrag],
   );
 
   const handleDragEnd = useCallback(
-    (shape: Shape, node: Konva.Node) => {
+    (shape: TShape, node: Konva.Node) => {
       applyDrag(shape, node);
       groupDragOrigin.current = null;
       groupDragAnchorId.current = null;
@@ -286,7 +286,7 @@ export function useSelectTool() {
   );
 
   const handleManualMouseDown = useCallback(
-    (shape: Shape, e: Konva.KonvaEventObject<MouseEvent>) => {
+    (shape: TShape, e: Konva.KonvaEventObject<MouseEvent>) => {
       const stage = e.target.getStage();
       const pointer = stage?.getRelativePointerPosition();
       if (!stage || !pointer) {
@@ -322,7 +322,7 @@ export function useSelectTool() {
             snapTolerance / viewScale,
           );
           const anchorStart = getShapeAnchor(drag.origin);
-          const anchorNow = getShapeAnchor({ ...drag.origin, ...patch } as Shape);
+          const anchorNow = getShapeAnchor({ ...drag.origin, ...patch } as TShape);
           const dx = anchorNow.x - anchorStart.x;
           const dy = anchorNow.y - anchorStart.y;
           updateShape(drag.origin.id, patch);

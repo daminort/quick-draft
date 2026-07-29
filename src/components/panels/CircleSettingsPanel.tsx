@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes';
 
-import type { Shape } from '~/types/document';
+import type { TShape } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
@@ -13,11 +13,11 @@ import {
   FillSection,
 } from '~/components/panels/shared/PanelFields';
 
-interface CircleSettingsPanelProps {
-  shape: Extract<Shape, { type: 'circle' }>;
-}
+type TCircleSettingsPanelProps = {
+  shape: Extract<TShape, { type: 'circle' }>;
+};
 
-export function CircleSettingsPanel({ shape }: CircleSettingsPanelProps) {
+export function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
   return (
