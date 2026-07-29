@@ -28,6 +28,8 @@ export function LineShape({
   onDragEnd,
   setNodeRef,
 }: TLineShapeProps) {
+  const strokeColor = isSelected ? SELECTED_COLOR : shape.style.stroke;
+
   return (
     <Line
       ref={setNodeRef}
@@ -35,16 +37,16 @@ export function LineShape({
       x={shape.x1}
       y={shape.y1}
       points={[0, 0, shape.x2 - shape.x1, shape.y2 - shape.y1]}
-      stroke={isSelected ? SELECTED_COLOR : shape.style.stroke}
-      strokeWidth={shape.style.strokeWidth}
-      dash={shape.style.dash}
-      hitStrokeWidth={HIT_STROKE_WIDTH}
       draggable={isDraggable}
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}
       onDragMove={e => onDragMove(e.target)}
       onDragEnd={e => onDragEnd(e.target)}
+      stroke={strokeColor}
+      strokeWidth={shape.style.strokeWidth}
+      dash={shape.style.dash}
+      hitStrokeWidth={HIT_STROKE_WIDTH}
     />
   );
 }

@@ -33,6 +33,7 @@ export function TextShape({
 }: TTextShapeProps) {
   const fontStyle =
     [shape.isBold && 'bold', shape.isItalic && 'italic'].filter(Boolean).join(' ') || 'normal';
+  const fillColor = isSelected ? SELECTED_COLOR : shape.fill;
 
   return (
     <Text
@@ -41,13 +42,7 @@ export function TextShape({
       x={shape.x}
       y={shape.y}
       text={shape.text}
-      align={shape.align}
-      fontFamily={shape.fontFamily}
-      fontSize={shape.fontSize}
-      fontStyle={fontStyle}
-      fill={isSelected ? SELECTED_COLOR : shape.fill}
       draggable={isDraggable}
-      visible={isVisible}
       onClick={onSelect}
       onTap={onSelect}
       onDblClick={onDblClick}
@@ -55,6 +50,12 @@ export function TextShape({
       onDragStart={onDragStart}
       onDragMove={e => onDragMove(e.target)}
       onDragEnd={e => onDragEnd(e.target)}
+      align={shape.align}
+      fontFamily={shape.fontFamily}
+      fontSize={shape.fontSize}
+      fontStyle={fontStyle}
+      fill={fillColor}
+      visible={isVisible}
     />
   );
 }

@@ -41,23 +41,23 @@ export function PrintView({ isOpen, onClose }: TPrintViewProps) {
       }}
     >
       <Flex gap="2" flexShrink="0">
-        <Button type="button" onClick={() => window.print()} title="Print" aria-label="Print">
+        <Button type="button" title="Print" aria-label="Print" onClick={() => window.print()}>
           <Printer size={18} />
           Print
         </Button>
         <Button
           type="button"
-          variant="surface"
-          color="gray"
-          onClick={onClose}
           title="Close preview"
           aria-label="Close preview"
+          onClick={onClose}
+          variant="surface"
+          color="gray"
         >
           <X size={18} />
           Close
         </Button>
       </Flex>
-      <Box className="print-page" flexShrink="0" dangerouslySetInnerHTML={{ __html: svg }} />
+      <Box dangerouslySetInnerHTML={{ __html: svg }} className="print-page" flexShrink="0" />
     </Flex>
   );
 }

@@ -51,12 +51,12 @@ export function ShapeRenderer({
     case 'arc':
       return (
         <ArcShape
+          setNodeRef={shared.setNodeRef}
           shape={shape}
           isInteractive={isInteractive}
           isSelected={isSelected}
           onSelect={shared.onSelect}
           onMouseDown={e => interaction.onManualMouseDown(shape, e)}
-          setNodeRef={shared.setNodeRef}
         />
       );
     case 'text':
@@ -73,12 +73,12 @@ export function ShapeRenderer({
     case 'dimension':
       return (
         <DimensionShape
+          setNodeRef={shared.setNodeRef}
           shape={shape}
           isSelected={isSelected}
           isInteractive={isInteractive}
           onSelect={shared.onSelect}
           onMouseDown={e => interaction.onManualMouseDown(shape, e)}
-          setNodeRef={shared.setNodeRef}
         />
       );
     case 'component-instance':

@@ -26,12 +26,12 @@ export function ConfirmDialog({
         <AlertDialog.Description size="2">{message}</AlertDialog.Description>
         <Flex justify="end" gap="3" mt="4">
           <AlertDialog.Cancel>
-            <Button variant="soft" color="gray" onClick={onCancel}>
+            <Button onClick={onCancel} variant="soft" color="gray">
               {cancelLabel}
             </Button>
           </AlertDialog.Cancel>
           <AlertDialog.Action>
-            <Button variant="solid" color="red" onClick={onConfirm}>
+            <Button onClick={onConfirm} variant="solid" color="red">
               {confirmLabel}
             </Button>
           </AlertDialog.Action>

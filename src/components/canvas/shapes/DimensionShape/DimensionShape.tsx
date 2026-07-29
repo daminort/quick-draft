@@ -58,6 +58,16 @@ export function DimensionShape({
     return null;
   }
 
+  const onManualMouseDown = isInteractive ? onMouseDown : undefined;
+  const labelText = formatDimensionLabel(geometry.length, shape.unit, shouldShowUnit);
+  const labelOffsetX =
+    geometry.label.align === 'center'
+      ? geometry.label.width / 2
+      : geometry.label.align === 'end'
+        ? geometry.label.width
+        : 0;
+  const labelOffsetY = geometry.label.baseline === 'bottom' ? DIMENSION_LABEL_FONT_SIZE : 0;
+
   return (
     <Group
       ref={setNodeRef}
@@ -66,7 +76,7 @@ export function DimensionShape({
       y={0}
       onClick={onSelect}
       onTap={onSelect}
-      onMouseDown={isInteractive ? onMouseDown : undefined}
+      onMouseDown={onManualMouseDown}
     >
       {geometry.extensionA && (
         <Line
@@ -121,18 +131,12 @@ export function DimensionShape({
       <Text
         x={geometry.label.x}
         y={geometry.label.y}
-        text={formatDimensionLabel(geometry.length, shape.unit, shouldShowUnit)}
+        text={labelText}
         fontSize={DIMENSION_LABEL_FONT_SIZE}
         fontStyle="italic"
         fill={color}
-        offsetX={
-          geometry.label.align === 'center'
-            ? geometry.label.width / 2
-            : geometry.label.align === 'end'
-              ? geometry.label.width
-              : 0
-        }
-        offsetY={geometry.label.baseline === 'bottom' ? DIMENSION_LABEL_FONT_SIZE : 0}
+        offsetX={labelOffsetX}
+        offsetY={labelOffsetY}
       />
     </Group>
   );

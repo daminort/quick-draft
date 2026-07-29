@@ -134,6 +134,8 @@ type TFillSectionProps = {
 
 export function FillSection({ style, onChange }: TFillSectionProps) {
   const enabled = style.fill !== undefined;
+  const fillColor = style.fill ?? '#ffffff';
+  const fillOpacity = style.fillOpacity ?? 1;
 
   return (
     <Flex direction="column" gap="2">
@@ -142,7 +144,7 @@ export function FillSection({ style, onChange }: TFillSectionProps) {
           <Checkbox
             checked={enabled}
             onCheckedChange={checked =>
-              onChange({ ...style, fill: checked ? (style.fill ?? '#ffffff') : undefined })
+              onChange({ ...style, fill: checked ? fillColor : undefined })
             }
           />
           Fill
@@ -151,17 +153,14 @@ export function FillSection({ style, onChange }: TFillSectionProps) {
       {enabled && (
         <>
           <LabeledRow label="Color">
-            <ColorInput
-              value={style.fill ?? '#ffffff'}
-              onChange={value => onChange({ ...style, fill: value })}
-            />
+            <ColorInput value={fillColor} onChange={value => onChange({ ...style, fill: value })} />
           </LabeledRow>
           <LabeledRow label="Opacity">
             <Slider
               min={0}
               max={1}
               step={0.01}
-              value={[style.fillOpacity ?? 1]}
+              value={[fillOpacity]}
               onValueChange={([value]) => onChange({ ...style, fillOpacity: value })}
             />
           </LabeledRow>

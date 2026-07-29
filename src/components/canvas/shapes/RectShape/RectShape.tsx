@@ -27,6 +27,9 @@ export function RectShape({
   onDragEnd,
   setNodeRef,
 }: TRectShapeProps) {
+  const strokeColor = isSelected ? SELECTED_COLOR : shape.style.stroke;
+  const fillOpacity = shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1;
+
   return (
     <Rect
       ref={setNodeRef}
@@ -36,18 +39,18 @@ export function RectShape({
       width={shape.w}
       height={shape.h}
       rotation={shape.rotation}
-      stroke={isSelected ? SELECTED_COLOR : shape.style.stroke}
-      strokeWidth={shape.style.strokeWidth}
-      fill={shape.style.fill}
-      opacity={shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1}
-      perfectDrawEnabled={false}
-      dash={shape.style.dash}
       draggable={isDraggable}
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}
       onDragMove={e => onDragMove(e.target)}
       onDragEnd={e => onDragEnd(e.target)}
+      stroke={strokeColor}
+      strokeWidth={shape.style.strokeWidth}
+      fill={shape.style.fill}
+      opacity={fillOpacity}
+      perfectDrawEnabled={false}
+      dash={shape.style.dash}
     />
   );
 }

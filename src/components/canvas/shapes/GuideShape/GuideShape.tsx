@@ -32,10 +32,11 @@ export function GuideShape({
   onDragEnd,
   setNodeRef,
 }: TGuideShapeProps) {
+  const strokeColor = isSelected ? SELECTED_COLOR : GUIDE_COLOR;
   const common = {
     ref: setNodeRef,
     id: shape.id,
-    stroke: isSelected ? SELECTED_COLOR : GUIDE_COLOR,
+    stroke: strokeColor,
     strokeWidth: 1,
     dash: GUIDE_DASH,
     hitStrokeWidth: HIT_STROKE_WIDTH,
