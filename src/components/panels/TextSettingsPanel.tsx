@@ -1,9 +1,5 @@
 import { Flex, IconButton, Select, TextArea } from '@radix-ui/themes'
-import { TextBIcon } from '@phosphor-icons/react/dist/csr/TextB'
-import { TextItalicIcon } from '@phosphor-icons/react/dist/csr/TextItalic'
-import { TextAlignLeftIcon } from '@phosphor-icons/react/dist/csr/TextAlignLeft'
-import { TextAlignCenterIcon } from '@phosphor-icons/react/dist/csr/TextAlignCenter'
-import { TextAlignRightIcon } from '@phosphor-icons/react/dist/csr/TextAlignRight'
+import { Bold, Italic, AlignLeft, AlignCenter, AlignRight } from 'lucide-react'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { Section, InlineField, CompactNumberInput, ColorInput } from '~/components/panels/shared/PanelFields'
 import type { Shape } from '~/types/document'
@@ -41,7 +37,7 @@ export function TextSettingsPanel({ shape }: TextSettingsPanelProps) {
             style={shape.bold ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
             onClick={() => updateShape(shape.id, { bold: !shape.bold })}
           >
-            <TextBIcon size={16} />
+            <Bold size={16} />
           </IconButton>
           <IconButton
             type="button"
@@ -53,7 +49,7 @@ export function TextSettingsPanel({ shape }: TextSettingsPanelProps) {
             style={shape.italic ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
             onClick={() => updateShape(shape.id, { italic: !shape.italic })}
           >
-            <TextItalicIcon size={16} />
+            <Italic size={16} />
           </IconButton>
           <IconButton
             type="button"
@@ -65,7 +61,7 @@ export function TextSettingsPanel({ shape }: TextSettingsPanelProps) {
             style={shape.align === 'left' ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
             onClick={() => updateShape(shape.id, { align: 'left' })}
           >
-            <TextAlignLeftIcon size={16} />
+            <AlignLeft size={16} />
           </IconButton>
           <IconButton
             type="button"
@@ -77,7 +73,7 @@ export function TextSettingsPanel({ shape }: TextSettingsPanelProps) {
             style={shape.align === 'center' ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
             onClick={() => updateShape(shape.id, { align: 'center' })}
           >
-            <TextAlignCenterIcon size={16} />
+            <AlignCenter size={16} />
           </IconButton>
           <IconButton
             type="button"
@@ -89,7 +85,7 @@ export function TextSettingsPanel({ shape }: TextSettingsPanelProps) {
             style={shape.align === 'right' ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
             onClick={() => updateShape(shape.id, { align: 'right' })}
           >
-            <TextAlignRightIcon size={16} />
+            <AlignRight size={16} />
           </IconButton>
         </Flex>
         <TextArea

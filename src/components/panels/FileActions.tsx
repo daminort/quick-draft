@@ -1,7 +1,6 @@
 import { useRef, type ChangeEvent } from 'react'
 import { IconButton } from '@radix-ui/themes'
-import { FloppyDiskIcon } from '@phosphor-icons/react/dist/csr/FloppyDisk'
-import { FolderOpenIcon } from '@phosphor-icons/react/dist/csr/FolderOpen'
+import { Save, FolderOpen } from 'lucide-react'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { exportDocumentToJsonFile, importDocumentFromJsonFile } from '~/lib/persistence/fileIO'
 
@@ -32,7 +31,7 @@ export function FileActions() {
         size="3"
         onClick={() => exportDocumentToJsonFile(documentState)}
       >
-        <FloppyDiskIcon size={20} />
+        <Save size={20} />
       </IconButton>
       <IconButton
         type="button"
@@ -42,7 +41,7 @@ export function FileActions() {
         size="3"
         onClick={() => inputRef.current?.click()}
       >
-        <FolderOpenIcon size={20} />
+        <FolderOpen size={20} />
       </IconButton>
       <input
         ref={inputRef}

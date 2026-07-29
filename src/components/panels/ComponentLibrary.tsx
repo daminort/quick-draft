@@ -1,9 +1,7 @@
 import { useRef, useState, type ChangeEvent } from 'react'
 import { Stage, Layer, Group } from 'react-konva'
 import { Flex, Text, Button, IconButton } from '@radix-ui/themes'
-import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
-import { DownloadSimpleIcon } from '@phosphor-icons/react/dist/csr/DownloadSimple'
-import { UploadSimpleIcon } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { Trash2, Download, Upload } from 'lucide-react'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
@@ -108,7 +106,7 @@ export function ComponentLibrary() {
           disabled={entries.length === 0}
           onClick={() => exportComponentLibraryToJsonFile(components)}
         >
-          <DownloadSimpleIcon size={16} />
+          <Download size={16} />
           Export
         </Button>
         <Button
@@ -118,7 +116,7 @@ export function ComponentLibrary() {
           style={{ flex: 1 }}
           onClick={() => importInputRef.current?.click()}
         >
-          <UploadSimpleIcon size={16} />
+          <Upload size={16} />
           Import
         </Button>
         <input
@@ -176,7 +174,7 @@ export function ComponentLibrary() {
               size="1"
               onClick={() => setDeleteTarget(componentDef)}
             >
-              <TrashIcon size={16} />
+              <Trash2 size={16} />
             </IconButton>
           </Flex>
         ))}

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { Flex, Box, Button } from '@radix-ui/themes'
-import { PrinterIcon } from '@phosphor-icons/react/dist/csr/Printer'
-import { XIcon } from '@phosphor-icons/react/dist/csr/X'
+import { Printer, X } from 'lucide-react'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useUIStore } from '~/stores/useUIStore'
 import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg'
@@ -38,7 +37,7 @@ export function PrintView({ open, onClose }: PrintViewProps) {
     >
       <Flex gap="2" flexShrink="0">
         <Button type="button" onClick={() => window.print()} title="Print" aria-label="Print">
-          <PrinterIcon size={18} />
+          <Printer size={18} />
           Print
         </Button>
         <Button
@@ -49,7 +48,7 @@ export function PrintView({ open, onClose }: PrintViewProps) {
           title="Close preview"
           aria-label="Close preview"
         >
-          <XIcon size={18} />
+          <X size={18} />
           Close
         </Button>
       </Flex>

@@ -2,10 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Stage, Layer, Line, Rect } from 'react-konva'
 import type Konva from 'konva'
 import { Box } from '@radix-ui/themes'
-import { ArrowLineUpIcon } from '@phosphor-icons/react/dist/csr/ArrowLineUp'
-import { ArrowLineDownIcon } from '@phosphor-icons/react/dist/csr/ArrowLineDown'
-import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/ArrowsOutLineHorizontal'
-import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
+import { ArrowUpToLine, ArrowDownFromLine, RulerDimensionLine, Trash2 } from 'lucide-react'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
@@ -403,12 +400,12 @@ export function CanvasStage() {
           items={[
             {
               label: 'Bring to Front',
-              icon: <ArrowLineUpIcon size={14} />,
+              icon: <ArrowUpToLine size={14} />,
               onClick: () => bringToFront(contextMenu.shapeId),
             },
             {
               label: 'Send to Back',
-              icon: <ArrowLineDownIcon size={14} />,
+              icon: <ArrowDownFromLine size={14} />,
               onClick: () => sendToBack(contextMenu.shapeId),
             },
           ]}
@@ -422,12 +419,12 @@ export function CanvasStage() {
           items={[
             {
               label: 'Toggle dimensions',
-              icon: <ArrowsOutLineHorizontalIcon size={14} />,
+              icon: <RulerDimensionLine size={14} />,
               onClick: () => toggleDimensionsVisible(),
             },
             {
               label: 'Delete guides',
-              icon: <TrashIcon size={14} />,
+              icon: <Trash2 size={14} />,
               onClick: () => setDeleteGuidesDialogOpen(true),
             },
           ]}

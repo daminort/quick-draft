@@ -1,6 +1,5 @@
 import { Flex, IconButton } from '@radix-ui/themes'
-import { MinusIcon } from '@phosphor-icons/react/dist/csr/Minus'
-import { PlusIcon } from '@phosphor-icons/react/dist/csr/Plus'
+import { Minus, Plus } from 'lucide-react'
 import { MIN_SCALE, MAX_SCALE } from '~/constants/canvas'
 
 interface ZoomControlProps {
@@ -36,7 +35,7 @@ export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: ZoomControl
         disabled={scale <= MIN_SCALE}
         onClick={onZoomOut}
       >
-        <MinusIcon size={14} />
+        <Minus size={14} />
       </IconButton>
       <IconButton
         type="button"
@@ -60,7 +59,7 @@ export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: ZoomControl
         disabled={scale >= MAX_SCALE}
         onClick={onZoomIn}
       >
-        <PlusIcon size={14} />
+        <Plus size={14} />
       </IconButton>
     </Flex>
   )

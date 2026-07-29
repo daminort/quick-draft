@@ -1,18 +1,20 @@
 import { useState } from 'react'
 import { Flex, IconButton } from '@radix-ui/themes'
-import { CursorIcon } from '@phosphor-icons/react/dist/csr/Cursor'
-import { LineSegmentIcon } from '@phosphor-icons/react/dist/csr/LineSegment'
-import { RectangleIcon } from '@phosphor-icons/react/dist/csr/Rectangle'
-import { CircleIcon } from '@phosphor-icons/react/dist/csr/Circle'
-import { CircleNotchIcon } from '@phosphor-icons/react/dist/csr/CircleNotch'
-import { TextTIcon } from '@phosphor-icons/react/dist/csr/TextT'
-import { RulerIcon } from '@phosphor-icons/react/dist/csr/Ruler'
-import { PencilRulerIcon } from '@phosphor-icons/react/dist/csr/PencilRuler'
-import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/ArrowsOutLineHorizontal'
-import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
-import { GearIcon } from '@phosphor-icons/react/dist/csr/Gear'
-import { StackIcon } from '@phosphor-icons/react/dist/csr/Stack'
-import { PrinterIcon } from '@phosphor-icons/react/dist/csr/Printer'
+import {
+  MousePointer2,
+  PencilLine,
+  Square,
+  Circle,
+  LoaderCircle,
+  Type,
+  PanelLeftRightDashed,
+  Ruler,
+  RulerDimensionLine,
+  Trash2,
+  Settings,
+  Layers,
+  Printer,
+} from 'lucide-react'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
@@ -20,24 +22,24 @@ import { useUIStore } from '~/stores/useUIStore'
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
 import { FileActions } from '~/components/panels/FileActions'
 
-const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
-  { tool: 'select', label: 'Select', Icon: CursorIcon },
-  { tool: 'line', label: 'Line (L)', Icon: LineSegmentIcon },
-  { tool: 'rect', label: 'Rectangle (R)', Icon: RectangleIcon },
-  { tool: 'circle', label: 'Circle (C)', Icon: CircleIcon },
-  { tool: 'arc', label: 'Arc (A)', Icon: CircleNotchIcon },
-  { tool: 'text', label: 'Text (T)', Icon: TextTIcon },
-  { tool: 'guide', label: 'Guide (G) — click: horizontal, Shift+click: vertical', Icon: RulerIcon },
+const TOOLS: { tool: Tool; label: string; Icon: typeof MousePointer2 }[] = [
+  { tool: 'select', label: 'Select', Icon: MousePointer2 },
+  { tool: 'line', label: 'Line (L)', Icon: PencilLine },
+  { tool: 'rect', label: 'Rectangle (R)', Icon: Square },
+  { tool: 'circle', label: 'Circle (C)', Icon: Circle },
+  { tool: 'arc', label: 'Arc (A)', Icon: LoaderCircle },
+  { tool: 'text', label: 'Text (T)', Icon: Type },
+  { tool: 'guide', label: 'Guide (G) — click: horizontal, Shift+click: vertical', Icon: PanelLeftRightDashed },
   {
     tool: 'dimension',
     label: 'Dimension (D) — click two points, then drag to set direction and offset',
-    Icon: ArrowsOutLineHorizontalIcon,
+    Icon: RulerDimensionLine,
   },
   {
     tool: 'ruler',
     label:
       'Ruler (U) — click two points to measure; hold Shift to lock to horizontal/vertical; type a number + Enter to set an exact length',
-    Icon: PencilRulerIcon,
+    Icon: Ruler,
   },
 ]
 
@@ -95,7 +97,7 @@ export function Toolbar() {
           style={libraryOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
           onClick={toggleLibrary}
         >
-          <StackIcon size={20} />
+          <Layers size={20} />
         </IconButton>
 
         <FileActions />
@@ -108,7 +110,7 @@ export function Toolbar() {
           size="3"
           onClick={openPrint}
         >
-          <PrinterIcon size={20} />
+          <Printer size={20} />
         </IconButton>
 
         <IconButton
@@ -121,7 +123,7 @@ export function Toolbar() {
           style={settingsOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
           onClick={toggleSettings}
         >
-          <GearIcon size={20} />
+          <Settings size={20} />
         </IconButton>
 
         <IconButton
@@ -133,7 +135,7 @@ export function Toolbar() {
           size="3"
           onClick={() => setClearDialogOpen(true)}
         >
-          <TrashIcon size={20} />
+          <Trash2 size={20} />
         </IconButton>
       </Flex>
 
