@@ -1,3 +1,4 @@
+import { Box, Flex, Text, TextField, Checkbox, Slider } from '@radix-ui/themes'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import type { Shape } from '~/types/document'
 
@@ -12,69 +13,83 @@ export function StylePanel({ shape }: StylePanelProps) {
   const { style } = shape
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-        Stroke width
-        <input
-          type="number"
-          min={1}
-          value={style.strokeWidth}
-          onChange={(e) => {
-            const value = Number(e.target.value)
-            if (Number.isFinite(value) && value > 0) {
-              updateShape(shape.id, { style: { ...style, strokeWidth: value } })
-            }
-          }}
-        />
-      </label>
-
-      <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-        Stroke color
-        <input
-          type="color"
-          value={style.stroke}
-          onChange={(e) => updateShape(shape.id, { style: { ...style, stroke: e.target.value } })}
-        />
-      </label>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <input
-            type="checkbox"
-            checked={style.fill !== undefined}
-            onChange={(e) =>
-              updateShape(shape.id, {
-                style: { ...style, fill: e.target.checked ? (style.fill ?? '#ffffff') : undefined },
-              })
-            }
+    <Flex direction="column" gap="2">
+      <Text as="label" size="2">
+        <Flex direction="column" gap="1">
+          Stroke width
+          <TextField.Root
+            type="number"
+            min={1}
+            value={style.strokeWidth}
+            onChange={(e) => {
+              const value = Number(e.target.value)
+              if (Number.isFinite(value) && value > 0) {
+                updateShape(shape.id, { style: { ...style, strokeWidth: value } })
+              }
+            }}
           />
-          Fill
-        </label>
-        {style.fill !== undefined && (
-          <>
+        </Flex>
+      </Text>
+
+      <Text as="label" size="2">
+        <Flex direction="column" gap="1">
+          Stroke color
+          <Box>
             <input
               type="color"
-              value={style.fill}
-              onChange={(e) => updateShape(shape.id, { style: { ...style, fill: e.target.value } })}
+              value={style.stroke}
+              onChange={(e) =>
+                updateShape(shape.id, { style: { ...style, stroke: e.target.value } })
+              }
             />
-            <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              Fill opacity
+          </Box>
+        </Flex>
+      </Text>
+
+      <Flex direction="column" gap="1">
+        <Text as="label" size="2">
+          <Flex align="center" gap="2">
+            <Checkbox
+              checked={style.fill !== undefined}
+              onCheckedChange={(checked) =>
+                updateShape(shape.id, {
+                  style: { ...style, fill: checked ? (style.fill ?? '#ffffff') : undefined },
+                })
+              }
+            />
+            Fill
+          </Flex>
+        </Text>
+        {style.fill !== undefined && (
+          <>
+            <Box>
               <input
-                type="range"
-                min={0}
-                max={1}
-                step={0.01}
-                value={style.fillOpacity ?? 1}
+                type="color"
+                value={style.fill}
                 onChange={(e) =>
-                  updateShape(shape.id, {
-                    style: { ...style, fillOpacity: Number(e.target.value) },
-                  })
+                  updateShape(shape.id, { style: { ...style, fill: e.target.value } })
                 }
               />
-            </label>
+            </Box>
+            <Text as="label" size="2">
+              <Flex direction="column" gap="1">
+                Fill opacity
+                <Slider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[style.fillOpacity ?? 1]}
+                  onValueChange={([value]) =>
+                    updateShape(shape.id, {
+                      style: { ...style, fillOpacity: value },
+                    })
+                  }
+                />
+              </Flex>
+            </Text>
           </>
         )}
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   )
 }

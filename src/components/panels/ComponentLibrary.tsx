@@ -1,5 +1,6 @@
 import { useRef, useState, type ChangeEvent } from 'react'
 import { Stage, Layer, Group } from 'react-konva'
+import { Flex, Text, Button, IconButton } from '@radix-ui/themes'
 import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
 import { DownloadSimpleIcon } from '@phosphor-icons/react/dist/csr/DownloadSimple'
 import { UploadSimpleIcon } from '@phosphor-icons/react/dist/csr/UploadSimple'
@@ -87,60 +88,39 @@ export function ComponentLibrary() {
   }
 
   return (
-    <div
-      style={{
-        width: 220,
-        padding: 12,
-        borderLeft: '1px solid #ddd',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-        overflowY: 'auto',
-      }}
+    <Flex
+      direction="column"
+      gap="4"
+      width="220px"
+      p="3"
+      style={{ borderLeft: '1px solid var(--gray-a5)', overflowY: 'auto' }}
     >
-      <h2 style={{ fontSize: 14, margin: 0 }}>Component library</h2>
+      <Text as="div" size="2" weight="bold">
+        Component library
+      </Text>
 
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button
+      <Flex gap="2">
+        <Button
           type="button"
-          onClick={() => exportComponentLibraryToJsonFile(components)}
+          variant="outline"
+          size="1"
+          style={{ flex: 1 }}
           disabled={entries.length === 0}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            flex: 1,
-            padding: '6px 8px',
-            border: '1px solid #ddd',
-            borderRadius: 6,
-            background: 'transparent',
-            cursor: entries.length === 0 ? 'default' : 'pointer',
-            opacity: entries.length === 0 ? 0.5 : 1,
-            fontSize: 12,
-          }}
+          onClick={() => exportComponentLibraryToJsonFile(components)}
         >
           <DownloadSimpleIcon size={16} />
           Export
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="outline"
+          size="1"
+          style={{ flex: 1 }}
           onClick={() => importInputRef.current?.click()}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            flex: 1,
-            padding: '6px 8px',
-            border: '1px solid #ddd',
-            borderRadius: 6,
-            background: 'transparent',
-            cursor: 'pointer',
-            fontSize: 12,
-          }}
         >
           <UploadSimpleIcon size={16} />
           Import
-        </button>
+        </Button>
         <input
           ref={importInputRef}
           type="file"
@@ -148,17 +128,20 @@ export function ComponentLibrary() {
           onChange={handleImportLibrary}
           style={{ display: 'none' }}
         />
-      </div>
+      </Flex>
 
       {entries.length === 0 && (
-        <p style={{ margin: 0, fontSize: 12, color: '#666' }}>
+        <Text as="p" size="1" color="gray">
           Select two or more shapes and group them into a component to see it here.
-        </p>
+        </Text>
       )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Flex direction="column" gap="2">
         {entries.map((componentDef) => (
-          <div
+          <Flex
             key={componentDef.id}
+            align="center"
+            gap="2"
+            p="1"
             draggable
             onDragStart={(e) => {
               e.dataTransfer.setData(COMPONENT_DRAG_MIME_TYPE, componentDef.id)
@@ -166,51 +149,38 @@ export function ComponentLibrary() {
             }}
             title={`Drag onto the canvas to insert an instance of "${componentDef.name}"`}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: 6,
-              border: '1px solid #ddd',
-              borderRadius: 6,
+              border: '1px solid var(--gray-a5)',
+              borderRadius: 'var(--radius-3)',
               cursor: 'grab',
             }}
           >
             <ComponentPreview componentDef={componentDef} components={components} />
-            <span
+            <Text
+              size="2"
               style={{
                 flex: 1,
                 minWidth: 0,
-                fontSize: 13,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
               }}
             >
               {componentDef.name}
-            </span>
-            <button
+            </Text>
+            <IconButton
               type="button"
               title={`Delete "${componentDef.name}" from the library`}
               aria-label={`Delete "${componentDef.name}" from the library`}
+              variant="ghost"
+              color="red"
+              size="1"
               onClick={() => setDeleteTarget(componentDef)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 28,
-                height: 28,
-                flexShrink: 0,
-                border: 'none',
-                borderRadius: 6,
-                background: 'transparent',
-                cursor: 'pointer',
-              }}
             >
               <TrashIcon size={16} />
-            </button>
-          </div>
+            </IconButton>
+          </Flex>
         ))}
-      </div>
+      </Flex>
 
       <ConfirmDialog
         open={deleteTarget !== null}
@@ -224,6 +194,6 @@ export function ComponentLibrary() {
         onConfirm={handleDeleteConfirmed}
         onCancel={() => setDeleteTarget(null)}
       />
-    </div>
+    </Flex>
   )
 }

@@ -1,20 +1,9 @@
 import { useRef, type ChangeEvent } from 'react'
+import { IconButton } from '@radix-ui/themes'
 import { FloppyDiskIcon } from '@phosphor-icons/react/dist/csr/FloppyDisk'
 import { FolderOpenIcon } from '@phosphor-icons/react/dist/csr/FolderOpen'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { exportDocumentToJsonFile, importDocumentFromJsonFile } from '~/lib/persistence/fileIO'
-
-const BUTTON_STYLE = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: 36,
-  height: 36,
-  border: 'none',
-  borderRadius: 6,
-  background: 'transparent',
-  cursor: 'pointer',
-} as const
 
 export function FileActions() {
   const documentState = useDocumentStore((state) => state.document)
@@ -35,24 +24,26 @@ export function FileActions() {
 
   return (
     <>
-      <button
+      <IconButton
         type="button"
         title="Save as JSON"
         aria-label="Save as JSON"
+        variant="ghost"
+        size="3"
         onClick={() => exportDocumentToJsonFile(documentState)}
-        style={BUTTON_STYLE}
       >
         <FloppyDiskIcon size={20} />
-      </button>
-      <button
+      </IconButton>
+      <IconButton
         type="button"
         title="Open JSON"
         aria-label="Open JSON"
+        variant="ghost"
+        size="3"
         onClick={() => inputRef.current?.click()}
-        style={BUTTON_STYLE}
       >
         <FolderOpenIcon size={20} />
-      </button>
+      </IconButton>
       <input
         ref={inputRef}
         type="file"

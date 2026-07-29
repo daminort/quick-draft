@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Flex, Box, Button } from '@radix-ui/themes'
 import { PrinterIcon } from '@phosphor-icons/react/dist/csr/Printer'
 import { XIcon } from '@phosphor-icons/react/dist/csr/X'
 import { useDocumentStore } from '~/stores/useDocumentStore'
@@ -22,18 +23,37 @@ export function PrintView({ open, onClose }: PrintViewProps) {
   if (!open) return null
 
   return (
-    <div className="print-overlay">
-      <div className="print-toolbar">
-        <button type="button" onClick={() => window.print()} title="Print" aria-label="Print">
+    <Flex
+      direction="column"
+      align="center"
+      gap="4"
+      p="6"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 2000,
+        overflow: 'auto',
+        background: 'rgba(0, 0, 0, 0.6)',
+      }}
+    >
+      <Flex gap="2" flexShrink="0">
+        <Button type="button" onClick={() => window.print()} title="Print" aria-label="Print">
           <PrinterIcon size={18} />
           Print
-        </button>
-        <button type="button" onClick={onClose} title="Close preview" aria-label="Close preview">
+        </Button>
+        <Button
+          type="button"
+          variant="surface"
+          color="gray"
+          onClick={onClose}
+          title="Close preview"
+          aria-label="Close preview"
+        >
           <XIcon size={18} />
           Close
-        </button>
-      </div>
-      <div className="print-page" dangerouslySetInnerHTML={{ __html: svg }} />
-    </div>
+        </Button>
+      </Flex>
+      <Box className="print-page" flexShrink="0" dangerouslySetInnerHTML={{ __html: svg }} />
+    </Flex>
   )
 }

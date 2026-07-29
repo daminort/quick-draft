@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Stage, Layer, Line, Rect } from 'react-konva'
 import type Konva from 'konva'
+import { Box } from '@radix-ui/themes'
 import { ArrowLineUpIcon } from '@phosphor-icons/react/dist/csr/ArrowLineUp'
 import { ArrowLineDownIcon } from '@phosphor-icons/react/dist/csr/ArrowLineDown'
 import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/ArrowsOutLineHorizontal'
@@ -229,14 +230,14 @@ export function CanvasStage() {
   }
 
   return (
-    <div
+    <Box
       ref={containerRef}
       onDrop={handleComponentDrop}
       onDragOver={handleComponentDragOver}
+      width="100%"
+      height="100%"
+      position="relative"
       style={{
-        width: '100%',
-        height: '100%',
-        position: 'relative',
         cursor: pan.isPanning ? 'grabbing' : undefined,
       }}
     >
@@ -401,6 +402,6 @@ export function CanvasStage() {
         }}
         onCancel={() => setDeleteGuidesDialogOpen(false)}
       />
-    </div>
+    </Box>
   )
 }

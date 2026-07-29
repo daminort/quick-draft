@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Flex, Text, TextField, Button } from '@radix-ui/themes'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 
@@ -19,33 +20,27 @@ export function ComponentActions() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <h3 style={{ fontSize: 13, margin: 0 }}>Component</h3>
-      <p style={{ margin: 0, fontSize: 12, color: '#666' }}>{selectedIds.length} shapes selected</p>
-      <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-        Name
-        <input
-          type="text"
-          value={name}
-          placeholder="Component"
-          onChange={(e) => setName(e.target.value)}
-        />
-      </label>
-      <button
-        type="button"
-        onClick={handleCreate}
-        style={{
-          padding: '6px 10px',
-          border: 'none',
-          borderRadius: 6,
-          background: '#2563eb',
-          color: '#fff',
-          cursor: 'pointer',
-          fontSize: 13,
-        }}
-      >
+    <Flex direction="column" gap="2">
+      <Text as="div" size="2" weight="bold">
+        Component
+      </Text>
+      <Text as="p" size="1" color="gray">
+        {selectedIds.length} shapes selected
+      </Text>
+      <Text as="label" size="2">
+        <Flex direction="column" gap="1">
+          Name
+          <TextField.Root
+            type="text"
+            value={name}
+            placeholder="Component"
+            onChange={(e) => setName(e.target.value)}
+          />
+        </Flex>
+      </Text>
+      <Button type="button" onClick={handleCreate}>
         Group into component
-      </button>
-    </div>
+      </Button>
+    </Flex>
   )
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes'
 import { UnitsControl } from '~/components/panels/UnitsControl'
 import { useUIStore } from '~/stores/useUIStore'
 import { useDocumentStore } from '~/stores/useDocumentStore'
@@ -28,88 +29,105 @@ export function SettingsPanel() {
   }
 
   return (
-    <div
-      style={{
-        width: 220,
-        padding: 12,
-        borderLeft: '1px solid #ddd',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-      }}
+    <Flex
+      direction="column"
+      gap="4"
+      width="220px"
+      p="3"
+      style={{ borderLeft: '1px solid var(--gray-a5)' }}
     >
-      <h2 style={{ fontSize: 14, margin: 0 }}>Settings</h2>
+      <Text as="div" size="2" weight="bold">
+        Settings
+      </Text>
       <UnitsControl />
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <h3 style={{ fontSize: 13, margin: 0 }}>Guides</h3>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-          <input type="checkbox" checked={guidesVisible} onChange={toggleGuidesVisible} />
-          Show guides
-        </label>
-        <button
+      <Flex direction="column" gap="2">
+        <Text as="div" size="2" weight="bold">
+          Guides
+        </Text>
+        <Text as="label" size="2">
+          <Flex align="center" gap="2">
+            <Checkbox checked={guidesVisible} onCheckedChange={toggleGuidesVisible} />
+            Show guides
+          </Flex>
+        </Text>
+        <Button
           type="button"
+          variant="soft"
+          color="gray"
           onClick={() => setDeleteGuidesDialogOpen(true)}
-          style={{
-            padding: '6px 10px',
-            border: '1px solid #ddd',
-            borderRadius: 6,
-            background: 'transparent',
-            cursor: 'pointer',
-            fontSize: 13,
-          }}
         >
           Delete all guides
-        </button>
-      </div>
+        </Button>
+      </Flex>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <h3 style={{ fontSize: 13, margin: 0 }}>Snapping</h3>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-          Snap tolerance (px)
-          <input
-            type="number"
-            min={0}
-            value={snapTolerance}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              if (Number.isFinite(value)) setSnapTolerance(value)
-            }}
-          />
-        </label>
-      </div>
+      <Flex direction="column" gap="2">
+        <Text as="div" size="2" weight="bold">
+          Snapping
+        </Text>
+        <Text as="label" size="2">
+          <Flex direction="column" gap="1">
+            Snap tolerance (px)
+            <TextField.Root
+              type="number"
+              min={0}
+              value={snapTolerance}
+              onChange={(e) => {
+                const value = Number(e.target.value)
+                if (Number.isFinite(value)) setSnapTolerance(value)
+              }}
+            />
+          </Flex>
+        </Text>
+      </Flex>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <h3 style={{ fontSize: 13, margin: 0 }}>Dimensions</h3>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-          <input type="checkbox" checked={dimensionsVisible} onChange={toggleDimensionsVisible} />
-          Show dimensions
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-          <input type="checkbox" checked={showDimensionUnit} onChange={toggleShowDimensionUnit} />
-          Show unit
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-          Color
-          <input
-            type="color"
-            value={dimensionColor}
-            onChange={(e) => setDimensionColor(e.target.value)}
-          />
-        </label>
-      </div>
+      <Flex direction="column" gap="2">
+        <Text as="div" size="2" weight="bold">
+          Dimensions
+        </Text>
+        <Text as="label" size="2">
+          <Flex align="center" gap="2">
+            <Checkbox checked={dimensionsVisible} onCheckedChange={toggleDimensionsVisible} />
+            Show dimensions
+          </Flex>
+        </Text>
+        <Text as="label" size="2">
+          <Flex align="center" gap="2">
+            <Checkbox checked={showDimensionUnit} onCheckedChange={toggleShowDimensionUnit} />
+            Show unit
+          </Flex>
+        </Text>
+        <Text as="label" size="2">
+          <Flex direction="column" gap="1">
+            Color
+            <Box>
+              <input
+                type="color"
+                value={dimensionColor}
+                onChange={(e) => setDimensionColor(e.target.value)}
+              />
+            </Box>
+          </Flex>
+        </Text>
+      </Flex>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <h3 style={{ fontSize: 13, margin: 0 }}>Ruler</h3>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-          <input type="checkbox" checked={rulerVisible} onChange={toggleRulerVisible} />
-          Show ruler
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-          <input type="checkbox" checked={rulerGuidesVisible} onChange={toggleRulerGuidesVisible} />
-          Show cursor guides
-        </label>
-      </div>
+      <Flex direction="column" gap="2">
+        <Text as="div" size="2" weight="bold">
+          Ruler
+        </Text>
+        <Text as="label" size="2">
+          <Flex align="center" gap="2">
+            <Checkbox checked={rulerVisible} onCheckedChange={toggleRulerVisible} />
+            Show ruler
+          </Flex>
+        </Text>
+        <Text as="label" size="2">
+          <Flex align="center" gap="2">
+            <Checkbox checked={rulerGuidesVisible} onCheckedChange={toggleRulerGuidesVisible} />
+            Show cursor guides
+          </Flex>
+        </Text>
+      </Flex>
 
       <ConfirmDialog
         open={deleteGuidesDialogOpen}
@@ -119,6 +137,6 @@ export function SettingsPanel() {
         onConfirm={handleDeleteGuidesConfirmed}
         onCancel={() => setDeleteGuidesDialogOpen(false)}
       />
-    </div>
+    </Flex>
   )
 }

@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import { Flex, IconButton } from '@radix-ui/themes'
 import { MinusIcon } from '@phosphor-icons/react/dist/csr/Minus'
 import { PlusIcon } from '@phosphor-icons/react/dist/csr/Plus'
 import { MIN_SCALE, MAX_SCALE } from '~/constants/canvas'
@@ -10,64 +10,58 @@ interface ZoomControlProps {
   onReset: () => void
 }
 
-const buttonStyle: CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: 24,
-  height: 24,
-  border: 'none',
-  borderRadius: 4,
-  background: 'transparent',
-  cursor: 'pointer',
-}
-
 export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: ZoomControlProps) {
   return (
-    <div
+    <Flex
+      align="center"
+      gap="1"
+      p="1"
       style={{
         position: 'absolute',
         right: 12,
         bottom: 12,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        padding: 4,
-        background: '#fff',
-        border: '1px solid #ddd',
-        borderRadius: 6,
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+        background: 'var(--color-panel-solid)',
+        border: '1px solid var(--gray-a5)',
+        borderRadius: 'var(--radius-3)',
+        boxShadow: 'var(--shadow-3)',
       }}
     >
-      <button
+      <IconButton
         type="button"
         title="Zoom out"
         aria-label="Zoom out"
-        onClick={onZoomOut}
+        variant="ghost"
+        color="gray"
+        size="1"
         disabled={scale <= MIN_SCALE}
-        style={buttonStyle}
+        onClick={onZoomOut}
       >
         <MinusIcon size={14} />
-      </button>
-      <button
+      </IconButton>
+      <IconButton
         type="button"
         title="Reset zoom to 100%"
         aria-label="Reset zoom to 100%"
+        variant="ghost"
+        color="gray"
+        size="1"
+        style={{ width: 44 }}
         onClick={onReset}
-        style={{ ...buttonStyle, width: 44, fontSize: 12 }}
       >
         {Math.round(scale * 100)}%
-      </button>
-      <button
+      </IconButton>
+      <IconButton
         type="button"
         title="Zoom in"
         aria-label="Zoom in"
-        onClick={onZoomIn}
+        variant="ghost"
+        color="gray"
+        size="1"
         disabled={scale >= MAX_SCALE}
-        style={buttonStyle}
+        onClick={onZoomIn}
       >
         <PlusIcon size={14} />
-      </button>
-    </div>
+      </IconButton>
+    </Flex>
   )
 }

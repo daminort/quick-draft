@@ -1,3 +1,4 @@
+import { Box } from '@radix-ui/themes'
 import {
   RULER_BAR_THICKNESS as THICKNESS,
   RULER_BAR_MAJOR_TICK_TARGET_PX as MAJOR_TICK_TARGET_PX,
@@ -86,7 +87,7 @@ export function CanvasRulers({
   const verticalTicks = computeTicks(height, scale, offsetY, documentScale)
 
   return (
-    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+    <Box style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
       {cursor && (
         <svg width={width} height={height} style={{ position: 'absolute', top: 0, left: 0 }}>
           <line
@@ -194,6 +195,6 @@ export function CanvasRulers({
           {documentUnits}
         </text>
       </svg>
-    </div>
+    </Box>
   )
 }

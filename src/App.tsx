@@ -1,3 +1,4 @@
+import { Flex, Box } from '@radix-ui/themes'
 import { CanvasStage } from '~/components/canvas/CanvasStage'
 import { Toolbar } from '~/components/panels/Toolbar'
 import { PropertiesPanel } from '~/components/panels/PropertiesPanel'
@@ -17,12 +18,12 @@ function App() {
   const closePrint = useUIStore((state) => state.closePrint)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
+    <Flex direction="row" width="100%" height="100%">
       <Toolbar />
-      <div style={{ display: 'flex', flex: 1, minWidth: 0 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <Flex flexGrow="1" minWidth="0">
+        <Box flexGrow="1" minWidth="0">
           <CanvasStage />
-        </div>
+        </Box>
         {settingsOpen ? (
           <SettingsPanel />
         ) : libraryOpen ? (
@@ -30,9 +31,9 @@ function App() {
         ) : (
           <PropertiesPanel />
         )}
-      </div>
+      </Flex>
       <PrintView open={printOpen} onClose={closePrint} />
-    </div>
+    </Flex>
   )
 }
 

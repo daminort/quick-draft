@@ -1,3 +1,4 @@
+import { Flex, Text, TextField, Select } from '@radix-ui/themes'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import type { Shape, ShapeId, ShapePatch } from '~/types/document'
 
@@ -10,18 +11,20 @@ interface NumberFieldProps {
 
 function NumberField({ label, value, min, onChange }: NumberFieldProps) {
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-      {label}
-      <input
-        type="number"
-        min={min}
-        value={value}
-        onChange={(e) => {
-          const next = Number(e.target.value)
-          if (Number.isFinite(next)) onChange(next)
-        }}
-      />
-    </label>
+    <Text as="label" size="2">
+      <Flex direction="column" gap="1">
+        {label}
+        <TextField.Root
+          type="number"
+          min={min}
+          value={value}
+          onChange={(e) => {
+            const next = Number(e.target.value)
+            if (Number.isFinite(next)) onChange(next)
+          }}
+        />
+      </Flex>
+    </Text>
   )
 }
 
@@ -159,21 +162,26 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
     case 'guide':
       return (
         <>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-            Orientation
-            <select
-              value={shape.orientation}
-              onChange={(e) =>
-                updateShape(shape.id, {
-                  orientation: e.target.value as 'h' | 'v' | 'angle',
-                })
-              }
-            >
-              <option value="h">Horizontal</option>
-              <option value="v">Vertical</option>
-              <option value="angle">Angle</option>
-            </select>
-          </label>
+          <Text as="label" size="2">
+            <Flex direction="column" gap="1">
+              Orientation
+              <Select.Root
+                value={shape.orientation}
+                onValueChange={(value) =>
+                  updateShape(shape.id, {
+                    orientation: value as 'h' | 'v' | 'angle',
+                  })
+                }
+              >
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Item value="h">Horizontal</Select.Item>
+                  <Select.Item value="v">Vertical</Select.Item>
+                  <Select.Item value="angle">Angle</Select.Item>
+                </Select.Content>
+              </Select.Root>
+            </Flex>
+          </Text>
           <NumberField
             label="Position"
             value={shape.position}
@@ -211,40 +219,50 @@ function GeometryFields({ shape, updateShape }: GeometryFieldsProps) {
             value={shape.y2}
             onChange={(v) => updateShape(shape.id, { y2: v, bindingB: null })}
           />
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-            Axis
-            <select
-              value={shape.axis}
-              onChange={(e) =>
-                updateShape(shape.id, {
-                  axis: e.target.value as 'horizontal' | 'vertical',
-                })
-              }
-            >
-              <option value="horizontal">Horizontal</option>
-              <option value="vertical">Vertical</option>
-            </select>
-          </label>
+          <Text as="label" size="2">
+            <Flex direction="column" gap="1">
+              Axis
+              <Select.Root
+                value={shape.axis}
+                onValueChange={(value) =>
+                  updateShape(shape.id, {
+                    axis: value as 'horizontal' | 'vertical',
+                  })
+                }
+              >
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Item value="horizontal">Horizontal</Select.Item>
+                  <Select.Item value="vertical">Vertical</Select.Item>
+                </Select.Content>
+              </Select.Root>
+            </Flex>
+          </Text>
           <NumberField
             label="Offset"
             value={shape.offset}
             onChange={(v) => updateShape(shape.id, { offset: v })}
           />
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-            Unit
-            <select
-              value={shape.unit}
-              onChange={(e) =>
-                updateShape(shape.id, {
-                  unit: e.target.value as 'mm' | 'cm' | 'm',
-                })
-              }
-            >
-              <option value="mm">mm</option>
-              <option value="cm">cm</option>
-              <option value="m">m</option>
-            </select>
-          </label>
+          <Text as="label" size="2">
+            <Flex direction="column" gap="1">
+              Unit
+              <Select.Root
+                value={shape.unit}
+                onValueChange={(value) =>
+                  updateShape(shape.id, {
+                    unit: value as 'mm' | 'cm' | 'm',
+                  })
+                }
+              >
+                <Select.Trigger />
+                <Select.Content>
+                  <Select.Item value="mm">mm</Select.Item>
+                  <Select.Item value="cm">cm</Select.Item>
+                  <Select.Item value="m">m</Select.Item>
+                </Select.Content>
+              </Select.Root>
+            </Flex>
+          </Text>
         </>
       )
     case 'component-instance':
@@ -286,8 +304,8 @@ export function GeometryPanel({ shape }: GeometryPanelProps) {
   const updateShape = useDocumentStore((state) => state.updateShape)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <Flex direction="column" gap="2">
       <GeometryFields shape={shape} updateShape={updateShape} />
-    </div>
+    </Flex>
   )
 }

@@ -1,3 +1,4 @@
+import { Flex, Text, Select } from '@radix-ui/themes'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import type { Document } from '~/types/document'
 import { UNIT_OPTIONS } from '~/constants/ui'
@@ -7,15 +8,20 @@ export function UnitsControl() {
   const setUnits = useDocumentStore((state) => state.setUnits)
 
   return (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
-      Measurement units
-      <select value={units} onChange={(e) => setUnits(e.target.value as Document['units'])}>
-        {UNIT_OPTIONS.map((unit) => (
-          <option key={unit} value={unit}>
-            {unit}
-          </option>
-        ))}
-      </select>
-    </label>
+    <Text as="label" size="2">
+      <Flex direction="column" gap="1">
+        Measurement units
+        <Select.Root value={units} onValueChange={(value) => setUnits(value as Document['units'])}>
+          <Select.Trigger />
+          <Select.Content>
+            {UNIT_OPTIONS.map((unit) => (
+              <Select.Item key={unit} value={unit}>
+                {unit}
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Root>
+      </Flex>
+    </Text>
   )
 }

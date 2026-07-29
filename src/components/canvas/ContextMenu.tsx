@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
+import { Box, Flex, Button } from '@radix-ui/themes'
 
 export interface ContextMenuItem {
   label: string
@@ -34,56 +35,43 @@ export function ContextMenu({ x, y, items, onClose }: ContextMenuProps) {
   }, [onClose])
 
   return (
-    <div
+    <Box
       ref={menuRef}
       role="menu"
+      p="2"
       style={{
         position: 'fixed',
         left: x,
         top: y,
         zIndex: 1000,
-        background: '#fff',
-        border: '1px solid #ddd',
-        borderRadius: 6,
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-        padding: 4,
+        background: 'var(--color-panel-solid)',
+        border: '1px solid var(--gray-a5)',
+        borderRadius: 'var(--radius-3)',
+        boxShadow: 'var(--shadow-5)',
         minWidth: 160,
-        display: 'flex',
-        flexDirection: 'column',
       }}
     >
-      {items.map((item) => (
-        <button
-          key={item.label}
-          type="button"
-          role="menuitem"
-          onClick={() => {
-            item.onClick()
-            onClose()
-          }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '6px 10px',
-            border: 'none',
-            borderRadius: 4,
-            background: 'transparent',
-            cursor: 'pointer',
-            fontSize: 13,
-            textAlign: 'left',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#f2f2f2'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-          }}
-        >
-          {item.icon}
-          {item.label}
-        </button>
-      ))}
-    </div>
+      <Flex direction="column" gap="1">
+        {items.map((item) => (
+          <Button
+            key={item.label}
+            type="button"
+            role="menuitem"
+            variant="ghost"
+            color="gray"
+            style={{ justifyContent: 'flex-start' }}
+            onClick={() => {
+              item.onClick()
+              onClose()
+            }}
+          >
+            <Flex align="center" gap="2">
+              {item.icon}
+              {item.label}
+            </Flex>
+          </Button>
+        ))}
+      </Flex>
+    </Box>
   )
 }

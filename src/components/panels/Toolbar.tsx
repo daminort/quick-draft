@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Flex, IconButton } from '@radix-ui/themes'
 import { CursorIcon } from '@phosphor-icons/react/dist/csr/Cursor'
 import { LineSegmentIcon } from '@phosphor-icons/react/dist/csr/LineSegment'
 import { RectangleIcon } from '@phosphor-icons/react/dist/csr/Rectangle'
@@ -40,6 +41,13 @@ const TOOLS: { tool: Tool; label: string; Icon: typeof CursorIcon }[] = [
   },
 ]
 
+// IconButton's `ghost` variant sizes itself to fit-content (content-box + padding) while every
+// other variant uses a fixed border-box height, so switching variant on activation shifts the
+// button's box. Keep `variant="ghost"` at all times — its own fit-content sizing is identical in
+// both states — and fake the "soft" active look with an inline background instead of switching
+// variant, so nothing shifts.
+const ACTIVE_TOOL_BUTTON_STYLE = { backgroundColor: 'var(--accent-a3)' }
+
 export function Toolbar() {
   const activeTool = useToolStore((state) => state.activeTool)
   const setTool = useToolStore((state) => state.setTool)
@@ -59,123 +67,75 @@ export function Toolbar() {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 4,
-        padding: 8,
-        borderRight: '1px solid #ddd',
-      }}
-    >
+    <Flex direction="column" gap="4" p="3" style={{ borderRight: '1px solid var(--gray-a5)' }}>
       {TOOLS.map(({ tool, label, Icon }) => (
-        <button
+        <IconButton
           key={tool}
           type="button"
           title={label}
           aria-label={label}
           aria-pressed={activeTool === tool}
+          variant="ghost"
+          size="3"
+          style={activeTool === tool ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
           onClick={() => setTool(tool)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 36,
-            height: 36,
-            border: 'none',
-            borderRadius: 6,
-            background: activeTool === tool ? '#dbe4ff' : 'transparent',
-            cursor: 'pointer',
-          }}
         >
           <Icon size={20} />
-        </button>
+        </IconButton>
       ))}
 
-      <button
-        type="button"
-        title="Component library"
-        aria-label="Component library"
-        aria-pressed={libraryOpen}
-        onClick={toggleLibrary}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 36,
-          height: 36,
-          border: 'none',
-          borderRadius: 6,
-          background: libraryOpen ? '#dbe4ff' : 'transparent',
-          cursor: 'pointer',
-          marginTop: 'auto',
-        }}
-      >
-        <StackIcon size={20} />
-      </button>
+      <Flex direction="column" gap="3" mt="auto">
+        <IconButton
+          type="button"
+          title="Component library"
+          aria-label="Component library"
+          aria-pressed={libraryOpen}
+          variant="ghost"
+          size="3"
+          style={libraryOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
+          onClick={toggleLibrary}
+        >
+          <StackIcon size={20} />
+        </IconButton>
 
-      <FileActions />
+        <FileActions />
 
-      <button
-        type="button"
-        title="Print"
-        aria-label="Print"
-        onClick={openPrint}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 36,
-          height: 36,
-          border: 'none',
-          borderRadius: 6,
-          background: 'transparent',
-          cursor: 'pointer',
-        }}
-      >
-        <PrinterIcon size={20} />
-      </button>
+        <IconButton
+          type="button"
+          title="Print"
+          aria-label="Print"
+          variant="ghost"
+          size="3"
+          onClick={openPrint}
+        >
+          <PrinterIcon size={20} />
+        </IconButton>
 
-      <button
-        type="button"
-        title="Settings"
-        aria-label="Settings"
-        aria-pressed={settingsOpen}
-        onClick={toggleSettings}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 36,
-          height: 36,
-          border: 'none',
-          borderRadius: 6,
-          background: settingsOpen ? '#dbe4ff' : 'transparent',
-          cursor: 'pointer',
-        }}
-      >
-        <GearIcon size={20} />
-      </button>
+        <IconButton
+          type="button"
+          title="Settings"
+          aria-label="Settings"
+          aria-pressed={settingsOpen}
+          variant="ghost"
+          size="3"
+          style={settingsOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined}
+          onClick={toggleSettings}
+        >
+          <GearIcon size={20} />
+        </IconButton>
 
-      <button
-        type="button"
-        title="Clear canvas"
-        aria-label="Clear canvas"
-        onClick={() => setClearDialogOpen(true)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 36,
-          height: 36,
-          border: 'none',
-          borderRadius: 6,
-          background: 'transparent',
-          cursor: 'pointer',
-        }}
-      >
-        <TrashIcon size={20} />
-      </button>
+        <IconButton
+          type="button"
+          title="Clear canvas"
+          aria-label="Clear canvas"
+          variant="ghost"
+          color="red"
+          size="3"
+          onClick={() => setClearDialogOpen(true)}
+        >
+          <TrashIcon size={20} />
+        </IconButton>
+      </Flex>
 
       <ConfirmDialog
         open={clearDialogOpen}
@@ -185,6 +145,6 @@ export function Toolbar() {
         onConfirm={handleClearConfirmed}
         onCancel={() => setClearDialogOpen(false)}
       />
-    </div>
+    </Flex>
   )
 }
