@@ -13,9 +13,10 @@ interface PrintViewProps {
 export function PrintView({ open, onClose }: PrintViewProps) {
   const document = useDocumentStore((state) => state.document)
   const showDimensionUnit = useUIStore((state) => state.showDimensionUnit)
+  const dimensionColor = useUIStore((state) => state.dimensionColor)
   const svg = useMemo(
-    () => renderDocumentToSvg(document, { showDimensionUnit }),
-    [document, showDimensionUnit],
+    () => renderDocumentToSvg(document, { showDimensionUnit, dimensionColor }),
+    [document, showDimensionUnit, dimensionColor],
   )
 
   if (!open) return null

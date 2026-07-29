@@ -13,6 +13,8 @@ export function SettingsPanel() {
   const toggleShowDimensionUnit = useUIStore((state) => state.toggleShowDimensionUnit)
   const dimensionsVisible = useUIStore((state) => state.dimensionsVisible)
   const toggleDimensionsVisible = useUIStore((state) => state.toggleDimensionsVisible)
+  const dimensionColor = useUIStore((state) => state.dimensionColor)
+  const setDimensionColor = useUIStore((state) => state.setDimensionColor)
   const rulerVisible = useUIStore((state) => state.rulerVisible)
   const toggleRulerVisible = useUIStore((state) => state.toggleRulerVisible)
   const rulerGuidesVisible = useUIStore((state) => state.rulerGuidesVisible)
@@ -86,6 +88,14 @@ export function SettingsPanel() {
         <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
           <input type="checkbox" checked={showDimensionUnit} onChange={toggleShowDimensionUnit} />
           Show unit
+        </label>
+        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 13 }}>
+          Color
+          <input
+            type="color"
+            value={dimensionColor}
+            onChange={(e) => setDimensionColor(e.target.value)}
+          />
         </label>
       </div>
 

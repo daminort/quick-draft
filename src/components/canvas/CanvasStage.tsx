@@ -3,6 +3,8 @@ import { Stage, Layer, Line, Rect } from 'react-konva'
 import type Konva from 'konva'
 import { ArrowLineUpIcon } from '@phosphor-icons/react/dist/csr/ArrowLineUp'
 import { ArrowLineDownIcon } from '@phosphor-icons/react/dist/csr/ArrowLineDown'
+import { ArrowsOutLineHorizontalIcon } from '@phosphor-icons/react/dist/csr/ArrowsOutLineHorizontal'
+import { TrashIcon } from '@phosphor-icons/react/dist/csr/Trash'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
@@ -11,6 +13,7 @@ import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer'
 import { ZoomControl } from '~/components/canvas/ZoomControl'
 import { ContextMenu } from '~/components/canvas/ContextMenu'
+import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
 import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool'
 import { useRulerTool } from '~/components/canvas/tools/useRulerTool'
 import { RulerOverlay } from '~/components/canvas/RulerOverlay'
@@ -52,6 +55,7 @@ export function CanvasStage() {
   const bringToFront = useDocumentStore((state) => state.bringToFront)
   const sendToBack = useDocumentStore((state) => state.sendToBack)
   const addComponentInstance = useDocumentStore((state) => state.addComponentInstance)
+  const clearGuides = useDocumentStore((state) => state.clearGuides)
   const selectedIds = useSelectionStore((state) => state.selectedIds)
   const select = useSelectionStore((state) => state.select)
   const clearSelection = useSelectionStore((state) => state.clear)
@@ -59,6 +63,7 @@ export function CanvasStage() {
   const setTool = useToolStore((state) => state.setTool)
   const guidesVisible = useUIStore((state) => state.guidesVisible)
   const dimensionsVisible = useUIStore((state) => state.dimensionsVisible)
+  const toggleDimensionsVisible = useUIStore((state) => state.toggleDimensionsVisible)
   const rulerVisible = useUIStore((state) => state.rulerVisible)
   const rulerGuidesVisible = useUIStore((state) => state.rulerGuidesVisible)
   const documentScale = useDocumentStore((state) => state.document.scale)
@@ -69,6 +74,8 @@ export function CanvasStage() {
     y: number
     shapeId: ShapeId
   } | null>(null)
+  const [emptyContextMenu, setEmptyContextMenu] = useState<{ x: number; y: number } | null>(null)
+  const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false)
 
   const drawingTool = useDrawingTool()
   const rulerTool = useRulerTool()
@@ -202,10 +209,16 @@ export function CanvasStage() {
     e.evt.preventDefault()
     if (!isInteractive) return
     const stage = e.target.getStage()
-    if (!stage || e.target === stage) return
+    if (!stage) return
+    if (e.target === stage) {
+      setContextMenu(null)
+      setEmptyContextMenu({ x: e.evt.clientX, y: e.evt.clientY })
+      return
+    }
     const shapeId = e.target.id()
     if (!shapeId) return
     select([shapeId])
+    setEmptyContextMenu(null)
     setContextMenu({ x: e.evt.clientX, y: e.evt.clientY, shapeId })
   }
 
@@ -358,6 +371,36 @@ export function CanvasStage() {
           ]}
         />
       )}
+      {emptyContextMenu && (
+        <ContextMenu
+          x={emptyContextMenu.x}
+          y={emptyContextMenu.y}
+          onClose={() => setEmptyContextMenu(null)}
+          items={[
+            {
+              label: 'Toggle dimensions',
+              icon: <ArrowsOutLineHorizontalIcon size={14} />,
+              onClick: () => toggleDimensionsVisible(),
+            },
+            {
+              label: 'Delete guides',
+              icon: <TrashIcon size={14} />,
+              onClick: () => setDeleteGuidesDialogOpen(true),
+            },
+          ]}
+        />
+      )}
+      <ConfirmDialog
+        open={deleteGuidesDialogOpen}
+        title="Delete all guides"
+        message="This will remove every guide from the canvas."
+        confirmLabel="Delete"
+        onConfirm={() => {
+          clearGuides()
+          setDeleteGuidesDialogOpen(false)
+        }}
+        onCancel={() => setDeleteGuidesDialogOpen(false)}
+      />
     </div>
   )
 }

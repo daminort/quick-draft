@@ -6,7 +6,7 @@ import type { Document, Shape } from '~/types/document'
 import { PAGE_MARGIN_MM, EMPTY_PAGE_SIZE_MM } from '~/constants/print'
 import {
   DIMENSION_LABEL_FONT_SIZE,
-  DIMENSION_COLOR,
+  DEFAULT_DIMENSION_COLOR,
   DIMENSION_STROKE_WIDTH,
   ARROW_SIZE,
   ARROW_MARKER_ID,
@@ -14,11 +14,13 @@ import {
 
 export interface RenderSvgOptions {
   showDimensionUnit?: boolean
+  dimensionColor?: string
 }
 
 interface RenderContext {
   document: Document
   showDimensionUnit: boolean
+  dimensionColor: string
   /** Converts a raw document-space value (length, radius, font size, ...) to mm. */
   mm: (value: number) => number
   offsetXMm: number
@@ -105,25 +107,25 @@ function renderShape(shape: Shape, ctx: RenderContext): string {
       const dominantBaseline = geometry.label.baseline === 'top' ? 'hanging' : 'text-after-edge'
 
       const parts = [
-        `<line x1="${X(geometry.arrowLine.x1)}" y1="${Y(geometry.arrowLine.y1)}" x2="${X(geometry.arrowLine.x2)}" y2="${Y(geometry.arrowLine.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" marker-start="url(#${ARROW_MARKER_ID})" marker-end="url(#${ARROW_MARKER_ID})" />`,
+        `<line x1="${X(geometry.arrowLine.x1)}" y1="${Y(geometry.arrowLine.y1)}" x2="${X(geometry.arrowLine.x2)}" y2="${Y(geometry.arrowLine.y2)}" stroke="${ctx.dimensionColor}" stroke-width="${strokeW}" marker-start="url(#${ARROW_MARKER_ID})" marker-end="url(#${ARROW_MARKER_ID})" />`,
       ]
       if (geometry.extensionA) {
         parts.push(
-          `<line x1="${X(geometry.extensionA.x1)}" y1="${Y(geometry.extensionA.y1)}" x2="${X(geometry.extensionA.x2)}" y2="${Y(geometry.extensionA.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
+          `<line x1="${X(geometry.extensionA.x1)}" y1="${Y(geometry.extensionA.y1)}" x2="${X(geometry.extensionA.x2)}" y2="${Y(geometry.extensionA.y2)}" stroke="${ctx.dimensionColor}" stroke-width="${strokeW}" />`,
         )
       }
       if (geometry.extensionB) {
         parts.push(
-          `<line x1="${X(geometry.extensionB.x1)}" y1="${Y(geometry.extensionB.y1)}" x2="${X(geometry.extensionB.x2)}" y2="${Y(geometry.extensionB.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
+          `<line x1="${X(geometry.extensionB.x1)}" y1="${Y(geometry.extensionB.y1)}" x2="${X(geometry.extensionB.x2)}" y2="${Y(geometry.extensionB.y2)}" stroke="${ctx.dimensionColor}" stroke-width="${strokeW}" />`,
         )
       }
       if (geometry.leader) {
         parts.push(
-          `<line x1="${X(geometry.leader.x1)}" y1="${Y(geometry.leader.y1)}" x2="${X(geometry.leader.x2)}" y2="${Y(geometry.leader.y2)}" stroke="${DIMENSION_COLOR}" stroke-width="${strokeW}" />`,
+          `<line x1="${X(geometry.leader.x1)}" y1="${Y(geometry.leader.y1)}" x2="${X(geometry.leader.x2)}" y2="${Y(geometry.leader.y2)}" stroke="${ctx.dimensionColor}" stroke-width="${strokeW}" />`,
         )
       }
       parts.push(
-        `<text x="${X(geometry.label.x)}" y="${Y(geometry.label.y)}" font-size="${fontSize}" font-style="italic" fill="${DIMENSION_COLOR}" text-anchor="${textAnchor}" dominant-baseline="${dominantBaseline}">${labelText}</text>`,
+        `<text x="${X(geometry.label.x)}" y="${Y(geometry.label.y)}" font-size="${fontSize}" font-style="italic" fill="${ctx.dimensionColor}" text-anchor="${textAnchor}" dominant-baseline="${dominantBaseline}">${labelText}</text>`,
       )
       return parts.join('')
     }
@@ -153,6 +155,7 @@ function renderShape(shape: Shape, ctx: RenderContext): string {
  */
 export function renderDocumentToSvg(document: Document, options: RenderSvgOptions = {}): string {
   const showDimensionUnit = options.showDimensionUnit ?? false
+  const dimensionColor = options.dimensionColor ?? DEFAULT_DIMENSION_COLOR
   const printableShapes = document.shapes.filter((shape) => shape.type !== 'guide')
   const bounds = getUnionBounds(printableShapes, document.components)
 
@@ -168,12 +171,12 @@ export function renderDocumentToSvg(document: Document, options: RenderSvgOption
   const offsetXMm = PAGE_MARGIN_MM - (bounds ? mm(bounds.x1) : 0)
   const offsetYMm = PAGE_MARGIN_MM - (bounds ? mm(bounds.y1) : 0)
 
-  const ctx: RenderContext = { document, showDimensionUnit, mm, offsetXMm, offsetYMm }
+  const ctx: RenderContext = { document, showDimensionUnit, dimensionColor, mm, offsetXMm, offsetYMm }
   const body = printableShapes.map((shape) => renderShape(shape, ctx)).join('\n')
 
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${page.width}mm" height="${page.height}mm" viewBox="0 0 ${page.width} ${page.height}">`,
-    `<defs><marker id="${ARROW_MARKER_ID}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${ARROW_SIZE}" markerHeight="${ARROW_SIZE}" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="${DIMENSION_COLOR}" /></marker></defs>`,
+    `<defs><marker id="${ARROW_MARKER_ID}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="${ARROW_SIZE}" markerHeight="${ARROW_SIZE}" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="${dimensionColor}" /></marker></defs>`,
     `<rect x="0" y="0" width="${page.width}" height="${page.height}" fill="#ffffff" />`,
     body,
     `</svg>`,

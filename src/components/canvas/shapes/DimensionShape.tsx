@@ -6,7 +6,6 @@ import type { Shape } from '~/types/document'
 import { computeDimensionGeometry, formatDimensionLabel } from '~/lib/dimension'
 import {
   DIMENSION_LABEL_FONT_SIZE,
-  DIMENSION_COLOR,
   DIMENSION_STROKE_WIDTH,
   ARROW_SIZE,
 } from '~/constants/dimension'
@@ -34,7 +33,8 @@ export function DimensionShape({
   const documentUnits = useDocumentStore((state) => state.document.units)
   const shapes = useDocumentStore((state) => state.document.shapes)
   const showUnit = useUIStore((state) => state.showDimensionUnit)
-  const color = selected ? SELECTED_COLOR : DIMENSION_COLOR
+  const dimensionColor = useUIStore((state) => state.dimensionColor)
+  const color = selected ? SELECTED_COLOR : dimensionColor
 
   const geometry = computeDimensionGeometry(
     shape.x1,

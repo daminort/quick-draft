@@ -1,5 +1,5 @@
-/** Color of dimension lines, extension lines, arrowheads and labels. Used in: components/canvas/shapes/DimensionShape.tsx, render/svg/renderDocumentToSvg.ts */
-export const DIMENSION_COLOR = '#ff7272'
+/** Default color of dimension lines, extension lines, arrowheads and labels, before the user overrides it in Settings. Used in: stores/useUIStore.ts, render/svg/renderDocumentToSvg.ts */
+export const DEFAULT_DIMENSION_COLOR = '#ff7272'
 
 /** Stroke width for dimension lines/extension lines/arrows. Used in: components/canvas/shapes/DimensionShape.tsx, render/svg/renderDocumentToSvg.ts */
 export const DIMENSION_STROKE_WIDTH = 1

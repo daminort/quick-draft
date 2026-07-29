@@ -6,9 +6,11 @@ import { ComponentLibrary } from '~/components/panels/ComponentLibrary'
 import { PrintView } from '~/components/print/PrintView'
 import { useUIStore } from '~/stores/useUIStore'
 import { useRestoreDocument } from '~/stores/useRestoreDocument'
+import { useRestoreUISettings } from '~/stores/useRestoreUISettings'
 
 function App() {
   useRestoreDocument()
+  useRestoreUISettings()
   const settingsOpen = useUIStore((state) => state.settingsOpen)
   const libraryOpen = useUIStore((state) => state.libraryOpen)
   const printOpen = useUIStore((state) => state.printOpen)
