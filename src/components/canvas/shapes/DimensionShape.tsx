@@ -3,17 +3,15 @@ import type Konva from 'konva'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useUIStore } from '~/stores/useUIStore'
 import type { Shape } from '~/types/document'
+import { computeDimensionGeometry, formatDimensionLabel } from '~/lib/dimension'
 import {
-  computeDimensionGeometry,
-  formatDimensionLabel,
   DIMENSION_LABEL_FONT_SIZE,
-} from '~/lib/dimension'
-
-const DIMENSION_COLOR = '#ff7272'
-const DIMENSION_SELECTED_COLOR = '#1d4ed8'
-const DIMENSION_STROKE_WIDTH = 1
-const ARROW_SIZE = 6
-const HIT_STROKE_WIDTH = 12
+  DIMENSION_COLOR,
+  DIMENSION_STROKE_WIDTH,
+  ARROW_SIZE,
+} from '~/constants/dimension'
+import { SELECTED_COLOR } from '~/constants/shapes'
+import { HIT_STROKE_WIDTH } from '~/constants/canvas'
 
 interface DimensionShapeProps {
   shape: Extract<Shape, { type: 'dimension' }>
@@ -36,7 +34,7 @@ export function DimensionShape({
   const documentUnits = useDocumentStore((state) => state.document.units)
   const shapes = useDocumentStore((state) => state.document.shapes)
   const showUnit = useUIStore((state) => state.showDimensionUnit)
-  const color = selected ? DIMENSION_SELECTED_COLOR : DIMENSION_COLOR
+  const color = selected ? SELECTED_COLOR : DIMENSION_COLOR
 
   const geometry = computeDimensionGeometry(
     shape.x1,

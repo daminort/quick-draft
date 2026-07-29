@@ -1,5 +1,17 @@
 import { listShapeEdges, type Segment } from '~/lib/bounds'
 import type { Shape } from '~/types/document'
+import {
+  DIMENSION_LABEL_FONT_SIZE,
+  UNIT_TO_MM,
+  EXTENSION_GAP,
+  EXTENSION_OVERSHOOT,
+  LABEL_GAP_HORIZONTAL,
+  LABEL_GAP_VERTICAL,
+  LEADER_GAP,
+  TEXT_PADDING,
+  DIMENSION_TEXT_CHAR_WIDTH_RATIO,
+  EDGE_EPSILON,
+} from '~/constants/dimension'
 
 type LengthUnit = 'mm' | 'cm' | 'm'
 type Point = { x: number; y: number }
@@ -25,17 +37,6 @@ export interface DimensionGeometry {
   leader: { x1: number; y1: number; x2: number; y2: number } | null
   length: number
 }
-
-export const DIMENSION_LABEL_FONT_SIZE = 12
-
-const UNIT_TO_MM: Record<LengthUnit, number> = { mm: 1, cm: 10, m: 1000 }
-const EXTENSION_GAP = 5
-const EXTENSION_OVERSHOOT = 5
-const LABEL_GAP_HORIZONTAL = 10
-const LABEL_GAP_VERTICAL = 10
-const LEADER_GAP = 4
-const TEXT_PADDING = 6
-const CHAR_WIDTH_RATIO = 0.62
 
 export function convertLength(
   internalDistance: number,
@@ -72,8 +73,6 @@ function extensionSegment(
     : { x1: point.x, y1: gapCoord, x2: point.x, y2: overshootCoord }
 }
 
-const EDGE_EPSILON = 1e-6
-
 /** Whether `point` sits on the (finite) `segment`, checked as perpendicular distance to the
  * infinite line plus a bounding-box containment test — exact for collinear points. */
 function pointOnSegment(point: Point, segment: Segment, epsilon: number): boolean {
@@ -104,7 +103,7 @@ function liesOnAnyEdge(segment: Segment, edges: Segment[]): boolean {
 }
 
 function estimateTextWidth(text: string, fontSize: number): number {
-  return text.length * fontSize * CHAR_WIDTH_RATIO
+  return text.length * fontSize * DIMENSION_TEXT_CHAR_WIDTH_RATIO
 }
 
 function buildLabelAndLeader(

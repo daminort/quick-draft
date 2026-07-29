@@ -1,4 +1,5 @@
 import type { ComponentDef, Shape } from '~/types/document'
+import { GUIDE_SPAN, TEXT_CHAR_WIDTH_RATIO } from '~/constants/shapes'
 
 export interface Bounds {
   x1: number
@@ -6,9 +7,6 @@ export interface Bounds {
   x2: number
   y2: number
 }
-
-const GUIDE_SPAN = 1e6
-const TEXT_CHAR_WIDTH_RATIO = 0.6
 
 export function rotatePoint(
   point: { x: number; y: number },

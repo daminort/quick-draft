@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type Konva from 'konva'
 import { useViewStore } from '~/stores/useViewStore'
-
-const MIDDLE_BUTTON = 1
+import { MIDDLE_MOUSE_BUTTON } from '~/constants/canvas'
 
 export function useCanvasPan() {
   const setView = useViewStore((state) => state.setView)
@@ -35,7 +34,7 @@ export function useCanvasPan() {
   }, [isPanning, setView])
 
   const handleMouseDown = useCallback((e: Konva.KonvaEventObject<MouseEvent>): boolean => {
-    if (e.evt.button !== MIDDLE_BUTTON) return false
+    if (e.evt.button !== MIDDLE_MOUSE_BUTTON) return false
     e.evt.preventDefault()
     lastPointer.current = { x: e.evt.clientX, y: e.evt.clientY }
     setIsPanning(true)

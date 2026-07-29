@@ -1,9 +1,7 @@
 import { useCallback } from 'react'
 import type Konva from 'konva'
-import { useViewStore, MIN_SCALE, MAX_SCALE } from '~/stores/useViewStore'
-
-const WHEEL_SCALE_BY = 1.05
-const BUTTON_SCALE_BY = 1.2
+import { useViewStore } from '~/stores/useViewStore'
+import { MIN_SCALE, MAX_SCALE, WHEEL_SCALE_BY, BUTTON_SCALE_BY } from '~/constants/canvas'
 
 function clampScale(scale: number): number {
   return Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale))

@@ -1,11 +1,8 @@
 import { rotatePoint } from '~/lib/bounds'
 import type { DimensionBinding, Shape, ShapePointKey } from '~/types/document'
+import { BINDING_EPSILON } from '~/constants/dimension'
 
 type Point = { x: number; y: number }
-
-/** Coordinates match within this tolerance are treated as "the same point" (they come from
- * snapCursor, which already snaps onto candidate coordinates exactly). */
-const BINDING_EPSILON = 1e-6
 
 /** Points on a shape that a dimension's endpoint can bind to. Mirrors the point set offered by
  * collectSnapTargets, but keyed per-shape (and rotation-aware for rects) so a binding can be

@@ -6,7 +6,7 @@ import { UploadSimpleIcon } from '@phosphor-icons/react/dist/csr/UploadSimple'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { useSelectionStore } from '~/stores/useSelectionStore'
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
-import { noopShapeInteraction, type ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
+import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction'
 import { getUnionBounds } from '~/lib/bounds'
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog'
 import {
@@ -14,10 +14,12 @@ import {
   importComponentLibraryFromJsonFile,
 } from '~/lib/persistence/fileIO'
 import type { ComponentDef } from '~/types/document'
-
-const PREVIEW_SIZE = 64
-const PREVIEW_PADDING = 6
-const PREVIEW_VIEW_BOUNDS: ViewBounds = { left: -1e5, top: -1e5, right: 1e5, bottom: 1e5 }
+import { COMPONENT_DRAG_MIME_TYPE } from '~/constants/fileIO'
+import {
+  COMPONENT_PREVIEW_SIZE as PREVIEW_SIZE,
+  COMPONENT_PREVIEW_PADDING as PREVIEW_PADDING,
+  LARGE_VIEW_BOUNDS as PREVIEW_VIEW_BOUNDS,
+} from '~/constants/componentLibrary'
 
 interface ComponentPreviewProps {
   componentDef: ComponentDef
@@ -53,9 +55,6 @@ function ComponentPreview({ componentDef, components }: ComponentPreviewProps) {
     </Stage>
   )
 }
-
-/** Drag source id for HTML5 drag-and-drop of a library entry onto the canvas. */
-export const COMPONENT_DRAG_MIME = 'application/x-quickdraft-component-id'
 
 export function ComponentLibrary() {
   const components = useDocumentStore((state) => state.document.components)
@@ -162,7 +161,7 @@ export function ComponentLibrary() {
             key={componentDef.id}
             draggable
             onDragStart={(e) => {
-              e.dataTransfer.setData(COMPONENT_DRAG_MIME, componentDef.id)
+              e.dataTransfer.setData(COMPONENT_DRAG_MIME_TYPE, componentDef.id)
               e.dataTransfer.effectAllowed = 'copy'
             }}
             title={`Drag onto the canvas to insert an instance of "${componentDef.name}"`}

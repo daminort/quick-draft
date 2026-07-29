@@ -1,6 +1,5 @@
 import { create } from 'zustand'
-
-export const DEFAULT_SNAP_TOLERANCE = 8
+import { SNAP_TOLERANCE_PX } from '~/constants/canvas'
 
 interface UIStore {
   settingsOpen: boolean
@@ -31,7 +30,7 @@ export const useUIStore = create<UIStore>()((set) => ({
   toggleLibrary: () => set((state) => ({ libraryOpen: !state.libraryOpen, settingsOpen: false })),
   guidesVisible: true,
   toggleGuidesVisible: () => set((state) => ({ guidesVisible: !state.guidesVisible })),
-  snapTolerance: DEFAULT_SNAP_TOLERANCE,
+  snapTolerance: SNAP_TOLERANCE_PX,
   setSnapTolerance: (tolerance) => set({ snapTolerance: Math.max(0, tolerance) }),
   showDimensionUnit: false,
   toggleShowDimensionUnit: () => set((state) => ({ showDimensionUnit: !state.showDimensionUnit })),
@@ -40,7 +39,8 @@ export const useUIStore = create<UIStore>()((set) => ({
   rulerVisible: false,
   toggleRulerVisible: () => set((state) => ({ rulerVisible: !state.rulerVisible })),
   rulerGuidesVisible: false,
-  toggleRulerGuidesVisible: () => set((state) => ({ rulerGuidesVisible: !state.rulerGuidesVisible })),
+  toggleRulerGuidesVisible: () =>
+    set((state) => ({ rulerGuidesVisible: !state.rulerGuidesVisible })),
   printOpen: false,
   openPrint: () => set({ printOpen: true }),
   closePrint: () => set({ printOpen: false }),

@@ -1,9 +1,5 @@
 import type { Document } from '~/types/document'
-
-const DB_NAME = 'quick-draft'
-const DB_VERSION = 1
-const STORE_NAME = 'documents'
-const CURRENT_KEY = 'current'
+import { DB_NAME, DB_VERSION, STORE_NAME, CURRENT_KEY } from '~/constants/persistence'
 
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {

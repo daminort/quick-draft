@@ -1,7 +1,6 @@
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import type { Document } from '~/types/document'
-
-const UNIT_OPTIONS: Document['units'][] = ['mm', 'cm', 'm']
+import { UNIT_OPTIONS } from '~/constants/ui'
 
 export function UnitsControl() {
   const units = useDocumentStore((state) => state.document.units)

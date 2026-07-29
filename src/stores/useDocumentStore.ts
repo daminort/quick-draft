@@ -5,6 +5,7 @@ import { translateShape, flattenComponentInstance } from '~/lib/shapeTransform'
 import { resyncDimensionBindings } from '~/lib/dimensionBinding'
 import { saveCurrentDocument } from '~/lib/persistence/indexedDb'
 import type { ComponentDef, Document, Shape, ShapeId, ShapePatch } from '~/types/document'
+import { AUTOSAVE_DEBOUNCE_MS } from '~/constants/persistence'
 
 interface DocumentStore {
   document: Document
@@ -196,7 +197,6 @@ export const useDocumentStore = create<DocumentStore>()(
   })),
 )
 
-const AUTOSAVE_DEBOUNCE_MS = 800
 let autosaveTimer: ReturnType<typeof setTimeout> | undefined
 useDocumentStore.subscribe((state) => {
   if (autosaveTimer) clearTimeout(autosaveTimer)

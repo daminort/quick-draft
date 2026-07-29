@@ -2,8 +2,8 @@ import { Path } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
 import { computeArcPath } from '~/lib/arcPath'
-
-const SELECTED_COLOR = '#1d4ed8'
+import { SELECTED_COLOR } from '~/constants/shapes'
+import { HIT_STROKE_WIDTH } from '~/constants/canvas'
 
 interface ArcShapeProps {
   shape: Extract<Shape, { type: 'arc' }>
@@ -35,7 +35,7 @@ export function ArcShape({
       opacity={shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1}
       perfectDrawEnabled={false}
       dash={shape.style.dash}
-      hitStrokeWidth={12}
+      hitStrokeWidth={HIT_STROKE_WIDTH}
       onClick={onSelect}
       onTap={onSelect}
       onMouseDown={interactive ? onMouseDown : undefined}

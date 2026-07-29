@@ -1,8 +1,7 @@
 import { Circle } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
-
-const SELECTED_COLOR = '#1d4ed8'
+import { SELECTED_COLOR } from '~/constants/shapes'
 
 interface CircleShapeProps {
   shape: Extract<Shape, { type: 'circle' }>

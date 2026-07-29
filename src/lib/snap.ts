@@ -1,4 +1,5 @@
 import type { Shape, ShapeId } from '~/types/document'
+import { SNAP_TOLERANCE_PX } from '~/constants/canvas'
 
 export interface SnapTargets {
   xs: number[]
@@ -11,8 +12,6 @@ export interface SnapResult {
   snappedX: boolean
   snappedY: boolean
 }
-
-const DEFAULT_TOLERANCE = 8
 
 export function collectSnapTargets(
   shapes: Shape[],
@@ -81,7 +80,7 @@ function closest(value: number, candidates: number[], tolerance: number): number
 export function snapPoint(
   point: { x: number; y: number },
   targets: SnapTargets,
-  tolerancePx: number = DEFAULT_TOLERANCE,
+  tolerancePx: number = SNAP_TOLERANCE_PX,
 ): SnapResult {
   const snappedX = closest(point.x, targets.xs, tolerancePx)
   const snappedY = closest(point.y, targets.ys, tolerancePx)

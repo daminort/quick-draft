@@ -1,17 +1,18 @@
 import { Group, Line, Rect, Text } from 'react-konva'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import type { RulerState } from '~/components/canvas/tools/useRulerTool'
-import { formatDimensionLabel, DIMENSION_LABEL_FONT_SIZE } from '~/lib/dimension'
+import { formatDimensionLabel } from '~/lib/dimension'
 import { rulerDirection, rulerEndpoint, internalToRealLength } from '~/lib/ruler'
-
-const RULER_COLOR = '#0f766e'
-const RULER_DASH = [6, 4]
-const RULER_STROKE_WIDTH = 1
-const LABEL_GAP = 8
-const LABEL_PADDING = 4
-const OVERRIDE_BG = '#0f766e'
-const OVERRIDE_TEXT_COLOR = '#ffffff'
-const CHAR_WIDTH_RATIO = 0.62
+import { DIMENSION_LABEL_FONT_SIZE, DIMENSION_TEXT_CHAR_WIDTH_RATIO } from '~/constants/dimension'
+import {
+  RULER_OVERLAY_COLOR,
+  RULER_OVERLAY_DASH,
+  RULER_OVERLAY_STROKE_WIDTH,
+  RULER_OVERLAY_LABEL_GAP,
+  RULER_OVERLAY_LABEL_PADDING,
+  RULER_OVERLAY_BG,
+  RULER_OVERLAY_TEXT_COLOR,
+} from '~/constants/ruler'
 
 interface RulerOverlayProps {
   ruler: RulerState
@@ -36,32 +37,42 @@ export function RulerOverlay({ ruler, scale }: RulerOverlayProps) {
 
   const midpoint = { x: (ruler.start.x + end.x) / 2, y: (ruler.start.y + end.y) / 2 }
   const normal = { x: -direction.y, y: direction.x }
-  const labelWidth = labelText.length * DIMENSION_LABEL_FONT_SIZE * CHAR_WIDTH_RATIO
+  const labelWidth = labelText.length * DIMENSION_LABEL_FONT_SIZE * DIMENSION_TEXT_CHAR_WIDTH_RATIO
 
   return (
     <Group listening={false}>
       <Line
         points={[ruler.start.x, ruler.start.y, end.x, end.y]}
-        stroke={RULER_COLOR}
-        strokeWidth={RULER_STROKE_WIDTH / scale}
-        dash={[RULER_DASH[0] / scale, RULER_DASH[1] / scale]}
+        stroke={RULER_OVERLAY_COLOR}
+        strokeWidth={RULER_OVERLAY_STROKE_WIDTH / scale}
+        dash={[RULER_OVERLAY_DASH[0] / scale, RULER_OVERLAY_DASH[1] / scale]}
       />
       {isEditing && (
         <Rect
-          x={midpoint.x + normal.x * LABEL_GAP - labelWidth / 2 - LABEL_PADDING}
-          y={midpoint.y + normal.y * LABEL_GAP - DIMENSION_LABEL_FONT_SIZE / 2 - LABEL_PADDING}
-          width={labelWidth + LABEL_PADDING * 2}
-          height={DIMENSION_LABEL_FONT_SIZE + LABEL_PADDING * 2}
-          fill={OVERRIDE_BG}
+          x={
+            midpoint.x +
+            normal.x * RULER_OVERLAY_LABEL_GAP -
+            labelWidth / 2 -
+            RULER_OVERLAY_LABEL_PADDING
+          }
+          y={
+            midpoint.y +
+            normal.y * RULER_OVERLAY_LABEL_GAP -
+            DIMENSION_LABEL_FONT_SIZE / 2 -
+            RULER_OVERLAY_LABEL_PADDING
+          }
+          width={labelWidth + RULER_OVERLAY_LABEL_PADDING * 2}
+          height={DIMENSION_LABEL_FONT_SIZE + RULER_OVERLAY_LABEL_PADDING * 2}
+          fill={RULER_OVERLAY_BG}
           cornerRadius={3}
         />
       )}
       <Text
-        x={midpoint.x + normal.x * LABEL_GAP - labelWidth / 2}
-        y={midpoint.y + normal.y * LABEL_GAP - DIMENSION_LABEL_FONT_SIZE / 2}
+        x={midpoint.x + normal.x * RULER_OVERLAY_LABEL_GAP - labelWidth / 2}
+        y={midpoint.y + normal.y * RULER_OVERLAY_LABEL_GAP - DIMENSION_LABEL_FONT_SIZE / 2}
         text={labelText}
         fontSize={DIMENSION_LABEL_FONT_SIZE}
-        fill={isEditing ? OVERRIDE_TEXT_COLOR : RULER_COLOR}
+        fill={isEditing ? RULER_OVERLAY_TEXT_COLOR : RULER_OVERLAY_COLOR}
       />
     </Group>
   )

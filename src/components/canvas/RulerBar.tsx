@@ -1,16 +1,18 @@
-type LengthUnit = 'mm' | 'cm' | 'm'
+import {
+  RULER_BAR_THICKNESS as THICKNESS,
+  RULER_BAR_MAJOR_TICK_TARGET_PX as MAJOR_TICK_TARGET_PX,
+  RULER_BAR_MINOR_TICKS_PER_MAJOR as MINOR_TICKS_PER_MAJOR,
+  RULER_BAR_BG_COLOR as BG_COLOR,
+  RULER_BAR_BORDER_COLOR as BORDER_COLOR,
+  RULER_BAR_MINOR_TICK_COLOR as MINOR_TICK_COLOR,
+  RULER_BAR_MAJOR_TICK_COLOR as MAJOR_TICK_COLOR,
+  RULER_BAR_LABEL_COLOR as LABEL_COLOR,
+  RULER_BAR_FONT_SIZE as FONT_SIZE,
+  RULER_BAR_GUIDE_COLOR as GUIDE_COLOR,
+  RULER_BAR_GUIDE_OPACITY as GUIDE_OPACITY,
+} from '~/constants/ruler'
 
-const THICKNESS = 20
-const MAJOR_TICK_TARGET_PX = 80
-const MINOR_TICKS_PER_MAJOR = 5
-const BG_COLOR = '#fafafa'
-const BORDER_COLOR = '#ddd'
-const MINOR_TICK_COLOR = '#ccc'
-const MAJOR_TICK_COLOR = '#888'
-const LABEL_COLOR = '#555'
-const FONT_SIZE = 9
-const GUIDE_COLOR = '#999'
-const GUIDE_OPACITY = 0.35
+type LengthUnit = 'mm' | 'cm' | 'm'
 
 interface CanvasRulersProps {
   width: number
@@ -48,12 +50,12 @@ function computeTicks(
   offset: number,
   documentScale: number,
 ): Tick[] {
-  const pixelsPerReal = (scale / documentScale) || 1
+  const pixelsPerReal = scale / documentScale || 1
   const majorStep = niceStep(MAJOR_TICK_TARGET_PX / pixelsPerReal)
   const minorStep = majorStep / MINOR_TICKS_PER_MAJOR
 
-  const realStart = (0 - offset) / scale * documentScale
-  const realEnd = (lengthPx - offset) / scale * documentScale
+  const realStart = ((0 - offset) / scale) * documentScale
+  const realEnd = ((lengthPx - offset) / scale) * documentScale
 
   const firstIndex = Math.floor(realStart / minorStep)
   const lastIndex = Math.ceil(realEnd / minorStep)

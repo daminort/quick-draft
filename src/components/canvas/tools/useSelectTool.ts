@@ -9,14 +9,12 @@ import { collectSnapTargets, snapPoint, type SnapTargets } from '~/lib/snap'
 import { getShapeBounds, boundsIntersect } from '~/lib/bounds'
 import { getShapeAnchor, translateShape } from '~/lib/shapeTransform'
 import type { Shape, ShapeId, ShapePatch } from '~/types/document'
+import { MARQUEE_CLICK_THRESHOLD_PX } from '~/constants/canvas'
 
 type Point = { x: number; y: number }
 type SnapIndicator = { x: number | null; y: number | null }
 const NO_SNAP: SnapIndicator = { x: null, y: null }
 export type MarqueeRect = { x: number; y: number; width: number; height: number }
-
-/** Below this screen-space drag distance a marquee mousedown+mouseup is treated as a plain click. */
-const MARQUEE_CLICK_THRESHOLD_PX = 3
 
 function computeDragResult(
   shape: Shape,

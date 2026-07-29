@@ -1,4 +1,5 @@
 import type { ComponentDef, Document } from '~/types/document'
+import { DEFAULT_DOCUMENT_FILENAME, DEFAULT_COMPONENT_LIBRARY_FILENAME } from '~/constants/fileIO'
 
 export function downloadBlob(blob: Blob, fileName: string): void {
   const url = URL.createObjectURL(blob)
@@ -11,7 +12,7 @@ export function downloadBlob(blob: Blob, fileName: string): void {
 
 export function exportDocumentToJsonFile(doc: Document): void {
   const json = JSON.stringify(doc, null, 2)
-  downloadBlob(new Blob([json], { type: 'application/json' }), 'drawing.json')
+  downloadBlob(new Blob([json], { type: 'application/json' }), DEFAULT_DOCUMENT_FILENAME)
 }
 
 function isDocumentShape(value: unknown): value is Document {
@@ -48,7 +49,7 @@ export async function importDocumentFromJsonFile(file: File): Promise<Document> 
 
 export function exportComponentLibraryToJsonFile(components: Record<string, ComponentDef>): void {
   const json = JSON.stringify(components, null, 2)
-  downloadBlob(new Blob([json], { type: 'application/json' }), 'component-library.json')
+  downloadBlob(new Blob([json], { type: 'application/json' }), DEFAULT_COMPONENT_LIBRARY_FILENAME)
 }
 
 function isComponentDef(value: unknown): value is ComponentDef {

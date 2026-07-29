@@ -1,8 +1,5 @@
 import { create } from 'zustand'
 
-export const MIN_SCALE = 0.1
-export const MAX_SCALE = 5
-
 interface ViewState {
   scale: number
   x: number

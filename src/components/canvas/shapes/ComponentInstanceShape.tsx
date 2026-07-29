@@ -2,10 +2,9 @@ import { Group } from 'react-konva'
 import type Konva from 'konva'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
-import { noopShapeInteraction, type ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
+import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction'
 import type { Shape } from '~/types/document'
-
-const INNER_VIEW_BOUNDS: ViewBounds = { left: -1e5, top: -1e5, right: 1e5, bottom: 1e5 }
+import { LARGE_VIEW_BOUNDS as INNER_VIEW_BOUNDS } from '~/constants/componentLibrary'
 
 interface ComponentInstanceShapeProps {
   shape: Extract<Shape, { type: 'component-instance' }>

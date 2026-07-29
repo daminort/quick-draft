@@ -1,23 +1,16 @@
 import { computeArcPath } from '~/lib/arcPath'
-import {
-  computeDimensionGeometry,
-  convertLength,
-  formatDimensionLabel,
-  DIMENSION_LABEL_FONT_SIZE,
-} from '~/lib/dimension'
+import { computeDimensionGeometry, convertLength, formatDimensionLabel } from '~/lib/dimension'
 import { getUnionBounds } from '~/lib/bounds'
 import { flattenComponentInstance } from '~/lib/shapeTransform'
 import type { Document, Shape } from '~/types/document'
-
-/** Page margin, in mm, around the printed content. */
-const PAGE_MARGIN_MM = 10
-/** Fallback page size, in mm, used only when the document has no printable shapes. */
-const EMPTY_PAGE_SIZE_MM = { width: 210, height: 297 }
-
-const DIMENSION_COLOR = '#ff7272'
-const DIMENSION_STROKE_WIDTH = 1
-const ARROW_SIZE = 6
-const ARROW_MARKER_ID = 'quickdraft-dimension-arrow'
+import { PAGE_MARGIN_MM, EMPTY_PAGE_SIZE_MM } from '~/constants/print'
+import {
+  DIMENSION_LABEL_FONT_SIZE,
+  DIMENSION_COLOR,
+  DIMENSION_STROKE_WIDTH,
+  ARROW_SIZE,
+  ARROW_MARKER_ID,
+} from '~/constants/dimension'
 
 export interface RenderSvgOptions {
   showDimensionUnit?: boolean

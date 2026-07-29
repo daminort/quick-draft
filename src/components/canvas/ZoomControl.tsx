@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { MinusIcon } from '@phosphor-icons/react/dist/csr/Minus'
 import { PlusIcon } from '@phosphor-icons/react/dist/csr/Plus'
-import { MIN_SCALE, MAX_SCALE } from '~/stores/useViewStore'
+import { MIN_SCALE, MAX_SCALE } from '~/constants/canvas'
 
 interface ZoomControlProps {
   scale: number

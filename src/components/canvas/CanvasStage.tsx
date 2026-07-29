@@ -19,13 +19,14 @@ import { useSelectTool } from '~/components/canvas/tools/useSelectTool'
 import { useCopyPasteTool } from '~/components/canvas/tools/useCopyPasteTool'
 import { useCanvasZoom } from '~/components/canvas/tools/useCanvasZoom'
 import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan'
-import { COMPONENT_DRAG_MIME } from '~/components/panels/ComponentLibrary'
 import type { ShapeId } from '~/types/document'
-
-const SNAP_INDICATOR_COLOR = '#ff3b8d'
-const SNAP_POINT_SIZE = 5
-const MARQUEE_STROKE_COLOR = '#2563eb'
-const MARQUEE_FILL_COLOR = 'rgba(37, 99, 235, 0.1)'
+import { COMPONENT_DRAG_MIME_TYPE } from '~/constants/fileIO'
+import {
+  SNAP_INDICATOR_COLOR,
+  SNAP_POINT_SIZE,
+  MARQUEE_STROKE_COLOR,
+  MARQUEE_FILL_COLOR,
+} from '~/constants/canvas'
 
 export function CanvasStage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -140,7 +141,7 @@ export function CanvasStage() {
   }
 
   function handleComponentDrop(e: React.DragEvent<HTMLDivElement>) {
-    const componentId = e.dataTransfer.getData(COMPONENT_DRAG_MIME)
+    const componentId = e.dataTransfer.getData(COMPONENT_DRAG_MIME_TYPE)
     if (!componentId || !components[componentId]) return
     e.preventDefault()
     const rect = containerRef.current?.getBoundingClientRect()
@@ -165,7 +166,7 @@ export function CanvasStage() {
   }
 
   function handleComponentDragOver(e: React.DragEvent<HTMLDivElement>) {
-    if (!e.dataTransfer.types.includes(COMPONENT_DRAG_MIME)) return
+    if (!e.dataTransfer.types.includes(COMPONENT_DRAG_MIME_TYPE)) return
     e.preventDefault()
     e.dataTransfer.dropEffect = 'copy'
   }

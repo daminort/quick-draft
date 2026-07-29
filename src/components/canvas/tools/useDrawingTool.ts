@@ -7,10 +7,16 @@ import { useUIStore } from '~/stores/useUIStore'
 import { useViewStore } from '~/stores/useViewStore'
 import { collectSnapTargets, snapPoint } from '~/lib/snap'
 import { findBindingForPoint } from '~/lib/dimensionBinding'
-import type { Shape, Style } from '~/types/document'
-
-const DEFAULT_STYLE: Style = { stroke: '#1a1a1a', strokeWidth: 1 }
-const DEFAULT_TEXT_COLOR = '#1a1a1a'
+import type { Shape } from '~/types/document'
+import {
+  DEFAULT_SHAPE_STYLE,
+  DEFAULT_TEXT_COLOR,
+  DEFAULT_TEXT_FONT_FAMILY,
+  DEFAULT_TEXT_FONT_SIZE,
+  DEFAULT_TEXT_CONTENT,
+  DEFAULT_ARC_END_ANGLE,
+  DEFAULT_DIMENSION_AXIS,
+} from '~/constants/shapes'
 
 type Point = { x: number; y: number }
 type ArcPhase = 'radius' | 'angle'
@@ -107,8 +113,8 @@ export function useDrawingTool() {
           cy: point.y,
           r: 0,
           startAngle: 0,
-          endAngle: 359.999,
-          style: DEFAULT_STYLE,
+          endAngle: DEFAULT_ARC_END_ANGLE,
+          style: DEFAULT_SHAPE_STYLE,
         })
         return
       }
@@ -158,7 +164,7 @@ export function useDrawingTool() {
         y1: a.y,
         x2: point.x,
         y2: point.y,
-        axis: 'horizontal',
+        axis: DEFAULT_DIMENSION_AXIS,
         offset: 0,
         unit: doc.units,
         bindingA: findBindingForPoint(doc.shapes, a),
@@ -192,9 +198,9 @@ export function useDrawingTool() {
           type: 'text',
           x: point.x,
           y: point.y,
-          text: 'Text',
-          fontFamily: 'Arial',
-          fontSize: 16,
+          text: DEFAULT_TEXT_CONTENT,
+          fontFamily: DEFAULT_TEXT_FONT_FAMILY,
+          fontSize: DEFAULT_TEXT_FONT_SIZE,
           bold: false,
           italic: false,
           fill: DEFAULT_TEXT_COLOR,
@@ -227,7 +233,7 @@ export function useDrawingTool() {
           y1: point.y,
           x2: point.x,
           y2: point.y,
-          style: DEFAULT_STYLE,
+          style: DEFAULT_SHAPE_STYLE,
         })
       } else if (activeTool === 'rect') {
         setDraftShape({
@@ -238,10 +244,17 @@ export function useDrawingTool() {
           w: 0,
           h: 0,
           rotation: 0,
-          style: DEFAULT_STYLE,
+          style: DEFAULT_SHAPE_STYLE,
         })
       } else if (activeTool === 'circle') {
-        setDraftShape({ id, type: 'circle', cx: point.x, cy: point.y, r: 0, style: DEFAULT_STYLE })
+        setDraftShape({
+          id,
+          type: 'circle',
+          cx: point.x,
+          cy: point.y,
+          r: 0,
+          style: DEFAULT_SHAPE_STYLE,
+        })
       }
     },
     [

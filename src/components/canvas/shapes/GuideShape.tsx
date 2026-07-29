@@ -2,11 +2,8 @@ import { Line } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
 import type { ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
-
-const GUIDE_COLOR = 'rgba(59, 130, 246, 0.6)'
-const GUIDE_SELECTED_COLOR = '#1d4ed8'
-const GUIDE_DASH = [4, 4]
-const GUIDE_REACH = 100000
+import { SELECTED_COLOR, GUIDE_COLOR, GUIDE_DASH, GUIDE_REACH } from '~/constants/shapes'
+import { HIT_STROKE_WIDTH } from '~/constants/canvas'
 
 interface GuideShapeProps {
   shape: Extract<Shape, { type: 'guide' }>
@@ -34,10 +31,10 @@ export function GuideShape({
   const common = {
     ref: setNodeRef,
     id: shape.id,
-    stroke: selected ? GUIDE_SELECTED_COLOR : GUIDE_COLOR,
+    stroke: selected ? SELECTED_COLOR : GUIDE_COLOR,
     strokeWidth: 1,
     dash: GUIDE_DASH,
-    hitStrokeWidth: 12,
+    hitStrokeWidth: HIT_STROKE_WIDTH,
     listening: draggable,
     draggable,
     onClick: onSelect,

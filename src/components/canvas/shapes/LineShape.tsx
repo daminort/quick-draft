@@ -1,8 +1,8 @@
 import { Line } from 'react-konva'
 import type Konva from 'konva'
 import type { Shape } from '~/types/document'
-
-const SELECTED_COLOR = '#1d4ed8'
+import { SELECTED_COLOR } from '~/constants/shapes'
+import { HIT_STROKE_WIDTH } from '~/constants/canvas'
 
 interface LineShapeProps {
   shape: Extract<Shape, { type: 'line' }>
@@ -35,7 +35,7 @@ export function LineShape({
       stroke={selected ? SELECTED_COLOR : shape.style.stroke}
       strokeWidth={shape.style.strokeWidth}
       dash={shape.style.dash}
-      hitStrokeWidth={12}
+      hitStrokeWidth={HIT_STROKE_WIDTH}
       draggable={draggable}
       onClick={onSelect}
       onTap={onSelect}

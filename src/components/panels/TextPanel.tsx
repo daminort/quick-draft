@@ -2,8 +2,7 @@ import { TextBIcon } from '@phosphor-icons/react/dist/csr/TextB'
 import { TextItalicIcon } from '@phosphor-icons/react/dist/csr/TextItalic'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import type { Shape } from '~/types/document'
-
-const FONT_FAMILIES = ['Arial', 'Helvetica', 'Times New Roman', 'Georgia', 'Courier New', 'Verdana']
+import { FONT_FAMILIES } from '~/constants/ui'
 
 interface TextPanelProps {
   shape: Shape
