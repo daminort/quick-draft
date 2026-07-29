@@ -1,6 +1,9 @@
 import { Box, Flex, Text, TextField, TextArea, Select, IconButton } from '@radix-ui/themes'
 import { TextBIcon } from '@phosphor-icons/react/dist/csr/TextB'
 import { TextItalicIcon } from '@phosphor-icons/react/dist/csr/TextItalic'
+import { TextAlignLeftIcon } from '@phosphor-icons/react/dist/csr/TextAlignLeft'
+import { TextAlignCenterIcon } from '@phosphor-icons/react/dist/csr/TextAlignCenter'
+import { TextAlignRightIcon } from '@phosphor-icons/react/dist/csr/TextAlignRight'
 import { useDocumentStore } from '~/stores/useDocumentStore'
 import type { Shape } from '~/types/document'
 import { FONT_FAMILIES } from '~/constants/ui'
@@ -89,6 +92,42 @@ export function TextPanel({ shape }: TextPanelProps) {
           onClick={() => updateShape(shape.id, { italic: !shape.italic })}
         >
           <TextItalicIcon size={18} />
+        </IconButton>
+      </Flex>
+
+      <Flex gap="1">
+        <IconButton
+          type="button"
+          title="Align left"
+          aria-label="Align left"
+          aria-pressed={shape.align === 'left'}
+          variant="ghost"
+          style={shape.align === 'left' ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
+          onClick={() => updateShape(shape.id, { align: 'left' })}
+        >
+          <TextAlignLeftIcon size={18} />
+        </IconButton>
+        <IconButton
+          type="button"
+          title="Align center"
+          aria-label="Align center"
+          aria-pressed={shape.align === 'center'}
+          variant="ghost"
+          style={shape.align === 'center' ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
+          onClick={() => updateShape(shape.id, { align: 'center' })}
+        >
+          <TextAlignCenterIcon size={18} />
+        </IconButton>
+        <IconButton
+          type="button"
+          title="Align right"
+          aria-label="Align right"
+          aria-pressed={shape.align === 'right'}
+          variant="ghost"
+          style={shape.align === 'right' ? ACTIVE_TEXT_BUTTON_STYLE : undefined}
+          onClick={() => updateShape(shape.id, { align: 'right' })}
+        >
+          <TextAlignRightIcon size={18} />
         </IconButton>
       </Flex>
 

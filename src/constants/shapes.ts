@@ -27,6 +27,9 @@ export const DEFAULT_TEXT_FONT_SIZE = 16
 /** Initial placeholder content for newly created text shapes. Used in: components/canvas/tools/useDrawingTool.ts */
 export const DEFAULT_TEXT_CONTENT = 'Text'
 
+/** Default horizontal alignment for newly created text shapes. Used in: components/canvas/tools/useDrawingTool.ts */
+export const DEFAULT_TEXT_ALIGN = 'left'
+
 /** Default end angle (degrees) for a newly drawn arc, just short of a full circle so it renders as a closed-looking ring by default. Used in: components/canvas/tools/useDrawingTool.ts */
 export const DEFAULT_ARC_END_ANGLE = 359.999
 

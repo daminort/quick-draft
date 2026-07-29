@@ -14,6 +14,7 @@ import {
   DEFAULT_TEXT_FONT_FAMILY,
   DEFAULT_TEXT_FONT_SIZE,
   DEFAULT_TEXT_CONTENT,
+  DEFAULT_TEXT_ALIGN,
   DEFAULT_ARC_END_ANGLE,
   DEFAULT_DIMENSION_AXIS,
 } from '~/constants/shapes'
@@ -204,6 +205,7 @@ export function useDrawingTool() {
           bold: false,
           italic: false,
           fill: DEFAULT_TEXT_COLOR,
+          align: DEFAULT_TEXT_ALIGN,
         })
         selectShape([id])
         setTool('select')

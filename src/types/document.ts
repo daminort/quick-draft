@@ -70,6 +70,7 @@ export type Shape =
       bold: boolean
       italic: boolean
       fill: string
+      align: 'left' | 'center' | 'right'
     }
   | {
       id: ShapeId

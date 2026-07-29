@@ -7,7 +7,9 @@ interface TextShapeProps {
   shape: Extract<Shape, { type: 'text' }>
   draggable: boolean
   selected?: boolean
+  visible?: boolean
   onSelect: () => void
+  onDblClick?: () => void
   onDragStart: () => void
   onDragMove: (node: Konva.Node) => void
   onDragEnd: (node: Konva.Node) => void
@@ -18,7 +20,9 @@ export function TextShape({
   shape,
   draggable,
   selected = false,
+  visible = true,
   onSelect,
+  onDblClick,
   onDragStart,
   onDragMove,
   onDragEnd,
@@ -34,13 +38,17 @@ export function TextShape({
       x={shape.x}
       y={shape.y}
       text={shape.text}
+      align={shape.align}
       fontFamily={shape.fontFamily}
       fontSize={shape.fontSize}
       fontStyle={fontStyle}
       fill={selected ? SELECTED_COLOR : shape.fill}
       draggable={draggable}
+      visible={visible}
       onClick={onSelect}
       onTap={onSelect}
+      onDblClick={onDblClick}
+      onDblTap={onDblClick}
       onDragStart={onDragStart}
       onDragMove={(e) => onDragMove(e.target)}
       onDragEnd={(e) => onDragEnd(e.target)}

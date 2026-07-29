@@ -33,3 +33,6 @@ export const MARQUEE_STROKE_COLOR = '#2563eb'
 
 /** Fill color of the rubber-band selection marquee. Used in: components/canvas/CanvasStage.tsx */
 export const MARQUEE_FILL_COLOR = 'rgba(37, 99, 235, 0.1)'
+
+/** Visual breathing room (screen px, not zoom-scaled) inside the dashed box shown when editing text in-place. Used in: components/canvas/TextEditOverlay.tsx */
+export const TEXT_EDIT_OVERLAY_PADDING_PX = 4

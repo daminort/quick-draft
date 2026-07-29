@@ -11,6 +11,7 @@ import { useSelectionStore } from '~/stores/useSelectionStore'
 import { useToolStore, type Tool } from '~/stores/useToolStore'
 import { useUIStore } from '~/stores/useUIStore'
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer'
+import { TextEditOverlay } from '~/components/canvas/TextEditOverlay'
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer'
 import { ZoomControl } from '~/components/canvas/ZoomControl'
 import { ContextMenu } from '~/components/canvas/ContextMenu'
@@ -52,6 +53,7 @@ export function CanvasStage() {
 
   const shapes = useDocumentStore((state) => state.document.shapes)
   const components = useDocumentStore((state) => state.document.components)
+  const updateShape = useDocumentStore((state) => state.updateShape)
   const removeShape = useDocumentStore((state) => state.removeShape)
   const bringToFront = useDocumentStore((state) => state.bringToFront)
   const sendToBack = useDocumentStore((state) => state.sendToBack)
@@ -77,6 +79,8 @@ export function CanvasStage() {
   } | null>(null)
   const [emptyContextMenu, setEmptyContextMenu] = useState<{ x: number; y: number } | null>(null)
   const [deleteGuidesDialogOpen, setDeleteGuidesDialogOpen] = useState(false)
+  const [editingTextId, setEditingTextId] = useState<ShapeId | null>(null)
+  const originalTextRef = useRef<string | null>(null)
 
   const drawingTool = useDrawingTool()
   const rulerTool = useRulerTool()
@@ -179,6 +183,7 @@ export function CanvasStage() {
   const selectedShape =
     selectedIds.length === 1 ? (shapes.find((shape) => shape.id === selectedIds[0]) ?? null) : null
   const selectedNode = selectedShape ? selectTool.getNode(selectedShape.id) : null
+  const editingShape = shapes.find((shape) => shape.id === editingTextId)
 
   const snapIndicator =
     drawingTool.snapIndicator.x !== null || drawingTool.snapIndicator.y !== null
@@ -190,6 +195,30 @@ export function CanvasStage() {
     top: -zoom.y / zoom.scale,
     right: (size.width - zoom.x) / zoom.scale,
     bottom: (size.height - zoom.y) / zoom.scale,
+  }
+
+  function startEditText(id: ShapeId) {
+    const shape = shapes.find((s) => s.id === id)
+    if (!shape || shape.type !== 'text') return
+    select([id])
+    originalTextRef.current = shape.text
+    useDocumentStore.temporal.getState().pause()
+    setEditingTextId(id)
+  }
+
+  function commitEditText() {
+    useDocumentStore.temporal.getState().resume()
+    originalTextRef.current = null
+    setEditingTextId(null)
+  }
+
+  function cancelEditText() {
+    if (editingTextId !== null && originalTextRef.current !== null) {
+      updateShape(editingTextId, { text: originalTextRef.current })
+    }
+    useDocumentStore.temporal.getState().resume()
+    originalTextRef.current = null
+    setEditingTextId(null)
   }
 
   function handleComponentDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -276,6 +305,8 @@ export function CanvasStage() {
               interaction={selectTool}
               viewBounds={viewBounds}
               selected={selectedIds.includes(shape.id)}
+              editingTextId={editingTextId}
+              onStartEditText={startEditText}
             />
           ))}
         </Layer>
@@ -335,6 +366,17 @@ export function CanvasStage() {
           )}
         </Layer>
       </Stage>
+      {editingShape && editingShape.type === 'text' && (
+        <TextEditOverlay
+          shape={editingShape}
+          scale={zoom.scale}
+          offsetX={zoom.x}
+          offsetY={zoom.y}
+          onChange={(text) => updateShape(editingShape.id, { text })}
+          onCommit={commitEditText}
+          onCancel={cancelEditText}
+        />
+      )}
       {rulerVisible && (
         <CanvasRulers
           width={size.width}

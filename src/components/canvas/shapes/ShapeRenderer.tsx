@@ -1,5 +1,5 @@
 import type Konva from 'konva'
-import type { Shape } from '~/types/document'
+import type { Shape, ShapeId } from '~/types/document'
 import type { ShapeInteraction, ViewBounds } from '~/components/canvas/shapes/ShapeInteraction'
 import { LineShape } from '~/components/canvas/shapes/LineShape'
 import { RectShape } from '~/components/canvas/shapes/RectShape'
@@ -16,6 +16,8 @@ interface ShapeRendererProps {
   interaction: ShapeInteraction
   viewBounds: ViewBounds
   selected?: boolean
+  editingTextId?: ShapeId | null
+  onStartEditText?: (id: ShapeId) => void
 }
 
 export function ShapeRenderer({
@@ -24,6 +26,8 @@ export function ShapeRenderer({
   interaction,
   viewBounds,
   selected = false,
+  editingTextId = null,
+  onStartEditText,
 }: ShapeRendererProps) {
   const shared = {
     draggable: interactive,
@@ -54,7 +58,14 @@ export function ShapeRenderer({
         />
       )
     case 'text':
-      return <TextShape shape={shape} {...shared} />
+      return (
+        <TextShape
+          shape={shape}
+          {...shared}
+          visible={editingTextId !== shape.id}
+          onDblClick={interactive ? () => onStartEditText?.(shape.id) : undefined}
+        />
+      )
     case 'guide':
       return <GuideShape shape={shape} viewBounds={viewBounds} {...shared} />
     case 'dimension':
