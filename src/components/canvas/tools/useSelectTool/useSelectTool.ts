@@ -10,7 +10,7 @@ import { getShapeAnchor, translateShape } from '~/lib/shapeTransform';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { useSelectionStore } from '~/stores/useSelectionStore';
-import { useToolStore } from '~/stores/useToolStore';
+import { toolStore, toolSelectors } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
 import { useViewStore } from '~/stores/useViewStore';
 
@@ -130,7 +130,7 @@ export function useSelectTool(): TUseSelectToolReturn {
   const components = useDocumentStore(state => state.document.components);
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
-  const activeTool = useToolStore(state => state.activeTool);
+  const activeTool = toolStore(toolSelectors.getActiveTool);
   const viewScale = useViewStore(state => state.scale);
   const select = useSelectionStore(state => state.select);
   const selectedIds = useSelectionStore(state => state.selectedIds);

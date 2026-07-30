@@ -17,7 +17,8 @@ import {
   Printer,
 } from 'lucide-react';
 
-import { useToolStore, type TTool } from '~/stores/useToolStore';
+import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
+import type { TTool } from '~/stores/toolStore';
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { useSelectionStore } from '~/stores/useSelectionStore';
 import { useUIStore } from '~/stores/useUIStore';
@@ -53,8 +54,7 @@ const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
 ];
 
 export function Toolbar() {
-  const activeTool = useToolStore(state => state.activeTool);
-  const setTool = useToolStore(state => state.setTool);
+  const activeTool = toolStore(toolSelectors.getActiveTool);
   const clearDocument = useDocumentStore(state => state.clear);
   const clearSelection = useSelectionStore(state => state.clear);
   const isSettingsOpen = useUIStore(state => state.isSettingsOpen);
@@ -72,7 +72,7 @@ export function Toolbar() {
 
   const libraryButtonClassName = isLibraryOpen ? s.active : undefined;
   const settingsButtonClassName = isSettingsOpen ? s.active : undefined;
-  const onToolClick = (tool: TTool) => () => setTool(tool);
+  const onToolClick = (tool: TTool) => () => toolActions.setTool(tool);
   const onOpenClearDialog = () => setIsClearDialogOpen(true);
   const onCancelClear = () => setIsClearDialogOpen(false);
 

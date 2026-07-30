@@ -16,7 +16,8 @@ import {
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { useSelectionStore } from '~/stores/useSelectionStore';
-import { useToolStore, type TTool } from '~/stores/useToolStore';
+import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
+import type { TTool } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
@@ -67,8 +68,7 @@ export function CanvasStage() {
   const selectedIds = useSelectionStore(state => state.selectedIds);
   const select = useSelectionStore(state => state.select);
   const clearSelection = useSelectionStore(state => state.clear);
-  const activeTool = useToolStore(state => state.activeTool);
-  const setTool = useToolStore(state => state.setTool);
+  const activeTool = toolStore(toolSelectors.getActiveTool);
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const areDimensionsVisible = useUIStore(state => state.areDimensionsVisible);
   const toggleDimensionsVisible = useUIStore(state => state.toggleDimensionsVisible);
@@ -125,12 +125,12 @@ export function CanvasStage() {
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) {
         return;
       }
-      setTool(tool);
+      toolActions.setTool(tool);
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [setTool]);
+  }, []);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -185,12 +185,12 @@ export function CanvasStage() {
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) {
         return;
       }
-      setTool('select');
+      toolActions.setTool('select');
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [setTool]);
+  }, []);
 
   const visibleShapes = shapes.filter(
     shape =>

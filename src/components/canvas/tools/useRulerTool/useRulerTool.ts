@@ -9,7 +9,7 @@ import {
 } from '~/lib/ruler';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useToolStore } from '~/stores/useToolStore';
+import { toolStore, toolSelectors } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
 import { useViewStore } from '~/stores/useViewStore';
 
@@ -27,7 +27,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
 }
 
 export function useRulerTool(): TUseRulerToolReturn {
-  const activeTool = useToolStore(state => state.activeTool);
+  const activeTool = toolStore(toolSelectors.getActiveTool);
   const documentScale = useDocumentStore(state => state.document.scale);
   const shapes = useDocumentStore(state => state.document.shapes);
   const addShape = useDocumentStore(state => state.addShape);

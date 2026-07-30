@@ -18,7 +18,7 @@ import { findBindingForPoint } from '~/lib/dimensionBinding';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { useSelectionStore } from '~/stores/useSelectionStore';
-import { useToolStore } from '~/stores/useToolStore';
+import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
 import { useViewStore } from '~/stores/useViewStore';
 
@@ -59,8 +59,7 @@ function hasSize(shape: TShape): boolean {
 }
 
 export function useDrawingTool(): TUseDrawingToolReturn {
-  const activeTool = useToolStore(state => state.activeTool);
-  const setTool = useToolStore(state => state.setTool);
+  const activeTool = toolStore(toolSelectors.getActiveTool);
   const doc = useDocumentStore(state => state.document);
   const addShape = useDocumentStore(state => state.addShape);
   const selectShape = useSelectionStore(state => state.select);
@@ -221,7 +220,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
           align: DEFAULT_TEXT_ALIGN,
         });
         selectShape([id]);
-        setTool('select');
+        toolActions.setTool('select');
         return;
       }
 
@@ -278,7 +277,6 @@ export function useDrawingTool(): TUseDrawingToolReturn {
       onDimensionMouseDown,
       addShape,
       selectShape,
-      setTool,
       snapCursor,
       setDraftShape,
     ],
