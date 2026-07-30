@@ -34,6 +34,8 @@ import { useCopyPasteTool } from '~/components/canvas/tools/useCopyPasteTool';
 import { useCanvasZoom } from '~/components/canvas/tools/useCanvasZoom';
 import { useCanvasPan } from '~/components/canvas/tools/useCanvasPan';
 
+import s from './CanvasStage.module.css';
+
 import type Konva from 'konva';
 
 // Keyed by e.code (physical key position), not e.key, so the shortcut still matches when a
@@ -379,7 +381,7 @@ export function CanvasStage() {
     { label: 'Delete guides', icon: <Trash2 size={14} />, onClick: onOpenDeleteGuidesDialog },
   ];
 
-  const containerStyle = { cursor: pan.isPanning ? 'grabbing' : undefined };
+  const containerClassName = pan.isPanning ? s.panning : undefined;
 
   return (
     <Box
@@ -389,7 +391,7 @@ export function CanvasStage() {
       width="100%"
       height="100%"
       position="relative"
-      style={containerStyle}
+      className={containerClassName}
     >
       <Stage
         width={size.width}

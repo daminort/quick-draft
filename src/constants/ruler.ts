@@ -32,12 +32,6 @@ export const RULER_BAR_MAJOR_TICK_TARGET_PX = 80;
 /** Number of minor ticks per major tick. Used in: components/canvas/RulerBar.tsx */
 export const RULER_BAR_MINOR_TICKS_PER_MAJOR = 5;
 
-/** Background color of the ruler bars. Used in: components/canvas/RulerBar.tsx */
-export const RULER_BAR_BG_COLOR = '#fafafa';
-
-/** Border color of the ruler bars. Used in: components/canvas/RulerBar.tsx */
-export const RULER_BAR_BORDER_COLOR = '#ddd';
-
 /** Color of minor tick marks. Used in: components/canvas/RulerBar.tsx */
 export const RULER_BAR_MINOR_TICK_COLOR = '#ccc';
 

@@ -1,0 +1,13 @@
+.container {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  background: var(--color-panel-solid);
+  border: 1px solid var(--gray-a5);
+  border-radius: var(--radius-3);
+  box-shadow: var(--shadow-3);
+}
+
+.resetButton {
+  width: 44px;
+}

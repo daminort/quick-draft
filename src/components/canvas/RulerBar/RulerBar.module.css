@@ -1,0 +1,27 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cursorGuide {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.horizontalRuler {
+  position: absolute;
+  top: 0;
+  left: var(--ruler-thickness);
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
+}
+
+.verticalRuler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #fafafa;
+  border-right: 1px solid #ddd;
+}

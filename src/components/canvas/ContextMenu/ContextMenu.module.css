@@ -1,0 +1,15 @@
+.menu {
+  position: fixed;
+  left: var(--menu-left);
+  top: var(--menu-top);
+  z-index: 1000;
+  background: var(--color-panel-solid);
+  border: 1px solid var(--gray-a5);
+  border-radius: var(--radius-3);
+  box-shadow: var(--shadow-5);
+  min-width: 160px;
+}
+
+.menuItem {
+  justify-content: flex-start;
+}

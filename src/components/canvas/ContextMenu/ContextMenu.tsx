@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 
 import { Box, Flex, Button } from '@radix-ui/themes';
 
+import s from './ContextMenu.module.css';
+
 export type TContextMenuItem = {
   label: string;
   icon: ReactNode;
@@ -39,25 +41,14 @@ export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
     };
   }, [onClose]);
 
-  const menuStyle = {
-    position: 'fixed' as const,
-    left: x,
-    top: y,
-    zIndex: 1000,
-    background: 'var(--color-panel-solid)',
-    border: '1px solid var(--gray-a5)',
-    borderRadius: 'var(--radius-3)',
-    boxShadow: 'var(--shadow-5)',
-    minWidth: 160,
-  };
-  const menuItemStyle = { justifyContent: 'flex-start' };
+  const menuStyle = { '--menu-left': `${x}px`, '--menu-top': `${y}px` } as React.CSSProperties;
   const onItemClick = (item: TContextMenuItem) => () => {
     item.onClick();
     onClose();
   };
 
   return (
-    <Box ref={menuRef} role="menu" p="2" style={menuStyle}>
+    <Box ref={menuRef} role="menu" p="2" className={s.menu} style={menuStyle}>
       <Flex direction="column" gap="1">
         {items.map(item => (
           <Button
@@ -67,7 +58,7 @@ export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
             onClick={onItemClick(item)}
             variant="ghost"
             color="gray"
-            style={menuItemStyle}
+            className={s.menuItem}
           >
             <Flex align="center" gap="2">
               {item.icon}

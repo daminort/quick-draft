@@ -4,8 +4,6 @@ import {
   RULER_BAR_THICKNESS as THICKNESS,
   RULER_BAR_MAJOR_TICK_TARGET_PX as MAJOR_TICK_TARGET_PX,
   RULER_BAR_MINOR_TICKS_PER_MAJOR as MINOR_TICKS_PER_MAJOR,
-  RULER_BAR_BG_COLOR as BG_COLOR,
-  RULER_BAR_BORDER_COLOR as BORDER_COLOR,
   RULER_BAR_MINOR_TICK_COLOR as MINOR_TICK_COLOR,
   RULER_BAR_MAJOR_TICK_COLOR as MAJOR_TICK_COLOR,
   RULER_BAR_LABEL_COLOR as LABEL_COLOR,
@@ -13,6 +11,8 @@ import {
   RULER_BAR_GUIDE_COLOR as GUIDE_COLOR,
   RULER_BAR_GUIDE_OPACITY as GUIDE_OPACITY,
 } from '~/constants/ruler';
+
+import s from './RulerBar.module.css';
 
 type TLengthUnit = 'mm' | 'cm' | 'm';
 
@@ -91,25 +91,12 @@ export function CanvasRulers({
   const horizontalTicks = computeTicks(horizontalLength, scale, offsetX - THICKNESS, documentScale);
   const verticalTicks = computeTicks(height, scale, offsetY, documentScale);
 
-  const horizontalRulerStyle = {
-    position: 'absolute' as const,
-    top: 0,
-    left: THICKNESS,
-    background: BG_COLOR,
-    borderBottom: `1px solid ${BORDER_COLOR}`,
-  };
-  const verticalRulerStyle = {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    background: BG_COLOR,
-    borderRight: `1px solid ${BORDER_COLOR}`,
-  };
+  const horizontalRulerStyle = { '--ruler-thickness': `${THICKNESS}px` } as React.CSSProperties;
 
   return (
-    <Box style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+    <Box className={s.overlay}>
       {cursor && (
-        <svg width={width} height={height} style={{ position: 'absolute', top: 0, left: 0 }}>
+        <svg width={width} height={height} className={s.cursorGuide}>
           <line
             x1={cursor.x}
             x2={cursor.x}
@@ -130,7 +117,12 @@ export function CanvasRulers({
           />
         </svg>
       )}
-      <svg width={horizontalLength} height={THICKNESS} style={horizontalRulerStyle}>
+      <svg
+        width={horizontalLength}
+        height={THICKNESS}
+        className={s.horizontalRuler}
+        style={horizontalRulerStyle}
+      >
         {horizontalTicks.map((tick, i) => {
           const y1 = tick.isMajor ? THICKNESS - 10 : THICKNESS - 5;
           const stroke = tick.isMajor ? MAJOR_TICK_COLOR : MINOR_TICK_COLOR;
@@ -161,7 +153,7 @@ export function CanvasRulers({
           ))}
       </svg>
 
-      <svg width={THICKNESS} height={height} style={verticalRulerStyle}>
+      <svg width={THICKNESS} height={height} className={s.verticalRuler}>
         {verticalTicks.map((tick, i) => {
           const x2 = tick.isMajor ? 10 : 5;
           const stroke = tick.isMajor ? MAJOR_TICK_COLOR : MINOR_TICK_COLOR;

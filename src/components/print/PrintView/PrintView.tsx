@@ -8,6 +8,8 @@ import { useUIStore } from '~/stores/useUIStore';
 
 import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg';
 
+import s from './PrintView.module.css';
+
 type TPrintViewProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -27,19 +29,7 @@ export function PrintView({ isOpen, onClose }: TPrintViewProps) {
   }
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      gap="4"
-      p="6"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 2000,
-        overflow: 'auto',
-        background: 'rgba(0, 0, 0, 0.6)',
-      }}
-    >
+    <Flex direction="column" align="center" gap="4" p="6" className={s.overlay}>
       <Flex gap="2" flexShrink="0">
         <Button type="button" title="Print" aria-label="Print" onClick={() => window.print()}>
           <Printer size={18} />

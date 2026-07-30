@@ -4,6 +4,8 @@ import type { TShape } from '~/types/document';
 
 import { TEXT_EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
 
+import s from './TextEditOverlay.module.css';
+
 type TTextEditOverlayProps = {
   shape: Extract<TShape, { type: 'text' }>;
   scale: number;
@@ -58,23 +60,16 @@ export function TextEditOverlay({
   }
 
   const overlayStyle = {
-    position: 'absolute' as const,
-    left: offsetX + shape.x * scale - TEXT_EDIT_OVERLAY_PADDING_PX,
-    top: offsetY + shape.y * scale - TEXT_EDIT_OVERLAY_PADDING_PX,
-    padding: TEXT_EDIT_OVERLAY_PADDING_PX,
-    minWidth: '1em',
-    fontFamily: shape.fontFamily,
-    fontSize: shape.fontSize * scale,
-    fontWeight: shape.isBold ? 'bold' : 'normal',
-    fontStyle,
-    textAlign: shape.align,
-    color: shape.fill,
-    lineHeight: 1,
-    whiteSpace: 'pre' as const,
-    outline: '1px dashed var(--accent-9)',
-    background: 'var(--color-background)',
-    cursor: 'text',
-  };
+    '--overlay-left': `${offsetX + shape.x * scale - TEXT_EDIT_OVERLAY_PADDING_PX}px`,
+    '--overlay-top': `${offsetY + shape.y * scale - TEXT_EDIT_OVERLAY_PADDING_PX}px`,
+    '--overlay-padding': `${TEXT_EDIT_OVERLAY_PADDING_PX}px`,
+    '--overlay-font-family': shape.fontFamily,
+    '--overlay-font-size': `${shape.fontSize * scale}px`,
+    '--overlay-font-weight': shape.isBold ? 'bold' : 'normal',
+    '--overlay-font-style': fontStyle,
+    '--overlay-text-align': shape.align,
+    '--overlay-color': shape.fill,
+  } as React.CSSProperties;
 
   return (
     <div
@@ -85,6 +80,7 @@ export function TextEditOverlay({
       onInput={onInput}
       onBlur={onCommit}
       onKeyDown={onKeyDown}
+      className={s.overlay}
       style={overlayStyle}
     />
   );

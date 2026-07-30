@@ -3,6 +3,8 @@ import { Minus, Plus } from 'lucide-react';
 
 import { MIN_SCALE, MAX_SCALE } from '~/constants/canvas';
 
+import s from './ZoomControl.module.css';
+
 type TZoomControlProps = {
   scale: number;
   onZoomIn: () => void;
@@ -14,23 +16,9 @@ export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomContro
   const isZoomOutDisabled = scale <= MIN_SCALE;
   const isZoomInDisabled = scale >= MAX_SCALE;
   const zoomPercentage = Math.round(scale * 100);
-  const resetButtonStyle = { width: 44 };
 
   return (
-    <Flex
-      align="center"
-      gap="1"
-      p="1"
-      style={{
-        position: 'absolute',
-        right: 12,
-        bottom: 12,
-        background: 'var(--color-panel-solid)',
-        border: '1px solid var(--gray-a5)',
-        borderRadius: 'var(--radius-3)',
-        boxShadow: 'var(--shadow-3)',
-      }}
-    >
+    <Flex align="center" gap="1" p="1" className={s.container}>
       <IconButton
         type="button"
         title="Zoom out"
@@ -51,7 +39,7 @@ export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomContro
         variant="ghost"
         color="gray"
         size="1"
-        style={resetButtonStyle}
+        className={s.resetButton}
       >
         {zoomPercentage}%
       </IconButton>
