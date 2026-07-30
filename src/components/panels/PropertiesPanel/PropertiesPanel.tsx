@@ -3,7 +3,7 @@ import { Flex, Text } from '@radix-ui/themes';
 import type { TShape } from '~/types/document';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { selectionStore, selectionSelectors } from '~/stores/selectionStore';
 
 import { GeometryPanel } from '~/components/panels/GeometryPanel';
 import { LineSettingsPanel } from '~/components/panels/LineSettingsPanel';
@@ -50,7 +50,7 @@ function ShapeSettings({ shape }: { shape: TShape }) {
 }
 
 export function PropertiesPanel() {
-  const selectedIds = useSelectionStore(state => state.selectedIds);
+  const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const shapes = useDocumentStore(state => state.document.shapes);
 
   if (selectedIds.length > 1) {

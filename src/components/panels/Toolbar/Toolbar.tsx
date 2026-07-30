@@ -20,7 +20,7 @@ import {
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import type { TTool } from '~/stores/toolStore';
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { selectionActions } from '~/stores/selectionStore';
 import { useUIStore } from '~/stores/useUIStore';
 
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
@@ -56,7 +56,6 @@ const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
 export function Toolbar() {
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const clearDocument = useDocumentStore(state => state.clear);
-  const clearSelection = useSelectionStore(state => state.clear);
   const isSettingsOpen = useUIStore(state => state.isSettingsOpen);
   const toggleSettings = useUIStore(state => state.toggleSettings);
   const isLibraryOpen = useUIStore(state => state.isLibraryOpen);
@@ -66,7 +65,7 @@ export function Toolbar() {
 
   const onClearConfirmed = () => {
     clearDocument();
-    clearSelection();
+    selectionActions.clear();
     setIsClearDialogOpen(false);
   };
 

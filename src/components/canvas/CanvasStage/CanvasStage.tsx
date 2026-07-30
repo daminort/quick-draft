@@ -15,7 +15,7 @@ import {
 } from '~/constants/canvas';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import type { TTool } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
@@ -65,9 +65,7 @@ export function CanvasStage() {
   const sendToBack = useDocumentStore(state => state.sendToBack);
   const addComponentInstance = useDocumentStore(state => state.addComponentInstance);
   const clearGuides = useDocumentStore(state => state.clearGuides);
-  const selectedIds = useSelectionStore(state => state.selectedIds);
-  const select = useSelectionStore(state => state.select);
-  const clearSelection = useSelectionStore(state => state.clear);
+  const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const areDimensionsVisible = useUIStore(state => state.areDimensionsVisible);
@@ -147,12 +145,12 @@ export function CanvasStage() {
       }
       e.preventDefault();
       selectedIds.forEach(id => removeShape(id));
-      clearSelection();
+      selectionActions.clear();
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selectedIds, removeShape, clearSelection]);
+  }, [selectedIds, removeShape]);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -233,7 +231,7 @@ export function CanvasStage() {
     if (!shape || shape.type !== 'text') {
       return;
     }
-    select([id]);
+    selectionActions.select([id]);
     originalTextRef.current = shape.text;
     useDocumentStore.temporal.getState().pause();
     setEditingTextId(id);
@@ -269,7 +267,7 @@ export function CanvasStage() {
     const instanceId = addComponentInstance(componentId, x, y);
     // Deferred: the instance's Konva node registers on mount, one render after this one — selecting
     // it a tick later (instead of in the same batch) lets the Transformer find it immediately.
-    setTimeout(() => select([instanceId]), 0);
+    setTimeout(() => selectionActions.select([instanceId]), 0);
   }
 
   function onContextMenu(e: Konva.KonvaEventObject<PointerEvent>) {
@@ -290,7 +288,7 @@ export function CanvasStage() {
     if (!shapeId) {
       return;
     }
-    select([shapeId]);
+    selectionActions.select([shapeId]);
     setEmptyContextMenu(null);
     setContextMenu({ x: e.evt.clientX, y: e.evt.clientY, shapeId });
   }

@@ -9,7 +9,7 @@ import { getShapeBounds, areBoundsIntersecting } from '~/lib/bounds';
 import { getShapeAnchor, translateShape } from '~/lib/shapeTransform';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
 import { useViewStore } from '~/stores/useViewStore';
@@ -132,9 +132,7 @@ export function useSelectTool(): TUseSelectToolReturn {
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const viewScale = useViewStore(state => state.scale);
-  const select = useSelectionStore(state => state.select);
-  const selectedIds = useSelectionStore(state => state.selectedIds);
-  const clearSelection = useSelectionStore(state => state.clear);
+  const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const nodeRefs = useRef(new Map<TShapeId, Konva.Node>());
   const manualDrag = useRef<TManualDrag | null>(null);
   const marqueeDrag = useRef<TMarqueeDrag | null>(null);
@@ -165,7 +163,7 @@ export function useSelectTool(): TUseSelectToolReturn {
 
   const getNode = useCallback((id: TShapeId) => nodeRefs.current.get(id) ?? null, []);
 
-  const selectShape = useCallback((id: TShapeId) => select([id]), [select]);
+  const selectShape = useCallback((id: TShapeId) => selectionActions.select([id]), []);
 
   const onStageMouseDown = useCallback(
     (e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -173,7 +171,7 @@ export function useSelectTool(): TUseSelectToolReturn {
         return;
       }
       if (activeTool !== 'select') {
-        clearSelection();
+        selectionActions.clear();
         return;
       }
       const stage = e.target.getStage();
@@ -188,7 +186,7 @@ export function useSelectTool(): TUseSelectToolReturn {
       };
       setMarqueeRect({ x: pointer.x, y: pointer.y, width: 0, height: 0 });
     },
-    [activeTool, clearSelection],
+    [activeTool],
   );
 
   const onDragStart = useCallback(
@@ -379,7 +377,7 @@ export function useSelectTool(): TUseSelectToolReturn {
         e.clientY - marquee.startClientPointer.y,
       );
       if (clientDistance < MARQUEE_CLICK_THRESHOLD_PX) {
-        clearSelection();
+        selectionActions.clear();
         return;
       }
 
@@ -399,7 +397,7 @@ export function useSelectTool(): TUseSelectToolReturn {
           return bounds !== null && areBoundsIntersecting(bounds, marqueeBounds);
         })
         .map(shape => shape.id);
-      select(ids);
+      selectionActions.select(ids);
     }
 
     window.addEventListener('mousemove', onWindowMouseMove);
@@ -408,16 +406,7 @@ export function useSelectTool(): TUseSelectToolReturn {
       window.removeEventListener('mousemove', onWindowMouseMove);
       window.removeEventListener('mouseup', onWindowMouseUp);
     };
-  }, [
-    dragTargets,
-    snapTolerance,
-    viewScale,
-    updateShape,
-    shapes,
-    components,
-    select,
-    clearSelection,
-  ]);
+  }, [dragTargets, snapTolerance, viewScale, updateShape, shapes, components]);
 
   return {
     registerNode,

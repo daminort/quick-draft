@@ -17,7 +17,7 @@ import { collectSnapTargets, snapPoint } from '~/lib/snap';
 import { findBindingForPoint } from '~/lib/dimensionBinding';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
 import { useViewStore } from '~/stores/useViewStore';
@@ -62,7 +62,6 @@ export function useDrawingTool(): TUseDrawingToolReturn {
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const doc = useDocumentStore(state => state.document);
   const addShape = useDocumentStore(state => state.addShape);
-  const selectShape = useSelectionStore(state => state.select);
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const viewScale = useViewStore(state => state.scale);
@@ -219,7 +218,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
           fill: DEFAULT_TEXT_COLOR,
           align: DEFAULT_TEXT_ALIGN,
         });
-        selectShape([id]);
+        selectionActions.select([id]);
         toolActions.setTool('select');
         return;
       }
@@ -271,15 +270,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
         });
       }
     },
-    [
-      activeTool,
-      onArcMouseDown,
-      onDimensionMouseDown,
-      addShape,
-      selectShape,
-      snapCursor,
-      setDraftShape,
-    ],
+    [activeTool, onArcMouseDown, onDimensionMouseDown, addShape, snapCursor, setDraftShape],
   );
 
   const onMouseMove = useCallback(

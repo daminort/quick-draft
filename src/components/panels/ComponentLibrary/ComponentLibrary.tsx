@@ -20,7 +20,7 @@ import {
 } from '~/lib/persistence/fileIO';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { selectionStore, selectionActions } from '~/stores/selectionStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
 import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction';
@@ -79,9 +79,9 @@ export function ComponentLibrary() {
     }
     const replacedBy = removeComponent(deleteTarget.id);
     // Swap any selected instance of the deleted component for the freestanding shapes it became.
-    const selectedIds = useSelectionStore.getState().selectedIds;
+    const selectedIds = selectionStore.getState().selectedIds;
     const nextSelection = selectedIds.flatMap(id => replacedBy[id] ?? [id]);
-    useSelectionStore.getState().select(nextSelection);
+    selectionActions.select(nextSelection);
     setDeleteTarget(null);
   };
 

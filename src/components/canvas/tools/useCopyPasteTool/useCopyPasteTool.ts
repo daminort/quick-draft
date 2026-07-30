@@ -6,7 +6,7 @@ import { getUnionBounds } from '~/lib/bounds';
 import { translateShape } from '~/lib/shapeTransform';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 
 import type { TPoint, TUseCopyPasteToolReturn } from './types';
 import type Konva from 'konva';
@@ -41,8 +41,7 @@ export function useCopyPasteTool(): TUseCopyPasteToolReturn {
   const shapes = useDocumentStore(state => state.document.shapes);
   const components = useDocumentStore(state => state.document.components);
   const addShape = useDocumentStore(state => state.addShape);
-  const selectedIds = useSelectionStore(state => state.selectedIds);
-  const select = useSelectionStore(state => state.select);
+  const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
 
   const clipboard = useRef<TShape[]>([]);
   const pointer = useRef<TPoint | null>(null);
@@ -108,12 +107,12 @@ export function useCopyPasteTool(): TUseCopyPasteToolReturn {
       // Deferred: pasted nodes register their Konva ref one render after this one — selecting a
       // tick later (as onComponentDrop already does) lets the Transformer find them immediately.
       const pastedIds = pasted.map(shape => shape.id);
-      setTimeout(() => select(pastedIds), 0);
+      setTimeout(() => selectionActions.select(pastedIds), 0);
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [shapes, selectedIds, components, addShape, select]);
+  }, [shapes, selectedIds, components, addShape]);
 
   return { onMouseMove };
 }
