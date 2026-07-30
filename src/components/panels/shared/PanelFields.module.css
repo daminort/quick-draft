@@ -1,0 +1,9 @@
+.sectionTitle {
+  font-weight: 600;
+}
+
+.rowLabel {
+  width: 56px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}

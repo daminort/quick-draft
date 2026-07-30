@@ -8,6 +8,8 @@ import { useDocumentStore } from '~/stores/useDocumentStore';
 import { UnitsControl } from '~/components/panels/UnitsControl';
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
+import s from './SettingsPanel.module.css';
+
 export function SettingsPanel() {
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const toggleGuidesVisible = useUIStore(state => state.toggleGuidesVisible);
@@ -51,13 +53,7 @@ export function SettingsPanel() {
   }
 
   return (
-    <Flex
-      direction="column"
-      gap="4"
-      width="220px"
-      p="3"
-      style={{ borderLeft: '1px solid var(--gray-a5)' }}
-    >
+    <Flex direction="column" gap="4" width="220px" p="3" className={s.panel}>
       <Text as="div" size="2" weight="bold">
         Settings
       </Text>

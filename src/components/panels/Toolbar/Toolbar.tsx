@@ -25,6 +25,8 @@ import { useUIStore } from '~/stores/useUIStore';
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 import { FileActions } from '~/components/panels/FileActions';
 
+import s from './Toolbar.module.css';
+
 const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
   { tool: 'select', label: 'Select', Icon: MousePointer2 },
   { tool: 'line', label: 'Line (L)', Icon: PencilLine },
@@ -50,13 +52,6 @@ const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
   },
 ];
 
-// IconButton's `ghost` variant sizes itself to fit-content (content-box + padding) while every
-// other variant uses a fixed border-box height, so switching variant on activation shifts the
-// button's box. Keep `variant="ghost"` at all times — its own fit-content sizing is identical in
-// both states — and fake the "soft" active look with an inline background instead of switching
-// variant, so nothing shifts.
-const ACTIVE_TOOL_BUTTON_STYLE = { backgroundColor: 'var(--accent-a3)' };
-
 export function Toolbar() {
   const activeTool = useToolStore(state => state.activeTool);
   const setTool = useToolStore(state => state.setTool);
@@ -75,17 +70,16 @@ export function Toolbar() {
     setIsClearDialogOpen(false);
   };
 
-  const toolbarStyle = { borderRight: '1px solid var(--gray-a5)' };
-  const libraryButtonStyle = isLibraryOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined;
-  const settingsButtonStyle = isSettingsOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined;
+  const libraryButtonClassName = isLibraryOpen ? s.active : undefined;
+  const settingsButtonClassName = isSettingsOpen ? s.active : undefined;
   const onToolClick = (tool: TTool) => () => setTool(tool);
   const onOpenClearDialog = () => setIsClearDialogOpen(true);
   const onCancelClear = () => setIsClearDialogOpen(false);
 
   return (
-    <Flex direction="column" gap="4" p="3" style={toolbarStyle}>
+    <Flex direction="column" gap="4" p="3" className={s.toolbar}>
       {TOOLS.map(({ tool, label, Icon }) => {
-        const buttonStyle = activeTool === tool ? ACTIVE_TOOL_BUTTON_STYLE : undefined;
+        const buttonClassName = activeTool === tool ? s.active : undefined;
         return (
           <IconButton
             key={tool}
@@ -96,7 +90,7 @@ export function Toolbar() {
             onClick={onToolClick(tool)}
             variant="ghost"
             size="3"
-            style={buttonStyle}
+            className={buttonClassName}
           >
             <Icon size={20} />
           </IconButton>
@@ -112,7 +106,7 @@ export function Toolbar() {
           onClick={toggleLibrary}
           variant="ghost"
           size="3"
-          style={libraryButtonStyle}
+          className={libraryButtonClassName}
         >
           <Layers size={20} />
         </IconButton>
@@ -138,7 +132,7 @@ export function Toolbar() {
           onClick={toggleSettings}
           variant="ghost"
           size="3"
-          style={settingsButtonStyle}
+          className={settingsButtonClassName}
         >
           <Settings size={20} />
         </IconButton>

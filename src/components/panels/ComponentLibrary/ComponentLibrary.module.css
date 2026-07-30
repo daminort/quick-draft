@@ -1,0 +1,26 @@
+.library {
+  border-left: 1px solid var(--gray-a5);
+  overflow-y: auto;
+}
+
+.libraryButton {
+  flex: 1;
+}
+
+.entry {
+  border: 1px solid var(--gray-a5);
+  border-radius: var(--radius-3);
+  cursor: grab;
+}
+
+.entryName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hiddenInput {
+  display: none;
+}

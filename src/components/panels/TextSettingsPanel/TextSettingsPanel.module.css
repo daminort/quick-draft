@@ -1,0 +1,8 @@
+/* See Toolbar.module.css for why this is a class instead of switching `variant`. */
+.active {
+  background-color: var(--accent-a3);
+}
+
+.textArea {
+  resize: vertical;
+}

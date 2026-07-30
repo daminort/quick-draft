@@ -14,23 +14,20 @@ import {
   ColorInput,
 } from '~/components/panels/shared/PanelFields';
 
+import s from './TextSettingsPanel.module.css';
+
 type TTextSettingsPanelProps = {
   shape: Extract<TShape, { type: 'text' }>;
 };
 
-// Keep `variant="ghost"` at all times (see Toolbar.tsx for why switching to `soft` on activation
-// shifts the button) and fake the active look with a plain background instead.
-const ACTIVE_TEXT_BUTTON_STYLE = { backgroundColor: 'var(--accent-a3)' };
-
 export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
   const updateShape = useDocumentStore(state => state.updateShape);
 
-  const isBoldStyle = shape.isBold ? ACTIVE_TEXT_BUTTON_STYLE : undefined;
-  const isItalicStyle = shape.isItalic ? ACTIVE_TEXT_BUTTON_STYLE : undefined;
-  const isAlignedLeftStyle = shape.align === 'left' ? ACTIVE_TEXT_BUTTON_STYLE : undefined;
-  const isAlignedCenterStyle = shape.align === 'center' ? ACTIVE_TEXT_BUTTON_STYLE : undefined;
-  const isAlignedRightStyle = shape.align === 'right' ? ACTIVE_TEXT_BUTTON_STYLE : undefined;
-  const textAreaStyle = { resize: 'vertical' as const };
+  const isBoldClassName = shape.isBold ? s.active : undefined;
+  const isItalicClassName = shape.isItalic ? s.active : undefined;
+  const isAlignedLeftClassName = shape.align === 'left' ? s.active : undefined;
+  const isAlignedCenterClassName = shape.align === 'center' ? s.active : undefined;
+  const isAlignedRightClassName = shape.align === 'right' ? s.active : undefined;
 
   const onXChange = (v: number) => updateShape(shape.id, { x: v });
   const onYChange = (v: number) => updateShape(shape.id, { y: v });
@@ -68,7 +65,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             onClick={onToggleBold}
             variant="ghost"
             size="1"
-            style={isBoldStyle}
+            className={isBoldClassName}
           >
             <Bold size={16} />
           </IconButton>
@@ -80,7 +77,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             onClick={onToggleItalic}
             variant="ghost"
             size="1"
-            style={isItalicStyle}
+            className={isItalicClassName}
           >
             <Italic size={16} />
           </IconButton>
@@ -92,7 +89,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             onClick={onAlignLeftClick}
             variant="ghost"
             size="1"
-            style={isAlignedLeftStyle}
+            className={isAlignedLeftClassName}
           >
             <AlignLeft size={16} />
           </IconButton>
@@ -104,7 +101,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             onClick={onAlignCenterClick}
             variant="ghost"
             size="1"
-            style={isAlignedCenterStyle}
+            className={isAlignedCenterClassName}
           >
             <AlignCenter size={16} />
           </IconButton>
@@ -116,12 +113,12 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             onClick={onAlignRightClick}
             variant="ghost"
             size="1"
-            style={isAlignedRightStyle}
+            className={isAlignedRightClassName}
           >
             <AlignRight size={16} />
           </IconButton>
         </Flex>
-        <TextArea value={shape.text} onChange={onTextChange} rows={2} style={textAreaStyle} />
+        <TextArea value={shape.text} onChange={onTextChange} rows={2} className={s.textArea} />
       </Section>
 
       <Section title="Font">

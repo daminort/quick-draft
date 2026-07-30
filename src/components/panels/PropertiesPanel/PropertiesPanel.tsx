@@ -13,9 +13,8 @@ import { ArcSettingsPanel } from '~/components/panels/ArcSettingsPanel';
 import { TextSettingsPanel } from '~/components/panels/TextSettingsPanel';
 import { DimensionSettingsPanel } from '~/components/panels/DimensionSettingsPanel';
 import { ComponentActions } from '~/components/panels/ComponentActions';
-import { LABEL_WEIGHT } from '~/components/panels/shared/PanelFields';
 
-const PANEL_STYLE = { borderLeft: '1px solid var(--gray-a5)' };
+import s from './PropertiesPanel.module.css';
 
 const SHAPE_TYPE_LABELS: Record<TShape['type'], string> = {
   line: 'Line',
@@ -56,7 +55,7 @@ export function PropertiesPanel() {
 
   if (selectedIds.length > 1) {
     return (
-      <Flex direction="column" gap="4" width="220px" p="3" style={PANEL_STYLE}>
+      <Flex direction="column" gap="4" width="220px" p="3" className={s.panel}>
         <ComponentActions />
       </Flex>
     );
@@ -73,8 +72,8 @@ export function PropertiesPanel() {
   const shapeTypeLabel = SHAPE_TYPE_LABELS[shape.type];
 
   return (
-    <Flex direction="column" gap="4" width="220px" p="3" style={PANEL_STYLE}>
-      <Text as="div" size="3" style={LABEL_WEIGHT}>
+    <Flex direction="column" gap="4" width="220px" p="3" className={s.panel}>
+      <Text as="div" size="3" className={s.shapeTypeLabel}>
         {shapeTypeLabel}
       </Text>
       <ShapeSettings shape={shape} />

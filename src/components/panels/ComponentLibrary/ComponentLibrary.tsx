@@ -26,19 +26,7 @@ import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
 import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction';
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
-const LIBRARY_BUTTON_STYLE = { flex: 1 };
-const LIBRARY_ENTRY_STYLE = {
-  border: '1px solid var(--gray-a5)',
-  borderRadius: 'var(--radius-3)',
-  cursor: 'grab',
-};
-const LIBRARY_ENTRY_NAME_STYLE = {
-  flex: 1,
-  minWidth: 0,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap' as const,
-};
+import s from './ComponentLibrary.module.css';
 
 type TComponentPreviewProps = {
   componentDef: TComponentDef;
@@ -136,13 +124,7 @@ export function ComponentLibrary() {
   const onDeleteClick = (componentDef: TComponentDef) => () => setDeleteTarget(componentDef);
 
   return (
-    <Flex
-      direction="column"
-      gap="4"
-      width="220px"
-      p="3"
-      style={{ borderLeft: '1px solid var(--gray-a5)', overflowY: 'auto' }}
-    >
+    <Flex direction="column" gap="4" width="220px" p="3" className={s.library}>
       <Text as="div" size="2" weight="bold">
         Component library
       </Text>
@@ -154,7 +136,7 @@ export function ComponentLibrary() {
           disabled={isExportDisabled}
           variant="outline"
           size="1"
-          style={LIBRARY_BUTTON_STYLE}
+          className={s.libraryButton}
         >
           <Download size={16} />
           Export
@@ -164,7 +146,7 @@ export function ComponentLibrary() {
           onClick={onImportClick}
           variant="outline"
           size="1"
-          style={LIBRARY_BUTTON_STYLE}
+          className={s.libraryButton}
         >
           <Upload size={16} />
           Import
@@ -174,7 +156,7 @@ export function ComponentLibrary() {
           type="file"
           accept=".json,application/json"
           onChange={onImportLibrary}
-          style={{ display: 'none' }}
+          className={s.hiddenInput}
         />
       </Flex>
 
@@ -197,10 +179,10 @@ export function ComponentLibrary() {
               align="center"
               gap="2"
               p="1"
-              style={LIBRARY_ENTRY_STYLE}
+              className={s.entry}
             >
               <ComponentPreview componentDef={componentDef} components={components} />
-              <Text size="2" style={LIBRARY_ENTRY_NAME_STYLE}>
+              <Text size="2" className={s.entryName}>
                 {componentDef.name}
               </Text>
               <IconButton

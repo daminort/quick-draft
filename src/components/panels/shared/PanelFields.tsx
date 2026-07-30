@@ -4,8 +4,7 @@ import { Box, Checkbox, Flex, Slider, Text, TextField } from '@radix-ui/themes';
 
 import type { TStyle } from '~/types/document';
 
-/** Weight for section titles — only labels wrapped in `**` in .ai/TODO.md are bold. */
-export const LABEL_WEIGHT = { fontWeight: 600 } as const;
+import s from './PanelFields.module.css';
 
 type TSectionProps = {
   title: string;
@@ -15,7 +14,7 @@ type TSectionProps = {
 export function Section({ title, children }: TSectionProps) {
   return (
     <Flex direction="column" gap="2">
-      <Text as="div" size="2" style={LABEL_WEIGHT}>
+      <Text as="div" size="2" className={s.sectionTitle}>
         {title}
       </Text>
       {children}
@@ -71,7 +70,7 @@ type TLabeledRowProps = {
 export function LabeledRow({ label, children }: TLabeledRowProps) {
   return (
     <Flex align="center" gap="2">
-      <Text as="div" size="2" style={{ width: '56px', flexShrink: 0, whiteSpace: 'nowrap' }}>
+      <Text as="div" size="2" className={s.rowLabel}>
         {label}:
       </Text>
       <Flex align="center" gap="2" flexGrow="1">
@@ -139,7 +138,7 @@ export function FillSection({ style, onChange }: TFillSectionProps) {
 
   return (
     <Flex direction="column" gap="2">
-      <Text as="label" size="2" style={LABEL_WEIGHT}>
+      <Text as="label" size="2" className={s.sectionTitle}>
         <Flex align="center" gap="2">
           <Checkbox checked={enabled} onCheckedChange={onFillEnabledChange} />
           Fill

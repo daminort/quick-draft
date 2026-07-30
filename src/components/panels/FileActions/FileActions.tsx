@@ -7,6 +7,8 @@ import { exportDocumentToJsonFile, importDocumentFromJsonFile } from '~/lib/pers
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
+import s from './FileActions.module.css';
+
 export function FileActions() {
   const documentState = useDocumentStore(state => state.document);
   const loadDocument = useDocumentStore(state => state.loadDocument);
@@ -61,7 +63,7 @@ export function FileActions() {
         type="file"
         accept=".json,application/json"
         onChange={onOpen}
-        style={{ display: 'none' }}
+        className={s.hiddenInput}
       />
     </>
   );

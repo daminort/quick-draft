@@ -1,0 +1,14 @@
+.toolbar {
+  border-right: 1px solid var(--gray-a5);
+}
+
+/*
+ * IconButton's `ghost` variant sizes itself to fit-content (content-box + padding) while every
+ * other variant uses a fixed border-box height, so switching variant on activation shifts the
+ * button's box. Keep `variant="ghost"` at all times — its own fit-content sizing is identical in
+ * both states — and fake the "soft" active look with this extra class instead of switching
+ * variant, so nothing shifts.
+ */
+.active {
+  background-color: var(--accent-a3);
+}
