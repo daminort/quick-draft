@@ -11,7 +11,7 @@ import {
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { toolStore, toolSelectors } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
-import { useViewStore } from '~/stores/useViewStore';
+import { viewStore, viewSelectors } from '~/stores/viewStore';
 
 import type { TPoint, TRulerState, TUseRulerToolReturn } from './types';
 import type Konva from 'konva';
@@ -33,7 +33,7 @@ export function useRulerTool(): TUseRulerToolReturn {
   const addShape = useDocumentStore(state => state.addShape);
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
-  const viewScale = useViewStore(state => state.scale);
+  const viewScale = viewStore(viewSelectors.getScale);
 
   const [ruler, setRulerState] = useState<TRulerState | null>(null);
   const rulerRef = useRef<TRulerState | null>(null);

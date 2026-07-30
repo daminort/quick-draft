@@ -20,7 +20,7 @@ import { useDocumentStore } from '~/stores/useDocumentStore';
 import { selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
-import { useViewStore } from '~/stores/useViewStore';
+import { viewStore, viewSelectors } from '~/stores/viewStore';
 
 import type {
   TPoint,
@@ -64,7 +64,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
   const addShape = useDocumentStore(state => state.addShape);
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
-  const viewScale = useViewStore(state => state.scale);
+  const viewScale = viewStore(viewSelectors.getScale);
   const [draftShape, setDraftShapeState] = useState<TShape | null>(null);
   const [snapIndicator, setSnapIndicator] = useState<TSnapIndicator>(NO_SNAP);
   const draftShapeRef = useRef<TShape | null>(null);

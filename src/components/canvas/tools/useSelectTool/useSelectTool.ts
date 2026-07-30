@@ -12,7 +12,7 @@ import { useDocumentStore } from '~/stores/useDocumentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors } from '~/stores/toolStore';
 import { useUIStore } from '~/stores/useUIStore';
-import { useViewStore } from '~/stores/useViewStore';
+import { viewStore, viewSelectors } from '~/stores/viewStore';
 
 import type {
   TPoint,
@@ -131,7 +131,7 @@ export function useSelectTool(): TUseSelectToolReturn {
   const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
   const snapTolerance = useUIStore(state => state.snapTolerance);
   const activeTool = toolStore(toolSelectors.getActiveTool);
-  const viewScale = useViewStore(state => state.scale);
+  const viewScale = viewStore(viewSelectors.getScale);
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const nodeRefs = useRef(new Map<TShapeId, Konva.Node>());
   const manualDrag = useRef<TManualDrag | null>(null);

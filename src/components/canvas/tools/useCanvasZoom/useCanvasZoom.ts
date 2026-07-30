@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { MIN_SCALE, MAX_SCALE, WHEEL_SCALE_BY, BUTTON_SCALE_BY } from '~/constants/canvas';
 
-import { useViewStore } from '~/stores/useViewStore';
+import { viewStore, viewSelectors, viewActions } from '~/stores/viewStore';
 
 import type { TStageSize, TUseCanvasZoomReturn } from './types';
 import type Konva from 'konva';
@@ -12,23 +12,21 @@ function clampScale(scale: number): number {
 }
 
 export function useCanvasZoom(stageSize: TStageSize): TUseCanvasZoomReturn {
-  const scale = useViewStore(state => state.scale);
-  const x = useViewStore(state => state.x);
-  const y = useViewStore(state => state.y);
-  const setView = useViewStore(state => state.setView);
-  const resetZoom = useViewStore(state => state.resetZoom);
+  const scale = viewStore(viewSelectors.getScale);
+  const x = viewStore(viewSelectors.getX);
+  const y = viewStore(viewSelectors.getY);
 
   const zoomAtPoint = useCallback(
     (point: { x: number; y: number }, nextScale: number) => {
       const clamped = clampScale(nextScale);
       const documentPoint = { x: (point.x - x) / scale, y: (point.y - y) / scale };
-      setView({
+      viewActions.setView({
         scale: clamped,
         x: point.x - documentPoint.x * clamped,
         y: point.y - documentPoint.y * clamped,
       });
     },
-    [scale, x, y, setView],
+    [scale, x, y],
   );
 
   const onWheel = useCallback(
@@ -58,5 +56,5 @@ export function useCanvasZoom(stageSize: TStageSize): TUseCanvasZoomReturn {
     zoomAtPoint({ x: stageSize.width / 2, y: stageSize.height / 2 }, scale / BUTTON_SCALE_BY);
   }, [zoomAtPoint, scale, stageSize.width, stageSize.height]);
 
-  return { scale, x, y, onWheel, zoomIn, zoomOut, resetZoom };
+  return { scale, x, y, onWheel, zoomIn, zoomOut, resetZoom: viewActions.resetZoom };
 }
