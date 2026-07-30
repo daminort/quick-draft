@@ -45,7 +45,7 @@ export function getUnionBounds(
   return union;
 }
 
-/** Axis-aligned bounding box for a shape, used for marquee-selection hit testing. */
+/** Used for marquee-selection hit testing. */
 export function getShapeBounds(
   shape: TShape,
   components: Record<string, TComponentDef> = {},

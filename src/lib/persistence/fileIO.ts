@@ -1,6 +1,10 @@
 import type { TComponentDef, TDocument } from '~/types/document';
 
-import { DEFAULT_DOCUMENT_FILENAME, DEFAULT_COMPONENT_LIBRARY_FILENAME } from '~/constants/fileIO';
+import {
+  DEFAULT_DOCUMENT_FILENAME,
+  DEFAULT_COMPONENT_LIBRARY_FILENAME,
+  JSON_MIME_TYPE,
+} from '~/constants/fileIO';
 
 export function downloadBlob(blob: Blob, fileName: string): void {
   const url = URL.createObjectURL(blob);
@@ -13,7 +17,7 @@ export function downloadBlob(blob: Blob, fileName: string): void {
 
 export function exportDocumentToJsonFile(doc: TDocument): void {
   const json = JSON.stringify(doc, null, 2);
-  downloadBlob(new Blob([json], { type: 'application/json' }), DEFAULT_DOCUMENT_FILENAME);
+  downloadBlob(new Blob([json], { type: JSON_MIME_TYPE }), DEFAULT_DOCUMENT_FILENAME);
 }
 
 function isDocumentShape(value: unknown): value is TDocument {
@@ -52,7 +56,7 @@ export async function importDocumentFromJsonFile(file: File): Promise<TDocument>
 
 export function exportComponentLibraryToJsonFile(components: Record<string, TComponentDef>): void {
   const json = JSON.stringify(components, null, 2);
-  downloadBlob(new Blob([json], { type: 'application/json' }), DEFAULT_COMPONENT_LIBRARY_FILENAME);
+  downloadBlob(new Blob([json], { type: JSON_MIME_TYPE }), DEFAULT_COMPONENT_LIBRARY_FILENAME);
 }
 
 function isComponentDef(value: unknown): value is TComponentDef {

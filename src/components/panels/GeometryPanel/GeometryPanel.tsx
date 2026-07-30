@@ -4,6 +4,8 @@ import { Flex, Text, TextField, Select } from '@radix-ui/themes';
 
 import type { TShape, TShapeId, TShapePatch } from '~/types/document';
 
+import { COMPONENT_INSTANCE_MIN_SCALE } from '~/constants/componentLibrary';
+
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
 type TNumberFieldProps = {
@@ -76,7 +78,12 @@ function GeometryFields({ shape, updateShape }: TGeometryFieldsProps) {
         <>
           <NumberField label="X" value={shape.x} onChange={onXChange} />
           <NumberField label="Y" value={shape.y} onChange={onYChange} />
-          <NumberField label="Scale" value={shape.scale} min={0.01} onChange={onScaleChange} />
+          <NumberField
+            label="Scale"
+            value={shape.scale}
+            min={COMPONENT_INSTANCE_MIN_SCALE}
+            onChange={onScaleChange}
+          />
           <NumberField label="Rotation" value={shape.rotation} onChange={onRotationChange} />
         </>
       );

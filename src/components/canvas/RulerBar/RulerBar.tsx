@@ -12,6 +12,12 @@ import {
   RULER_BAR_GUIDE_OPACITY as GUIDE_OPACITY,
 } from '~/constants/ruler';
 
+import {
+  MAJOR_TICK_LENGTH_PX,
+  MINOR_TICK_LENGTH_PX,
+  TICK_LABEL_OFFSET_PX,
+  TICK_LABEL_BASELINE_OFFSET_PX,
+} from './assets';
 import s from './RulerBar.module.css';
 
 type TLengthUnit = 'mm' | 'cm' | 'm';
@@ -124,7 +130,9 @@ export function CanvasRulers({
         style={horizontalRulerStyle}
       >
         {horizontalTicks.map((tick, i) => {
-          const y1 = tick.isMajor ? THICKNESS - 10 : THICKNESS - 5;
+          const y1 = tick.isMajor
+            ? THICKNESS - MAJOR_TICK_LENGTH_PX
+            : THICKNESS - MINOR_TICK_LENGTH_PX;
           const stroke = tick.isMajor ? MAJOR_TICK_COLOR : MINOR_TICK_COLOR;
           return (
             <line
@@ -143,8 +151,8 @@ export function CanvasRulers({
           .map((tick, i) => (
             <text
               key={i}
-              x={tick.screenPos + 3}
-              y={THICKNESS - 11}
+              x={tick.screenPos + TICK_LABEL_OFFSET_PX}
+              y={THICKNESS - TICK_LABEL_BASELINE_OFFSET_PX}
               fontSize={FONT_SIZE}
               fill={LABEL_COLOR}
             >
@@ -155,7 +163,7 @@ export function CanvasRulers({
 
       <svg width={THICKNESS} height={height} className={s.verticalRuler}>
         {verticalTicks.map((tick, i) => {
-          const x2 = tick.isMajor ? 10 : 5;
+          const x2 = tick.isMajor ? MAJOR_TICK_LENGTH_PX : MINOR_TICK_LENGTH_PX;
           const stroke = tick.isMajor ? MAJOR_TICK_COLOR : MINOR_TICK_COLOR;
           return (
             <line
@@ -175,11 +183,11 @@ export function CanvasRulers({
             <text
               key={i}
               x={THICKNESS / 2}
-              y={tick.screenPos - 3}
+              y={tick.screenPos - TICK_LABEL_OFFSET_PX}
               fontSize={FONT_SIZE}
               fill={LABEL_COLOR}
               textAnchor="middle"
-              transform={`rotate(-90 ${THICKNESS / 2} ${tick.screenPos - 3})`}
+              transform={`rotate(-90 ${THICKNESS / 2} ${tick.screenPos - TICK_LABEL_OFFSET_PX})`}
             >
               {tick.label}
             </text>

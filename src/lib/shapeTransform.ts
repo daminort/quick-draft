@@ -2,7 +2,7 @@ import type { TComponentDef, TShape, TShapePatch } from '~/types/document';
 
 type TPoint = { x: number; y: number };
 
-/** A representative anchor coordinate per shape type, used to measure how far a shape moved. */
+/** Used to measure how far a shape moved. */
 export function getShapeAnchor(shape: TShape): TPoint {
   switch (shape.type) {
     case 'rect':

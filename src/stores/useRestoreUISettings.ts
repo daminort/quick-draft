@@ -4,7 +4,6 @@ import { loadUISettings } from '~/lib/persistence/indexedDb';
 
 import { useUIStore } from '~/stores/useUIStore';
 
-/** Restores the last autosaved UI settings (if any) once, on mount. */
 export function useRestoreUISettings() {
   useEffect(() => {
     let cancelled = false;

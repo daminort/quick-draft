@@ -4,7 +4,6 @@ import { loadCurrentDocument } from '~/lib/persistence/indexedDb';
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
-/** Restores the last autosaved document (if any) once, on mount. */
 export function useRestoreDocument() {
   useEffect(() => {
     let cancelled = false;

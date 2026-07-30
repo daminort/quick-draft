@@ -4,7 +4,11 @@ import { Transformer } from 'react-konva';
 
 import type { TShape, TShapePatch } from '~/types/document';
 
+import { COMPONENT_INSTANCE_MIN_SCALE } from '~/constants/componentLibrary';
+
 import { useDocumentStore } from '~/stores/useDocumentStore';
+
+import { MIN_TRANSFORM_SIZE_PX } from './assets';
 
 import type Konva from 'konva';
 
@@ -24,15 +28,15 @@ function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
         x: node.x(),
         y: node.y(),
         rotation: node.rotation(),
-        w: Math.max(1, shape.w * scaleX),
-        h: Math.max(1, shape.h * scaleY),
+        w: Math.max(MIN_TRANSFORM_SIZE_PX, shape.w * scaleX),
+        h: Math.max(MIN_TRANSFORM_SIZE_PX, shape.h * scaleY),
       };
     }
     case 'circle': {
       const scale = node.scaleX();
       node.scaleX(1);
       node.scaleY(1);
-      return { cx: node.x(), cy: node.y(), r: Math.max(1, shape.r * scale) };
+      return { cx: node.x(), cy: node.y(), r: Math.max(MIN_TRANSFORM_SIZE_PX, shape.r * scale) };
     }
     case 'component-instance': {
       const scale = node.scaleX();
@@ -42,7 +46,7 @@ function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
         x: node.x(),
         y: node.y(),
         rotation: node.rotation(),
-        scale: Math.max(0.01, shape.scale * scale),
+        scale: Math.max(COMPONENT_INSTANCE_MIN_SCALE, shape.scale * scale),
       };
     }
     case 'line': {

@@ -20,7 +20,6 @@ type TPoint = { x: number; y: number };
 export type TDimensionAxis = 'horizontal' | 'vertical';
 
 export type TDimensionGeometry = {
-  /** Main dimension line, rendered with arrowheads on both ends. */
   arrowLine: { x1: number; y1: number; x2: number; y2: number };
   /** Null when the extension line would run entirely along a shape's own edge — drawing it there
    * would just double that edge's outline. */

@@ -40,7 +40,6 @@ export function listBindablePoints(shape: TShape): { key: TShapePointKey; point:
   }
 }
 
-/** Resolves a binding's point key back to a live coordinate on its current shape state. */
 export function getBoundPoint(shape: TShape, key: TShapePointKey): TPoint | null {
   const found = listBindablePoints(shape).find(candidate => candidate.key === key);
   return found ? found.point : null;

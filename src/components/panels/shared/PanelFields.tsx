@@ -46,7 +46,6 @@ type TInlineFieldProps = {
   onChange: (value: number) => void;
 };
 
-/** Renders `label: [ input ]` inline, e.g. paired "x: [ ]  y: [ ]" fields. */
 export function InlineField({ label, value, min, onChange }: TInlineFieldProps) {
   return (
     <Flex align="center" gap="1" flexGrow="1">
@@ -63,10 +62,7 @@ type TLabeledRowProps = {
   children: ReactNode;
 };
 
-/**
- * Renders `label: input input…` inline on one row, e.g. "Start: [X] [Y]".
- * The label has a fixed width so inputs in stacked rows (Start/End, …) line up vertically.
- */
+/** The label has a fixed width so inputs in stacked rows (Start/End, …) line up vertically. */
 export function LabeledRow({ label, children }: TLabeledRowProps) {
   return (
     <Flex align="center" gap="2">
