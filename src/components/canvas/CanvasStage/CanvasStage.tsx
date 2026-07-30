@@ -18,7 +18,7 @@ import { useDocumentStore } from '~/stores/useDocumentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import type { TTool } from '~/stores/toolStore';
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
 import { TextEditOverlay } from '~/components/canvas/TextEditOverlay';
@@ -67,11 +67,10 @@ export function CanvasStage() {
   const clearGuides = useDocumentStore(state => state.clearGuides);
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const activeTool = toolStore(toolSelectors.getActiveTool);
-  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
-  const areDimensionsVisible = useUIStore(state => state.areDimensionsVisible);
-  const toggleDimensionsVisible = useUIStore(state => state.toggleDimensionsVisible);
-  const isRulerVisible = useUIStore(state => state.isRulerVisible);
-  const areRulerGuidesVisible = useUIStore(state => state.areRulerGuidesVisible);
+  const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
+  const areDimensionsVisible = uiStore(uiSelectors.getAreDimensionsVisible);
+  const isRulerVisible = uiStore(uiSelectors.getIsRulerVisible);
+  const areRulerGuidesVisible = uiStore(uiSelectors.getAreRulerGuidesVisible);
   const documentScale = useDocumentStore(state => state.document.scale);
   const documentUnits = useDocumentStore(state => state.document.units);
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
@@ -374,7 +373,7 @@ export function CanvasStage() {
     {
       label: 'Toggle dimensions',
       icon: <RulerDimensionLine size={14} />,
-      onClick: toggleDimensionsVisible,
+      onClick: uiActions.toggleDimensionsVisible,
     },
     { label: 'Delete guides', icon: <Trash2 size={14} />, onClick: onOpenDeleteGuidesDialog },
   ];

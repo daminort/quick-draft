@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { loadUISettings } from '~/lib/persistence/indexedDb';
 
-import { useUIStore } from '~/stores/useUIStore';
+import { uiActions } from '~/stores/uiStore';
 
 export function useRestoreUISettings() {
   useEffect(() => {
@@ -11,7 +11,7 @@ export function useRestoreUISettings() {
       if (cancelled || !settings) {
         return;
       }
-      useUIStore.getState().hydrateSettings(settings);
+      uiActions.hydrateSettings(settings);
     });
     return () => {
       cancelled = true;

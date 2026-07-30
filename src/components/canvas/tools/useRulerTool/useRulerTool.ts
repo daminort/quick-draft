@@ -10,7 +10,7 @@ import {
 
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { toolStore, toolSelectors } from '~/stores/toolStore';
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors } from '~/stores/uiStore';
 import { viewStore, viewSelectors } from '~/stores/viewStore';
 
 import type { TPoint, TRulerState, TUseRulerToolReturn } from './types';
@@ -31,8 +31,8 @@ export function useRulerTool(): TUseRulerToolReturn {
   const documentScale = useDocumentStore(state => state.document.scale);
   const shapes = useDocumentStore(state => state.document.shapes);
   const addShape = useDocumentStore(state => state.addShape);
-  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
-  const snapTolerance = useUIStore(state => state.snapTolerance);
+  const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
+  const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const viewScale = viewStore(viewSelectors.getScale);
 
   const [ruler, setRulerState] = useState<TRulerState | null>(null);

@@ -1,6 +1,6 @@
 import { Flex, Box } from '@radix-ui/themes';
 
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 import { useRestoreDocument } from '~/stores/useRestoreDocument';
 import { useRestoreUISettings } from '~/stores/useRestoreUISettings';
 
@@ -14,10 +14,9 @@ import { PrintView } from '~/components/print/PrintView';
 function App() {
   useRestoreDocument();
   useRestoreUISettings();
-  const isSettingsOpen = useUIStore(state => state.isSettingsOpen);
-  const isLibraryOpen = useUIStore(state => state.isLibraryOpen);
-  const isPrintOpen = useUIStore(state => state.isPrintOpen);
-  const closePrint = useUIStore(state => state.closePrint);
+  const isSettingsOpen = uiStore(uiSelectors.getIsSettingsOpen);
+  const isLibraryOpen = uiStore(uiSelectors.getIsLibraryOpen);
+  const isPrintOpen = uiStore(uiSelectors.getIsPrintOpen);
 
   return (
     <Flex direction="row" width="100%" height="100%">
@@ -34,7 +33,7 @@ function App() {
           <PropertiesPanel />
         )}
       </Flex>
-      <PrintView isOpen={isPrintOpen} onClose={closePrint} />
+      <PrintView isOpen={isPrintOpen} onClose={uiActions.closePrint} />
     </Flex>
   );
 }

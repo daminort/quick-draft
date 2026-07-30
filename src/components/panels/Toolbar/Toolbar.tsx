@@ -21,7 +21,7 @@ import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import type { TTool } from '~/stores/toolStore';
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { selectionActions } from '~/stores/selectionStore';
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 import { FileActions } from '~/components/panels/FileActions';
@@ -56,11 +56,8 @@ const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
 export function Toolbar() {
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const clearDocument = useDocumentStore(state => state.clear);
-  const isSettingsOpen = useUIStore(state => state.isSettingsOpen);
-  const toggleSettings = useUIStore(state => state.toggleSettings);
-  const isLibraryOpen = useUIStore(state => state.isLibraryOpen);
-  const toggleLibrary = useUIStore(state => state.toggleLibrary);
-  const openPrint = useUIStore(state => state.openPrint);
+  const isSettingsOpen = uiStore(uiSelectors.getIsSettingsOpen);
+  const isLibraryOpen = uiStore(uiSelectors.getIsLibraryOpen);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
 
   const onClearConfirmed = () => {
@@ -102,7 +99,7 @@ export function Toolbar() {
           title="Component library"
           aria-label="Component library"
           aria-pressed={isLibraryOpen}
-          onClick={toggleLibrary}
+          onClick={uiActions.toggleLibrary}
           variant="ghost"
           size="3"
           className={libraryButtonClassName}
@@ -116,7 +113,7 @@ export function Toolbar() {
           type="button"
           title="Print"
           aria-label="Print"
-          onClick={openPrint}
+          onClick={uiActions.openPrint}
           variant="ghost"
           size="3"
         >
@@ -128,7 +125,7 @@ export function Toolbar() {
           title="Settings"
           aria-label="Settings"
           aria-pressed={isSettingsOpen}
-          onClick={toggleSettings}
+          onClick={uiActions.toggleSettings}
           variant="ghost"
           size="3"
           className={settingsButtonClassName}

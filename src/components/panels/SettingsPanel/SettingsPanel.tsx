@@ -2,7 +2,7 @@ import { useState, type ChangeEvent } from 'react';
 
 import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes';
 
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
 import { UnitsControl } from '~/components/panels/UnitsControl';
@@ -11,20 +11,13 @@ import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 import s from './SettingsPanel.module.css';
 
 export function SettingsPanel() {
-  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
-  const toggleGuidesVisible = useUIStore(state => state.toggleGuidesVisible);
-  const snapTolerance = useUIStore(state => state.snapTolerance);
-  const setSnapTolerance = useUIStore(state => state.setSnapTolerance);
-  const shouldShowDimensionUnit = useUIStore(state => state.shouldShowDimensionUnit);
-  const toggleShowDimensionUnit = useUIStore(state => state.toggleShowDimensionUnit);
-  const areDimensionsVisible = useUIStore(state => state.areDimensionsVisible);
-  const toggleDimensionsVisible = useUIStore(state => state.toggleDimensionsVisible);
-  const dimensionColor = useUIStore(state => state.dimensionColor);
-  const setDimensionColor = useUIStore(state => state.setDimensionColor);
-  const isRulerVisible = useUIStore(state => state.isRulerVisible);
-  const toggleRulerVisible = useUIStore(state => state.toggleRulerVisible);
-  const areRulerGuidesVisible = useUIStore(state => state.areRulerGuidesVisible);
-  const toggleRulerGuidesVisible = useUIStore(state => state.toggleRulerGuidesVisible);
+  const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
+  const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
+  const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
+  const areDimensionsVisible = uiStore(uiSelectors.getAreDimensionsVisible);
+  const dimensionColor = uiStore(uiSelectors.getDimensionColor);
+  const isRulerVisible = uiStore(uiSelectors.getIsRulerVisible);
+  const areRulerGuidesVisible = uiStore(uiSelectors.getAreRulerGuidesVisible);
   const clearGuides = useDocumentStore(state => state.clearGuides);
   const [isDeleteGuidesDialogOpen, setIsDeleteGuidesDialogOpen] = useState(false);
 
@@ -44,12 +37,12 @@ export function SettingsPanel() {
   function onSnapToleranceChange(e: ChangeEvent<HTMLInputElement>) {
     const value = Number(e.target.value);
     if (Number.isFinite(value)) {
-      setSnapTolerance(value);
+      uiActions.setSnapTolerance(value);
     }
   }
 
   function onDimensionColorChange(e: ChangeEvent<HTMLInputElement>) {
-    setDimensionColor(e.target.value);
+    uiActions.setDimensionColor(e.target.value);
   }
 
   return (
@@ -65,7 +58,7 @@ export function SettingsPanel() {
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={areGuidesVisible} onCheckedChange={toggleGuidesVisible} />
+            <Checkbox checked={areGuidesVisible} onCheckedChange={uiActions.toggleGuidesVisible} />
             Show guides
           </Flex>
         </Text>
@@ -97,13 +90,19 @@ export function SettingsPanel() {
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={areDimensionsVisible} onCheckedChange={toggleDimensionsVisible} />
+            <Checkbox
+              checked={areDimensionsVisible}
+              onCheckedChange={uiActions.toggleDimensionsVisible}
+            />
             Show dimensions
           </Flex>
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={shouldShowDimensionUnit} onCheckedChange={toggleShowDimensionUnit} />
+            <Checkbox
+              checked={shouldShowDimensionUnit}
+              onCheckedChange={uiActions.toggleShowDimensionUnit}
+            />
             Show unit
           </Flex>
         </Text>
@@ -123,13 +122,16 @@ export function SettingsPanel() {
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={isRulerVisible} onCheckedChange={toggleRulerVisible} />
+            <Checkbox checked={isRulerVisible} onCheckedChange={uiActions.toggleRulerVisible} />
             Show ruler
           </Flex>
         </Text>
         <Text as="label" size="2">
           <Flex align="center" gap="2">
-            <Checkbox checked={areRulerGuidesVisible} onCheckedChange={toggleRulerGuidesVisible} />
+            <Checkbox
+              checked={areRulerGuidesVisible}
+              onCheckedChange={uiActions.toggleRulerGuidesVisible}
+            />
             Show cursor guides
           </Flex>
         </Text>

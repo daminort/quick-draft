@@ -11,7 +11,7 @@ import { getShapeAnchor, translateShape } from '~/lib/shapeTransform';
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors } from '~/stores/toolStore';
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors } from '~/stores/uiStore';
 import { viewStore, viewSelectors } from '~/stores/viewStore';
 
 import type {
@@ -128,8 +128,8 @@ export function useSelectTool(): TUseSelectToolReturn {
   const updateShape = useDocumentStore(state => state.updateShape);
   const shapes = useDocumentStore(state => state.document.shapes);
   const components = useDocumentStore(state => state.document.components);
-  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
-  const snapTolerance = useUIStore(state => state.snapTolerance);
+  const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
+  const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const viewScale = viewStore(viewSelectors.getScale);
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);

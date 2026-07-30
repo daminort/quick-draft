@@ -19,7 +19,7 @@ import { findBindingForPoint } from '~/lib/dimensionBinding';
 import { useDocumentStore } from '~/stores/useDocumentStore';
 import { selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors } from '~/stores/uiStore';
 import { viewStore, viewSelectors } from '~/stores/viewStore';
 
 import type {
@@ -62,8 +62,8 @@ export function useDrawingTool(): TUseDrawingToolReturn {
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const doc = useDocumentStore(state => state.document);
   const addShape = useDocumentStore(state => state.addShape);
-  const areGuidesVisible = useUIStore(state => state.areGuidesVisible);
-  const snapTolerance = useUIStore(state => state.snapTolerance);
+  const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
+  const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const viewScale = viewStore(viewSelectors.getScale);
   const [draftShape, setDraftShapeState] = useState<TShape | null>(null);
   const [snapIndicator, setSnapIndicator] = useState<TSnapIndicator>(NO_SNAP);

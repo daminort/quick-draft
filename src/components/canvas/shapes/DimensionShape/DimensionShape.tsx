@@ -12,7 +12,7 @@ import { HIT_STROKE_WIDTH } from '~/constants/canvas';
 
 import { computeDimensionGeometry, formatDimensionLabel } from '~/lib/dimension';
 
-import { useUIStore } from '~/stores/useUIStore';
+import { uiStore, uiSelectors } from '~/stores/uiStore';
 import { useDocumentStore } from '~/stores/useDocumentStore';
 
 import type Konva from 'konva';
@@ -37,8 +37,8 @@ export function DimensionShape({
   const documentScale = useDocumentStore(state => state.document.scale);
   const documentUnits = useDocumentStore(state => state.document.units);
   const shapes = useDocumentStore(state => state.document.shapes);
-  const shouldShowUnit = useUIStore(state => state.shouldShowDimensionUnit);
-  const dimensionColor = useUIStore(state => state.dimensionColor);
+  const shouldShowUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
+  const dimensionColor = uiStore(uiSelectors.getDimensionColor);
   const color = isSelected ? SELECTED_COLOR : dimensionColor;
 
   const geometry = computeDimensionGeometry(
