@@ -12,6 +12,14 @@ export function FileActions() {
   const loadDocument = useDocumentStore(state => state.loadDocument);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  function onSaveClick() {
+    exportDocumentToJsonFile(documentState);
+  }
+
+  function onOpenClick() {
+    inputRef.current?.click();
+  }
+
   const onOpen = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -32,7 +40,7 @@ export function FileActions() {
         type="button"
         title="Save as JSON"
         aria-label="Save as JSON"
-        onClick={() => exportDocumentToJsonFile(documentState)}
+        onClick={onSaveClick}
         variant="ghost"
         size="3"
       >
@@ -42,7 +50,7 @@ export function FileActions() {
         type="button"
         title="Open JSON"
         aria-label="Open JSON"
-        onClick={() => inputRef.current?.click()}
+        onClick={onOpenClick}
         variant="ghost"
         size="3"
       >

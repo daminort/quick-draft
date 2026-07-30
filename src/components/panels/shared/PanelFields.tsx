@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, ChangeEvent } from 'react';
 
 import { Box, Checkbox, Flex, Slider, Text, TextField } from '@radix-ui/themes';
 
@@ -30,19 +30,14 @@ type TCompactNumberInputProps = {
 };
 
 export function CompactNumberInput({ value, min, onChange }: TCompactNumberInputProps) {
-  return (
-    <TextField.Root
-      type="number"
-      min={min}
-      value={value}
-      onChange={e => {
-        const next = Number(e.target.value);
-        if (Number.isFinite(next)) {
-          onChange(next);
-        }
-      }}
-    />
-  );
+  function onFieldChange(e: ChangeEvent<HTMLInputElement>) {
+    const next = Number(e.target.value);
+    if (Number.isFinite(next)) {
+      onChange(next);
+    }
+  }
+
+  return <TextField.Root type="number" min={min} value={value} onChange={onFieldChange} />;
 }
 
 type TInlineFieldProps = {
@@ -93,9 +88,13 @@ export function ColorInput({
   value: string;
   onChange: (value: string) => void;
 }) {
+  function onColorChange(e: ChangeEvent<HTMLInputElement>) {
+    onChange(e.target.value);
+  }
+
   return (
     <Box>
-      <input type="color" value={value} onChange={e => onChange(e.target.value)} />
+      <input type="color" value={value} onChange={onColorChange} />
     </Box>
   );
 }
@@ -106,22 +105,18 @@ type TStrokeSectionProps = {
 };
 
 export function StrokeSection({ style, onChange }: TStrokeSectionProps) {
+  const onStrokeWidthChange = (value: number) => {
+    if (value > 0) {
+      onChange({ ...style, strokeWidth: value });
+    }
+  };
+  const onStrokeColorChange = (value: string) => onChange({ ...style, stroke: value });
+
   return (
     <Section title="Stroke">
       <LabeledRow label="Width">
-        <CompactNumberInput
-          value={style.strokeWidth}
-          min={1}
-          onChange={value => {
-            if (value > 0) {
-              onChange({ ...style, strokeWidth: value });
-            }
-          }}
-        />
-        <ColorInput
-          value={style.stroke}
-          onChange={value => onChange({ ...style, stroke: value })}
-        />
+        <CompactNumberInput value={style.strokeWidth} min={1} onChange={onStrokeWidthChange} />
+        <ColorInput value={style.stroke} onChange={onStrokeColorChange} />
       </LabeledRow>
     </Section>
   );
@@ -137,23 +132,23 @@ export function FillSection({ style, onChange }: TFillSectionProps) {
   const fillColor = style.fill ?? '#ffffff';
   const fillOpacity = style.fillOpacity ?? 1;
 
+  const onFillEnabledChange = (checked: boolean) =>
+    onChange({ ...style, fill: checked ? fillColor : undefined });
+  const onFillColorChange = (value: string) => onChange({ ...style, fill: value });
+  const onFillOpacityChange = ([value]: number[]) => onChange({ ...style, fillOpacity: value });
+
   return (
     <Flex direction="column" gap="2">
       <Text as="label" size="2" style={LABEL_WEIGHT}>
         <Flex align="center" gap="2">
-          <Checkbox
-            checked={enabled}
-            onCheckedChange={checked =>
-              onChange({ ...style, fill: checked ? fillColor : undefined })
-            }
-          />
+          <Checkbox checked={enabled} onCheckedChange={onFillEnabledChange} />
           Fill
         </Flex>
       </Text>
       {enabled && (
         <>
           <LabeledRow label="Color">
-            <ColorInput value={fillColor} onChange={value => onChange({ ...style, fill: value })} />
+            <ColorInput value={fillColor} onChange={onFillColorChange} />
           </LabeledRow>
           <LabeledRow label="Opacity">
             <Slider
@@ -161,7 +156,7 @@ export function FillSection({ style, onChange }: TFillSectionProps) {
               max={1}
               step={0.01}
               value={[fillOpacity]}
-              onValueChange={([value]) => onChange({ ...style, fillOpacity: value })}
+              onValueChange={onFillOpacityChange}
             />
           </LabeledRow>
         </>

@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent } from 'react';
+import { useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 
 import { Stage, Layer, Group } from 'react-konva';
 import { Flex, Text, Button, IconButton } from '@radix-ui/themes';
@@ -116,6 +116,25 @@ export function ComponentLibrary() {
     ? `This will remove "${deleteTarget.name}" from the library. Existing instances on the canvas will become independent, ungrouped shapes.`
     : '';
 
+  function onExportClick() {
+    exportComponentLibraryToJsonFile(components);
+  }
+
+  function onImportClick() {
+    importInputRef.current?.click();
+  }
+
+  function onCancelDelete() {
+    setDeleteTarget(null);
+  }
+
+  const onEntryDragStart = (componentDef: TComponentDef) => (e: DragEvent) => {
+    e.dataTransfer.setData(COMPONENT_DRAG_MIME_TYPE, componentDef.id);
+    e.dataTransfer.effectAllowed = 'copy';
+  };
+
+  const onDeleteClick = (componentDef: TComponentDef) => () => setDeleteTarget(componentDef);
+
   return (
     <Flex
       direction="column"
@@ -131,7 +150,7 @@ export function ComponentLibrary() {
       <Flex gap="2">
         <Button
           type="button"
-          onClick={() => exportComponentLibraryToJsonFile(components)}
+          onClick={onExportClick}
           disabled={isExportDisabled}
           variant="outline"
           size="1"
@@ -142,7 +161,7 @@ export function ComponentLibrary() {
         </Button>
         <Button
           type="button"
-          onClick={() => importInputRef.current?.click()}
+          onClick={onImportClick}
           variant="outline"
           size="1"
           style={LIBRARY_BUTTON_STYLE}
@@ -174,10 +193,7 @@ export function ComponentLibrary() {
               key={componentDef.id}
               title={dragTitle}
               draggable
-              onDragStart={e => {
-                e.dataTransfer.setData(COMPONENT_DRAG_MIME_TYPE, componentDef.id);
-                e.dataTransfer.effectAllowed = 'copy';
-              }}
+              onDragStart={onEntryDragStart(componentDef)}
               align="center"
               gap="2"
               p="1"
@@ -191,7 +207,7 @@ export function ComponentLibrary() {
                 type="button"
                 title={deleteTitle}
                 aria-label={deleteTitle}
-                onClick={() => setDeleteTarget(componentDef)}
+                onClick={onDeleteClick(componentDef)}
                 variant="ghost"
                 color="red"
                 size="1"
@@ -209,7 +225,7 @@ export function ComponentLibrary() {
         message={deleteMessage}
         confirmLabel="Delete"
         onConfirm={onDeleteConfirmed}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={onCancelDelete}
       />
     </Flex>
   );

@@ -32,12 +32,29 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
   const isAlignedRightStyle = shape.align === 'right' ? ACTIVE_TEXT_BUTTON_STYLE : undefined;
   const textAreaStyle = { resize: 'vertical' as const };
 
+  const onXChange = (v: number) => updateShape(shape.id, { x: v });
+  const onYChange = (v: number) => updateShape(shape.id, { y: v });
+  const onToggleBold = () => updateShape(shape.id, { isBold: !shape.isBold });
+  const onToggleItalic = () => updateShape(shape.id, { isItalic: !shape.isItalic });
+  const onAlignLeftClick = () => updateShape(shape.id, { align: 'left' });
+  const onAlignCenterClick = () => updateShape(shape.id, { align: 'center' });
+  const onAlignRightClick = () => updateShape(shape.id, { align: 'right' });
+  const onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    updateShape(shape.id, { text: e.target.value });
+  const onFontFamilyChange = (value: string) => updateShape(shape.id, { fontFamily: value });
+  const onFontSizeChange = (value: number) => {
+    if (value > 0) {
+      updateShape(shape.id, { fontSize: value });
+    }
+  };
+  const onFillColorChange = (value: string) => updateShape(shape.id, { fill: value });
+
   return (
     <Flex direction="column" gap="4">
       <Section title="Position">
         <Flex gap="3">
-          <InlineField label="x" value={shape.x} onChange={v => updateShape(shape.id, { x: v })} />
-          <InlineField label="y" value={shape.y} onChange={v => updateShape(shape.id, { y: v })} />
+          <InlineField label="x" value={shape.x} onChange={onXChange} />
+          <InlineField label="y" value={shape.y} onChange={onYChange} />
         </Flex>
       </Section>
 
@@ -48,7 +65,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             title="Bold"
             aria-label="Bold"
             aria-pressed={shape.isBold}
-            onClick={() => updateShape(shape.id, { isBold: !shape.isBold })}
+            onClick={onToggleBold}
             variant="ghost"
             size="1"
             style={isBoldStyle}
@@ -60,7 +77,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             title="Italic"
             aria-label="Italic"
             aria-pressed={shape.isItalic}
-            onClick={() => updateShape(shape.id, { isItalic: !shape.isItalic })}
+            onClick={onToggleItalic}
             variant="ghost"
             size="1"
             style={isItalicStyle}
@@ -72,7 +89,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             title="Align left"
             aria-label="Align left"
             aria-pressed={shape.align === 'left'}
-            onClick={() => updateShape(shape.id, { align: 'left' })}
+            onClick={onAlignLeftClick}
             variant="ghost"
             size="1"
             style={isAlignedLeftStyle}
@@ -84,7 +101,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             title="Align center"
             aria-label="Align center"
             aria-pressed={shape.align === 'center'}
-            onClick={() => updateShape(shape.id, { align: 'center' })}
+            onClick={onAlignCenterClick}
             variant="ghost"
             size="1"
             style={isAlignedCenterStyle}
@@ -96,7 +113,7 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             title="Align right"
             aria-label="Align right"
             aria-pressed={shape.align === 'right'}
-            onClick={() => updateShape(shape.id, { align: 'right' })}
+            onClick={onAlignRightClick}
             variant="ghost"
             size="1"
             style={isAlignedRightStyle}
@@ -104,20 +121,12 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
             <AlignRight size={16} />
           </IconButton>
         </Flex>
-        <TextArea
-          value={shape.text}
-          onChange={e => updateShape(shape.id, { text: e.target.value })}
-          rows={2}
-          style={textAreaStyle}
-        />
+        <TextArea value={shape.text} onChange={onTextChange} rows={2} style={textAreaStyle} />
       </Section>
 
       <Section title="Font">
         <Flex gap="2" align="center">
-          <Select.Root
-            value={shape.fontFamily}
-            onValueChange={value => updateShape(shape.id, { fontFamily: value })}
-          >
+          <Select.Root value={shape.fontFamily} onValueChange={onFontFamilyChange}>
             <Select.Trigger />
             <Select.Content>
               {FONT_FAMILIES.map(font => (
@@ -127,19 +136,8 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
               ))}
             </Select.Content>
           </Select.Root>
-          <CompactNumberInput
-            value={shape.fontSize}
-            min={1}
-            onChange={value => {
-              if (value > 0) {
-                updateShape(shape.id, { fontSize: value });
-              }
-            }}
-          />
-          <ColorInput
-            value={shape.fill}
-            onChange={value => updateShape(shape.id, { fill: value })}
-          />
+          <CompactNumberInput value={shape.fontSize} min={1} onChange={onFontSizeChange} />
+          <ColorInput value={shape.fill} onChange={onFillColorChange} />
         </Flex>
       </Section>
     </Flex>

@@ -78,6 +78,9 @@ export function Toolbar() {
   const toolbarStyle = { borderRight: '1px solid var(--gray-a5)' };
   const libraryButtonStyle = isLibraryOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined;
   const settingsButtonStyle = isSettingsOpen ? ACTIVE_TOOL_BUTTON_STYLE : undefined;
+  const onToolClick = (tool: TTool) => () => setTool(tool);
+  const onOpenClearDialog = () => setIsClearDialogOpen(true);
+  const onCancelClear = () => setIsClearDialogOpen(false);
 
   return (
     <Flex direction="column" gap="4" p="3" style={toolbarStyle}>
@@ -90,7 +93,7 @@ export function Toolbar() {
             title={label}
             aria-label={label}
             aria-pressed={activeTool === tool}
-            onClick={() => setTool(tool)}
+            onClick={onToolClick(tool)}
             variant="ghost"
             size="3"
             style={buttonStyle}
@@ -144,7 +147,7 @@ export function Toolbar() {
           type="button"
           title="Clear canvas"
           aria-label="Clear canvas"
-          onClick={() => setIsClearDialogOpen(true)}
+          onClick={onOpenClearDialog}
           variant="ghost"
           color="red"
           size="3"
@@ -159,7 +162,7 @@ export function Toolbar() {
         message="This will remove all shapes from the canvas."
         confirmLabel="Clear"
         onConfirm={onClearConfirmed}
-        onCancel={() => setIsClearDialogOpen(false)}
+        onCancel={onCancelClear}
       />
     </Flex>
   );

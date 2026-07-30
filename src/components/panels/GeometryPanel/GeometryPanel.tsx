@@ -1,3 +1,5 @@
+import type { ChangeEvent } from 'react';
+
 import { Flex, Text, TextField, Select } from '@radix-ui/themes';
 
 import type { TShape, TShapeId, TShapePatch } from '~/types/document';
@@ -12,21 +14,18 @@ type TNumberFieldProps = {
 };
 
 function NumberField({ label, value, min, onChange }: TNumberFieldProps) {
+  function onFieldChange(e: ChangeEvent<HTMLInputElement>) {
+    const next = Number(e.target.value);
+    if (Number.isFinite(next)) {
+      onChange(next);
+    }
+  }
+
   return (
     <Text as="label" size="2">
       <Flex direction="column" gap="1">
         {label}
-        <TextField.Root
-          type="number"
-          min={min}
-          value={value}
-          onChange={e => {
-            const next = Number(e.target.value);
-            if (Number.isFinite(next)) {
-              onChange(next);
-            }
-          }}
-        />
+        <TextField.Root type="number" min={min} value={value} onChange={onFieldChange} />
       </Flex>
     </Text>
   );
@@ -39,20 +38,18 @@ type TGeometryFieldsProps = {
 
 function GeometryFields({ shape, updateShape }: TGeometryFieldsProps) {
   switch (shape.type) {
-    case 'guide':
+    case 'guide': {
+      const onOrientationChange = (value: string) =>
+        updateShape(shape.id, { orientation: value as 'h' | 'v' | 'angle' });
+      const onPositionChange = (v: number) => updateShape(shape.id, { position: v });
+      const onAngleChange = (v: number) => updateShape(shape.id, { angle: v });
+
       return (
         <>
           <Text as="label" size="2">
             <Flex direction="column" gap="1">
               Orientation
-              <Select.Root
-                value={shape.orientation}
-                onValueChange={value =>
-                  updateShape(shape.id, {
-                    orientation: value as 'h' | 'v' | 'angle',
-                  })
-                }
-              >
+              <Select.Root value={shape.orientation} onValueChange={onOrientationChange}>
                 <Select.Trigger />
                 <Select.Content>
                   <Select.Item value="h">Horizontal</Select.Item>
@@ -62,38 +59,28 @@ function GeometryFields({ shape, updateShape }: TGeometryFieldsProps) {
               </Select.Root>
             </Flex>
           </Text>
-          <NumberField
-            label="Position"
-            value={shape.position}
-            onChange={v => updateShape(shape.id, { position: v })}
-          />
+          <NumberField label="Position" value={shape.position} onChange={onPositionChange} />
           {shape.orientation === 'angle' && (
-            <NumberField
-              label="Angle"
-              value={shape.angle ?? 0}
-              onChange={v => updateShape(shape.id, { angle: v })}
-            />
+            <NumberField label="Angle" value={shape.angle ?? 0} onChange={onAngleChange} />
           )}
         </>
       );
-    case 'component-instance':
+    }
+    case 'component-instance': {
+      const onXChange = (v: number) => updateShape(shape.id, { x: v });
+      const onYChange = (v: number) => updateShape(shape.id, { y: v });
+      const onScaleChange = (v: number) => updateShape(shape.id, { scale: v });
+      const onRotationChange = (v: number) => updateShape(shape.id, { rotation: v });
+
       return (
         <>
-          <NumberField label="X" value={shape.x} onChange={v => updateShape(shape.id, { x: v })} />
-          <NumberField label="Y" value={shape.y} onChange={v => updateShape(shape.id, { y: v })} />
-          <NumberField
-            label="Scale"
-            value={shape.scale}
-            min={0.01}
-            onChange={v => updateShape(shape.id, { scale: v })}
-          />
-          <NumberField
-            label="Rotation"
-            value={shape.rotation}
-            onChange={v => updateShape(shape.id, { rotation: v })}
-          />
+          <NumberField label="X" value={shape.x} onChange={onXChange} />
+          <NumberField label="Y" value={shape.y} onChange={onYChange} />
+          <NumberField label="Scale" value={shape.scale} min={0.01} onChange={onScaleChange} />
+          <NumberField label="Rotation" value={shape.rotation} onChange={onRotationChange} />
         </>
       );
+    }
     default:
       return null;
   }

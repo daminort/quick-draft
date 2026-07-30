@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 
 import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes';
 
@@ -31,6 +31,25 @@ export function SettingsPanel() {
     setIsDeleteGuidesDialogOpen(false);
   };
 
+  function onOpenDeleteGuidesDialog() {
+    setIsDeleteGuidesDialogOpen(true);
+  }
+
+  function onCancelDeleteGuides() {
+    setIsDeleteGuidesDialogOpen(false);
+  }
+
+  function onSnapToleranceChange(e: ChangeEvent<HTMLInputElement>) {
+    const value = Number(e.target.value);
+    if (Number.isFinite(value)) {
+      setSnapTolerance(value);
+    }
+  }
+
+  function onDimensionColorChange(e: ChangeEvent<HTMLInputElement>) {
+    setDimensionColor(e.target.value);
+  }
+
   return (
     <Flex
       direction="column"
@@ -54,12 +73,7 @@ export function SettingsPanel() {
             Show guides
           </Flex>
         </Text>
-        <Button
-          type="button"
-          onClick={() => setIsDeleteGuidesDialogOpen(true)}
-          variant="soft"
-          color="gray"
-        >
+        <Button type="button" onClick={onOpenDeleteGuidesDialog} variant="soft" color="gray">
           Delete all guides
         </Button>
       </Flex>
@@ -75,12 +89,7 @@ export function SettingsPanel() {
               type="number"
               min={0}
               value={snapTolerance}
-              onChange={e => {
-                const value = Number(e.target.value);
-                if (Number.isFinite(value)) {
-                  setSnapTolerance(value);
-                }
-              }}
+              onChange={onSnapToleranceChange}
             />
           </Flex>
         </Text>
@@ -106,11 +115,7 @@ export function SettingsPanel() {
           <Flex direction="column" gap="1">
             Color
             <Box>
-              <input
-                type="color"
-                value={dimensionColor}
-                onChange={e => setDimensionColor(e.target.value)}
-              />
+              <input type="color" value={dimensionColor} onChange={onDimensionColorChange} />
             </Box>
           </Flex>
         </Text>
@@ -140,7 +145,7 @@ export function SettingsPanel() {
         message="This will remove every guide from the canvas."
         confirmLabel="Delete"
         onConfirm={onDeleteGuidesConfirmed}
-        onCancel={() => setIsDeleteGuidesDialogOpen(false)}
+        onCancel={onCancelDeleteGuides}
       />
     </Flex>
   );

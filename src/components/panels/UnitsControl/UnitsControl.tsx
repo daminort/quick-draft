@@ -10,11 +10,13 @@ export function UnitsControl() {
   const units = useDocumentStore(state => state.document.units);
   const setUnits = useDocumentStore(state => state.setUnits);
 
+  const onUnitsChange = (value: string) => setUnits(value as TDocument['units']);
+
   return (
     <Text as="label" size="2">
       <Flex direction="column" gap="1">
         Measurement units
-        <Select.Root value={units} onValueChange={value => setUnits(value as TDocument['units'])}>
+        <Select.Root value={units} onValueChange={onUnitsChange}>
           <Select.Trigger />
           <Select.Content>
             {UNIT_OPTIONS.map(unit => (

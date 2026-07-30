@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 
 import { Flex, Text, TextField, Button } from '@radix-ui/themes';
 
@@ -27,6 +27,10 @@ export function ComponentActions() {
 
   const selectedCount = selectedIds.length;
 
+  function onNameChange(e: ChangeEvent<HTMLInputElement>) {
+    setName(e.target.value);
+  }
+
   return (
     <Flex direction="column" gap="2">
       <Text as="div" size="2" weight="bold">
@@ -41,7 +45,7 @@ export function ComponentActions() {
           <TextField.Root
             type="text"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={onNameChange}
             placeholder="Component"
           />
         </Flex>
