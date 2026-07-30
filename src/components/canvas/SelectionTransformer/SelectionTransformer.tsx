@@ -85,12 +85,13 @@ export function SelectionTransformer({ shape, node }: TSelectionTransformerProps
   const enabledAnchors = isRadialShape
     ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']
     : undefined;
+  const onTransformEnd = () => updateShape(shape.id, computeTransformPatch(shape, node));
 
   return (
     <Transformer
       ref={transformerRef}
       nodes={[node]}
-      onTransformEnd={() => updateShape(shape.id, computeTransformPatch(shape, node))}
+      onTransformEnd={onTransformEnd}
       rotateEnabled={isRotateEnabled}
       keepRatio={isRadialShape}
       enabledAnchors={enabledAnchors}

@@ -31,14 +31,23 @@ export function ShapeRenderer({
   editingTextId = null,
   onStartEditText,
 }: TShapeRendererProps) {
+  const onSelect = isInteractive ? () => interaction.selectShape(shape.id) : () => {};
+  const onDragStart = () => interaction.onDragStart(shape);
+  const onDragMove = (node: Konva.Node) => interaction.onDragMove(shape, node);
+  const onDragEnd = (node: Konva.Node) => interaction.onDragEnd(shape, node);
+  const setNodeRef = (node: Konva.Node | null) => interaction.registerNode(shape.id, node);
+  const onMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) =>
+    interaction.onManualMouseDown(shape, e);
+  const onDblClick = isInteractive ? () => onStartEditText?.(shape.id) : undefined;
+
   const shared = {
     isDraggable: isInteractive,
     isSelected,
-    onSelect: isInteractive ? () => interaction.selectShape(shape.id) : () => {},
-    onDragStart: () => interaction.onDragStart(shape),
-    onDragMove: (node: Konva.Node) => interaction.onDragMove(shape, node),
-    onDragEnd: (node: Konva.Node) => interaction.onDragEnd(shape, node),
-    setNodeRef: (node: Konva.Node | null) => interaction.registerNode(shape.id, node),
+    onSelect,
+    onDragStart,
+    onDragMove,
+    onDragEnd,
+    setNodeRef,
   };
 
   switch (shape.type) {
@@ -51,12 +60,12 @@ export function ShapeRenderer({
     case 'arc':
       return (
         <ArcShape
-          setNodeRef={shared.setNodeRef}
+          setNodeRef={setNodeRef}
           shape={shape}
           isInteractive={isInteractive}
           isSelected={isSelected}
-          onSelect={shared.onSelect}
-          onMouseDown={e => interaction.onManualMouseDown(shape, e)}
+          onSelect={onSelect}
+          onMouseDown={onMouseDown}
         />
       );
     case 'text':
@@ -65,7 +74,7 @@ export function ShapeRenderer({
           shape={shape}
           {...shared}
           isVisible={editingTextId !== shape.id}
-          onDblClick={isInteractive ? () => onStartEditText?.(shape.id) : undefined}
+          onDblClick={onDblClick}
         />
       );
     case 'guide':
@@ -73,12 +82,12 @@ export function ShapeRenderer({
     case 'dimension':
       return (
         <DimensionShape
-          setNodeRef={shared.setNodeRef}
+          setNodeRef={setNodeRef}
           shape={shape}
           isSelected={isSelected}
           isInteractive={isInteractive}
-          onSelect={shared.onSelect}
-          onMouseDown={e => interaction.onManualMouseDown(shape, e)}
+          onSelect={onSelect}
+          onMouseDown={onMouseDown}
         />
       );
     case 'component-instance':

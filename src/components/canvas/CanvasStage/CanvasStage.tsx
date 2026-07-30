@@ -301,6 +301,84 @@ export function CanvasStage() {
     e.dataTransfer.dropEffect = 'copy';
   }
 
+  function onStageMouseDown(e: Konva.KonvaEventObject<MouseEvent>) {
+    if (pan.onMouseDown(e)) {
+      return;
+    }
+    selectTool.onStageMouseDown(e);
+    drawingTool.onMouseDown(e);
+    rulerTool.onMouseDown(e);
+  }
+
+  function onStageMouseMove(e: Konva.KonvaEventObject<MouseEvent>) {
+    drawingTool.onMouseMove(e);
+    rulerTool.onMouseMove(e);
+    copyPasteTool.onMouseMove(e);
+    if (isRulerVisible && areRulerGuidesVisible) {
+      setCursorPos(e.target.getStage()?.getPointerPosition() ?? null);
+    }
+  }
+
+  function onStageMouseLeave() {
+    setCursorPos(null);
+  }
+
+  function onEditingTextChange(text: string) {
+    if (!editingShape) {
+      return;
+    }
+    updateShape(editingShape.id, { text });
+  }
+
+  function onContextMenuClose() {
+    setContextMenu(null);
+  }
+
+  function onEmptyContextMenuClose() {
+    setEmptyContextMenu(null);
+  }
+
+  function onBringToFrontClick() {
+    if (!contextMenu) {
+      return;
+    }
+    bringToFront(contextMenu.shapeId);
+  }
+
+  function onSendToBackClick() {
+    if (!contextMenu) {
+      return;
+    }
+    sendToBack(contextMenu.shapeId);
+  }
+
+  function onOpenDeleteGuidesDialog() {
+    setIsDeleteGuidesDialogOpen(true);
+  }
+
+  function onConfirmDeleteGuides() {
+    clearGuides();
+    setIsDeleteGuidesDialogOpen(false);
+  }
+
+  function onCancelDeleteGuides() {
+    setIsDeleteGuidesDialogOpen(false);
+  }
+
+  const contextMenuItems = [
+    { label: 'Bring to Front', icon: <ArrowUpToLine size={14} />, onClick: onBringToFrontClick },
+    { label: 'Send to Back', icon: <ArrowDownFromLine size={14} />, onClick: onSendToBackClick },
+  ];
+
+  const emptyContextMenuItems = [
+    {
+      label: 'Toggle dimensions',
+      icon: <RulerDimensionLine size={14} />,
+      onClick: toggleDimensionsVisible,
+    },
+    { label: 'Delete guides', icon: <Trash2 size={14} />, onClick: onOpenDeleteGuidesDialog },
+  ];
+
   const containerStyle = { cursor: pan.isPanning ? 'grabbing' : undefined };
 
   return (
@@ -321,23 +399,9 @@ export function CanvasStage() {
         x={zoom.x}
         y={zoom.y}
         onWheel={zoom.onWheel}
-        onMouseDown={e => {
-          if (pan.onMouseDown(e)) {
-            return;
-          }
-          selectTool.onStageMouseDown(e);
-          drawingTool.onMouseDown(e);
-          rulerTool.onMouseDown(e);
-        }}
-        onMouseMove={e => {
-          drawingTool.onMouseMove(e);
-          rulerTool.onMouseMove(e);
-          copyPasteTool.onMouseMove(e);
-          if (isRulerVisible && areRulerGuidesVisible) {
-            setCursorPos(e.target.getStage()?.getPointerPosition() ?? null);
-          }
-        }}
-        onMouseLeave={() => setCursorPos(null)}
+        onMouseDown={onStageMouseDown}
+        onMouseMove={onStageMouseMove}
+        onMouseLeave={onStageMouseLeave}
         onMouseUp={drawingTool.onMouseUp}
         onContextMenu={onContextMenu}
       >
@@ -417,7 +481,7 @@ export function CanvasStage() {
           scale={zoom.scale}
           offsetX={zoom.x}
           offsetY={zoom.y}
-          onChange={text => updateShape(editingShape.id, { text })}
+          onChange={onEditingTextChange}
           onCommit={commitEditText}
           onCancel={cancelEditText}
         />
@@ -444,38 +508,16 @@ export function CanvasStage() {
         <ContextMenu
           x={contextMenu.x}
           y={contextMenu.y}
-          items={[
-            {
-              label: 'Bring to Front',
-              icon: <ArrowUpToLine size={14} />,
-              onClick: () => bringToFront(contextMenu.shapeId),
-            },
-            {
-              label: 'Send to Back',
-              icon: <ArrowDownFromLine size={14} />,
-              onClick: () => sendToBack(contextMenu.shapeId),
-            },
-          ]}
-          onClose={() => setContextMenu(null)}
+          items={contextMenuItems}
+          onClose={onContextMenuClose}
         />
       )}
       {emptyContextMenu && (
         <ContextMenu
           x={emptyContextMenu.x}
           y={emptyContextMenu.y}
-          items={[
-            {
-              label: 'Toggle dimensions',
-              icon: <RulerDimensionLine size={14} />,
-              onClick: () => toggleDimensionsVisible(),
-            },
-            {
-              label: 'Delete guides',
-              icon: <Trash2 size={14} />,
-              onClick: () => setIsDeleteGuidesDialogOpen(true),
-            },
-          ]}
-          onClose={() => setEmptyContextMenu(null)}
+          items={emptyContextMenuItems}
+          onClose={onEmptyContextMenuClose}
         />
       )}
       <ConfirmDialog
@@ -483,11 +525,8 @@ export function CanvasStage() {
         title="Delete all guides"
         message="This will remove every guide from the canvas."
         confirmLabel="Delete"
-        onConfirm={() => {
-          clearGuides();
-          setIsDeleteGuidesDialogOpen(false);
-        }}
-        onCancel={() => setIsDeleteGuidesDialogOpen(false)}
+        onConfirm={onConfirmDeleteGuides}
+        onCancel={onCancelDeleteGuides}
       />
     </Box>
   );

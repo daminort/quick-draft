@@ -34,6 +34,8 @@ export function TextShape({
   const fontStyle =
     [shape.isBold && 'bold', shape.isItalic && 'italic'].filter(Boolean).join(' ') || 'normal';
   const fillColor = isSelected ? SELECTED_COLOR : shape.fill;
+  const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
+  const onNodeDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => onDragEnd(e.target);
 
   return (
     <Text
@@ -48,8 +50,8 @@ export function TextShape({
       onDblClick={onDblClick}
       onDblTap={onDblClick}
       onDragStart={onDragStart}
-      onDragMove={e => onDragMove(e.target)}
-      onDragEnd={e => onDragEnd(e.target)}
+      onDragMove={onNodeDragMove}
+      onDragEnd={onNodeDragEnd}
       align={shape.align}
       fontFamily={shape.fontFamily}
       fontSize={shape.fontSize}

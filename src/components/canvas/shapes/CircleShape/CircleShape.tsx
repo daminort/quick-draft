@@ -29,6 +29,8 @@ export function CircleShape({
 }: TCircleShapeProps) {
   const strokeColor = isSelected ? SELECTED_COLOR : shape.style.stroke;
   const fillOpacity = shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1;
+  const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
+  const onNodeDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => onDragEnd(e.target);
 
   return (
     <Circle
@@ -41,8 +43,8 @@ export function CircleShape({
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}
-      onDragMove={e => onDragMove(e.target)}
-      onDragEnd={e => onDragEnd(e.target)}
+      onDragMove={onNodeDragMove}
+      onDragEnd={onNodeDragEnd}
       stroke={strokeColor}
       strokeWidth={shape.style.strokeWidth}
       fill={shape.style.fill}

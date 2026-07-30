@@ -45,6 +45,18 @@ export function TextEditOverlay({
   const fontStyle =
     [shape.isBold && 'bold', shape.isItalic && 'italic'].filter(Boolean).join(' ') || 'normal';
 
+  const onInput = (e: React.FormEvent<HTMLDivElement>) =>
+    onChange(e.currentTarget.textContent ?? '');
+  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onCancel();
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      onCommit();
+    }
+  }
+
   const overlayStyle = {
     position: 'absolute' as const,
     left: offsetX + shape.x * scale - TEXT_EDIT_OVERLAY_PADDING_PX,
@@ -70,17 +82,9 @@ export function TextEditOverlay({
       contentEditable
       suppressContentEditableWarning
       spellCheck={false}
-      onInput={e => onChange(e.currentTarget.textContent ?? '')}
+      onInput={onInput}
       onBlur={onCommit}
-      onKeyDown={e => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          onCancel();
-        } else if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          onCommit();
-        }
-      }}
+      onKeyDown={onKeyDown}
       style={overlayStyle}
     />
   );

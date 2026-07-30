@@ -37,6 +37,9 @@ export function ComponentInstanceShape({
     return null;
   }
 
+  const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
+  const onNodeDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => onDragEnd(e.target);
+
   return (
     <Group
       ref={setNodeRef}
@@ -50,8 +53,8 @@ export function ComponentInstanceShape({
       onClick={onSelect}
       onTap={onSelect}
       onDragStart={onDragStart}
-      onDragMove={e => onDragMove(e.target)}
-      onDragEnd={e => onDragEnd(e.target)}
+      onDragMove={onNodeDragMove}
+      onDragEnd={onNodeDragEnd}
     >
       {componentDef.shapes.map(childShape => (
         <ShapeRenderer

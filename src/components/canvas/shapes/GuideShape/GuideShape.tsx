@@ -33,6 +33,10 @@ export function GuideShape({
   setNodeRef,
 }: TGuideShapeProps) {
   const strokeColor = isSelected ? SELECTED_COLOR : GUIDE_COLOR;
+  const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
+  const onNodeDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => onDragEnd(e.target);
+  const restrictDragToHorizontal = (pos: Konva.Vector2d): Konva.Vector2d => ({ x: pos.x, y: 0 });
+  const restrictDragToVertical = (pos: Konva.Vector2d): Konva.Vector2d => ({ x: 0, y: pos.y });
   const common = {
     ref: setNodeRef,
     id: shape.id,
@@ -45,8 +49,8 @@ export function GuideShape({
     onClick: onSelect,
     onTap: onSelect,
     onDragStart,
-    onDragMove: (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target),
-    onDragEnd: (e: Konva.KonvaEventObject<DragEvent>) => onDragEnd(e.target),
+    onDragMove: onNodeDragMove,
+    onDragEnd: onNodeDragEnd,
   };
 
   if (shape.orientation === 'v') {
@@ -56,7 +60,7 @@ export function GuideShape({
         x={shape.position}
         y={0}
         points={[0, viewBounds.top, 0, viewBounds.bottom]}
-        dragBoundFunc={pos => ({ x: pos.x, y: 0 })}
+        dragBoundFunc={restrictDragToHorizontal}
       />
     );
   }
@@ -71,7 +75,7 @@ export function GuideShape({
         x={0}
         y={shape.position}
         points={[-dx, -dy, dx, dy]}
-        dragBoundFunc={pos => ({ x: 0, y: pos.y })}
+        dragBoundFunc={restrictDragToVertical}
       />
     );
   }
@@ -82,7 +86,7 @@ export function GuideShape({
       x={0}
       y={shape.position}
       points={[viewBounds.left, 0, viewBounds.right, 0]}
-      dragBoundFunc={pos => ({ x: 0, y: pos.y })}
+      dragBoundFunc={restrictDragToVertical}
     />
   );
 }

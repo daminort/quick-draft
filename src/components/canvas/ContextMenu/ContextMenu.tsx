@@ -51,6 +51,10 @@ export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
     minWidth: 160,
   };
   const menuItemStyle = { justifyContent: 'flex-start' };
+  const onItemClick = (item: TContextMenuItem) => () => {
+    item.onClick();
+    onClose();
+  };
 
   return (
     <Box ref={menuRef} role="menu" p="2" style={menuStyle}>
@@ -60,10 +64,7 @@ export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
             key={item.label}
             type="button"
             role="menuitem"
-            onClick={() => {
-              item.onClick();
-              onClose();
-            }}
+            onClick={onItemClick(item)}
             variant="ghost"
             color="gray"
             style={menuItemStyle}
