@@ -4,7 +4,7 @@ import { loadUISettings } from '~/lib/persistence/indexedDb';
 
 import { uiActions } from '~/stores/uiStore';
 
-export function useRestoreUISettings() {
+function useRestoreUISettings() {
   useEffect(() => {
     let cancelled = false;
     loadUISettings().then(settings => {
@@ -18,3 +18,5 @@ export function useRestoreUISettings() {
     };
   }, []);
 }
+
+export { useRestoreUISettings };

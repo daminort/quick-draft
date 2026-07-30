@@ -1,5 +1,7 @@
 import type { TToolState } from './types';
 
-export const toolSelectors = {
+const toolSelectors = {
   getActiveTool: (state: TToolState) => state.activeTool,
 };
+
+export { toolSelectors };

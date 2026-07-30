@@ -10,7 +10,7 @@ import { saveUISettings } from '~/lib/persistence/indexedDb';
 
 import type { TUIState } from './types';
 
-export const uiStore = create<TUIState>()(() => ({
+const uiStore = create<TUIState>()(() => ({
   isSettingsOpen: false,
   isLibraryOpen: false,
   areGuidesVisible: true,
@@ -44,3 +44,5 @@ uiStore.subscribe(state => {
     void saveUISettings(pickPersistedSettings(state));
   }, AUTOSAVE_DEBOUNCE_MS);
 });
+
+export { uiStore };

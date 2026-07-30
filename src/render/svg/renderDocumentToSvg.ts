@@ -14,7 +14,7 @@ import { computeDimensionGeometry, convertLength, formatDimensionLabel } from '~
 import { getUnionBounds } from '~/lib/bounds';
 import { flattenComponentInstance } from '~/lib/shapeTransform';
 
-export type TRenderSvgOptions = {
+type TRenderSvgOptions = {
   shouldShowDimensionUnit?: boolean;
   dimensionColor?: string;
 };
@@ -159,7 +159,7 @@ function renderShape(shape: TShape, ctx: TRenderContext): string {
  * to the bottom-right corner of the bottom-right-most one, plus a margin — rather than a fixed
  * paper size, so nothing is ever clipped regardless of how large or spread out the drawing is.
  */
-export function renderDocumentToSvg(document: TDocument, options: TRenderSvgOptions = {}): string {
+function renderDocumentToSvg(document: TDocument, options: TRenderSvgOptions = {}): string {
   const shouldShowDimensionUnit = options.shouldShowDimensionUnit ?? false;
   const dimensionColor = options.dimensionColor ?? DEFAULT_DIMENSION_COLOR;
   const printableShapes = document.shapes.filter(shape => shape.type !== 'guide');
@@ -195,3 +195,5 @@ export function renderDocumentToSvg(document: TDocument, options: TRenderSvgOpti
     `</svg>`,
   ].join('\n');
 }
+
+export { renderDocumentToSvg };

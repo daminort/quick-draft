@@ -2,7 +2,7 @@ import type { TShapeId } from '~/types/document';
 
 import { selectionStore } from './store';
 
-export const selectionActions = {
+const selectionActions = {
   select: (ids: TShapeId[]) => {
     selectionStore.setState({ selectedIds: ids });
   },
@@ -18,3 +18,5 @@ export const selectionActions = {
     selectionStore.setState({ selectedIds: [] });
   },
 };
+
+export { selectionActions };

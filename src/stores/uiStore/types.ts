@@ -1,4 +1,4 @@
-export type TUIState = {
+type TUIState = {
   isSettingsOpen: boolean;
   isLibraryOpen: boolean;
   areGuidesVisible: boolean;
@@ -10,3 +10,5 @@ export type TUIState = {
   areRulerGuidesVisible: boolean;
   isPrintOpen: boolean;
 };
+
+export type { TUIState };

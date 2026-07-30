@@ -1,5 +1,7 @@
 import type { TDocument } from '~/types/document';
 
-export type TDocumentState = {
+type TDocumentState = {
   document: TDocument;
 };
+
+export type { TDocumentState };

@@ -2,7 +2,7 @@ import type { TPersistedUISettings } from '~/types/uiSettings';
 
 import { uiStore } from './store';
 
-export const uiActions = {
+const uiActions = {
   toggleSettings: () => {
     uiStore.setState(state => ({ isSettingsOpen: !state.isSettingsOpen, isLibraryOpen: false }));
   },
@@ -40,3 +40,5 @@ export const uiActions = {
     uiStore.setState(settings);
   },
 };
+
+export { uiActions };

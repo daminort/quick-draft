@@ -16,7 +16,7 @@ const initialDocument: TDocument = {
   scale: 1,
 };
 
-export const documentStore = create<TDocumentState>()(
+const documentStore = create<TDocumentState>()(
   temporal(() => ({
     document: initialDocument,
   })),
@@ -31,3 +31,5 @@ documentStore.subscribe(state => {
     void saveCurrentDocument(state.document);
   }, AUTOSAVE_DEBOUNCE_MS);
 });
+
+export { documentStore };

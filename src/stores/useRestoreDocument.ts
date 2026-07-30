@@ -4,7 +4,7 @@ import { loadCurrentDocument } from '~/lib/persistence/indexedDb';
 
 import { documentActions } from '~/stores/documentStore';
 
-export function useRestoreDocument() {
+function useRestoreDocument() {
   useEffect(() => {
     let cancelled = false;
     loadCurrentDocument().then(doc => {
@@ -18,3 +18,5 @@ export function useRestoreDocument() {
     };
   }, []);
 }
+
+export { useRestoreDocument };

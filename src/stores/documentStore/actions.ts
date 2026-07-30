@@ -6,7 +6,7 @@ import { resyncDimensionBindings } from '~/lib/dimensionBinding';
 
 import { documentStore } from './store';
 
-export const documentActions = {
+const documentActions = {
   addShape: (shape: TShape) => {
     documentStore.setState(state => ({
       document: { ...state.document, shapes: [...state.document.shapes, shape] },
@@ -193,3 +193,5 @@ export const documentActions = {
     });
   },
 };
+
+export { documentActions };

@@ -1,5 +1,7 @@
 import type { TShapeId } from '~/types/document';
 
-export type TSelectionState = {
+type TSelectionState = {
   selectedIds: TShapeId[];
 };
+
+export type { TSelectionState };

@@ -1,5 +1,7 @@
 import type { TSelectionState } from './types';
 
-export const selectionSelectors = {
+const selectionSelectors = {
   getSelectedIds: (state: TSelectionState) => state.selectedIds,
 };
+
+export { selectionSelectors };

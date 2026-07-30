@@ -1,6 +1,8 @@
-export type TTool =
+type TTool =
   'select' | 'line' | 'rect' | 'circle' | 'arc' | 'text' | 'guide' | 'dimension' | 'ruler';
 
-export type TToolState = {
+type TToolState = {
   activeTool: TTool;
 };
+
+export type { TTool, TToolState };

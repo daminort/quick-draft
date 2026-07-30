@@ -1,6 +1,6 @@
 import type { TUIState } from './types';
 
-export const uiSelectors = {
+const uiSelectors = {
   getIsSettingsOpen: (state: TUIState) => state.isSettingsOpen,
   getIsLibraryOpen: (state: TUIState) => state.isLibraryOpen,
   getAreGuidesVisible: (state: TUIState) => state.areGuidesVisible,
@@ -12,3 +12,5 @@ export const uiSelectors = {
   getAreRulerGuidesVisible: (state: TUIState) => state.areRulerGuidesVisible,
   getIsPrintOpen: (state: TUIState) => state.isPrintOpen,
 };
+
+export { uiSelectors };

@@ -1,6 +1,6 @@
 import type { TDocumentState } from './types';
 
-export const documentSelectors = {
+const documentSelectors = {
   getDocument: (state: TDocumentState) => state.document,
   getShapes: (state: TDocumentState) => state.document.shapes,
   getComponents: (state: TDocumentState) => state.document.components,
@@ -9,3 +9,5 @@ export const documentSelectors = {
   getUnits: (state: TDocumentState) => state.document.units,
   getScale: (state: TDocumentState) => state.document.scale,
 };
+
+export { documentSelectors };
