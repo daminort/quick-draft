@@ -14,7 +14,7 @@ import {
   MARQUEE_FILL_COLOR,
 } from '~/constants/canvas';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import type { TTool } from '~/stores/toolStore';
@@ -57,22 +57,16 @@ export function CanvasStage() {
   const staticLayerRef = useRef<Konva.Layer>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
 
-  const shapes = useDocumentStore(state => state.document.shapes);
-  const components = useDocumentStore(state => state.document.components);
-  const updateShape = useDocumentStore(state => state.updateShape);
-  const removeShape = useDocumentStore(state => state.removeShape);
-  const bringToFront = useDocumentStore(state => state.bringToFront);
-  const sendToBack = useDocumentStore(state => state.sendToBack);
-  const addComponentInstance = useDocumentStore(state => state.addComponentInstance);
-  const clearGuides = useDocumentStore(state => state.clearGuides);
+  const shapes = documentStore(documentSelectors.getShapes);
+  const components = documentStore(documentSelectors.getComponents);
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
   const areDimensionsVisible = uiStore(uiSelectors.getAreDimensionsVisible);
   const isRulerVisible = uiStore(uiSelectors.getIsRulerVisible);
   const areRulerGuidesVisible = uiStore(uiSelectors.getAreRulerGuidesVisible);
-  const documentScale = useDocumentStore(state => state.document.scale);
-  const documentUnits = useDocumentStore(state => state.document.units);
+  const documentScale = documentStore(documentSelectors.getScale);
+  const documentUnits = documentStore(documentSelectors.getUnits);
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -143,13 +137,13 @@ export function CanvasStage() {
         return;
       }
       e.preventDefault();
-      selectedIds.forEach(id => removeShape(id));
+      selectedIds.forEach(id => documentActions.removeShape(id));
       selectionActions.clear();
     }
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selectedIds, removeShape]);
+  }, [selectedIds]);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -165,7 +159,7 @@ export function CanvasStage() {
         return;
       }
       e.preventDefault();
-      useDocumentStore.temporal.getState().undo();
+      documentStore.temporal.getState().undo();
     }
 
     window.addEventListener('keydown', onKeyDown);
@@ -232,21 +226,21 @@ export function CanvasStage() {
     }
     selectionActions.select([id]);
     originalTextRef.current = shape.text;
-    useDocumentStore.temporal.getState().pause();
+    documentStore.temporal.getState().pause();
     setEditingTextId(id);
   }
 
   function commitEditText() {
-    useDocumentStore.temporal.getState().resume();
+    documentStore.temporal.getState().resume();
     originalTextRef.current = null;
     setEditingTextId(null);
   }
 
   function cancelEditText() {
     if (editingTextId !== null && originalTextRef.current !== null) {
-      updateShape(editingTextId, { text: originalTextRef.current });
+      documentActions.updateShape(editingTextId, { text: originalTextRef.current });
     }
-    useDocumentStore.temporal.getState().resume();
+    documentStore.temporal.getState().resume();
     originalTextRef.current = null;
     setEditingTextId(null);
   }
@@ -263,7 +257,7 @@ export function CanvasStage() {
     }
     const x = (e.clientX - rect.left - zoom.x) / zoom.scale;
     const y = (e.clientY - rect.top - zoom.y) / zoom.scale;
-    const instanceId = addComponentInstance(componentId, x, y);
+    const instanceId = documentActions.addComponentInstance(componentId, x, y);
     // Deferred: the instance's Konva node registers on mount, one render after this one — selecting
     // it a tick later (instead of in the same batch) lets the Transformer find it immediately.
     setTimeout(() => selectionActions.select([instanceId]), 0);
@@ -326,7 +320,7 @@ export function CanvasStage() {
     if (!editingShape) {
       return;
     }
-    updateShape(editingShape.id, { text });
+    documentActions.updateShape(editingShape.id, { text });
   }
 
   function onContextMenuClose() {
@@ -341,14 +335,14 @@ export function CanvasStage() {
     if (!contextMenu) {
       return;
     }
-    bringToFront(contextMenu.shapeId);
+    documentActions.bringToFront(contextMenu.shapeId);
   }
 
   function onSendToBackClick() {
     if (!contextMenu) {
       return;
     }
-    sendToBack(contextMenu.shapeId);
+    documentActions.sendToBack(contextMenu.shapeId);
   }
 
   function onOpenDeleteGuidesDialog() {
@@ -356,7 +350,7 @@ export function CanvasStage() {
   }
 
   function onConfirmDeleteGuides() {
-    clearGuides();
+    documentActions.clearGuides();
     setIsDeleteGuidesDialogOpen(false);
   }
 

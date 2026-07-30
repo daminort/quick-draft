@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Flex, Box, Button } from '@radix-ui/themes';
 import { Printer, X } from 'lucide-react';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors } from '~/stores/documentStore';
 import { uiStore, uiSelectors } from '~/stores/uiStore';
 
 import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg';
@@ -16,7 +16,7 @@ type TPrintViewProps = {
 };
 
 export function PrintView({ isOpen, onClose }: TPrintViewProps) {
-  const document = useDocumentStore(state => state.document);
+  const document = documentStore(documentSelectors.getDocument);
   const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
   const dimensionColor = uiStore(uiSelectors.getDimensionColor);
   const svg = useMemo(

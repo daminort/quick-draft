@@ -3,7 +3,7 @@ import { useState, type ChangeEvent } from 'react';
 import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes';
 
 import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 import { UnitsControl } from '~/components/panels/UnitsControl';
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
@@ -18,11 +18,10 @@ export function SettingsPanel() {
   const dimensionColor = uiStore(uiSelectors.getDimensionColor);
   const isRulerVisible = uiStore(uiSelectors.getIsRulerVisible);
   const areRulerGuidesVisible = uiStore(uiSelectors.getAreRulerGuidesVisible);
-  const clearGuides = useDocumentStore(state => state.clearGuides);
   const [isDeleteGuidesDialogOpen, setIsDeleteGuidesDialogOpen] = useState(false);
 
   const onDeleteGuidesConfirmed = () => {
-    clearGuides();
+    documentActions.clearGuides();
     setIsDeleteGuidesDialogOpen(false);
   };
 

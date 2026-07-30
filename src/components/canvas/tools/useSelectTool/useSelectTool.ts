@@ -8,7 +8,7 @@ import { collectSnapTargets, snapPoint, type TSnapTargets } from '~/lib/snap';
 import { getShapeBounds, areBoundsIntersecting } from '~/lib/bounds';
 import { getShapeAnchor, translateShape } from '~/lib/shapeTransform';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors } from '~/stores/toolStore';
 import { uiStore, uiSelectors } from '~/stores/uiStore';
@@ -125,9 +125,8 @@ function computeManualDragPatch(
 }
 
 export function useSelectTool(): TUseSelectToolReturn {
-  const updateShape = useDocumentStore(state => state.updateShape);
-  const shapes = useDocumentStore(state => state.document.shapes);
-  const components = useDocumentStore(state => state.document.components);
+  const shapes = documentStore(documentSelectors.getShapes);
+  const components = documentStore(documentSelectors.getComponents);
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
   const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const activeTool = toolStore(toolSelectors.getActiveTool);
@@ -199,7 +198,7 @@ export function useSelectTool(): TUseSelectToolReturn {
         groupDragOrigin.current = null;
         groupDragAnchorId.current = null;
       }
-      useDocumentStore.temporal.getState().pause();
+      documentStore.temporal.getState().pause();
     },
     [selectShape, selectedIds, snapshotSelection],
   );
@@ -238,12 +237,12 @@ export function useSelectTool(): TUseSelectToolReturn {
         const anchorNow = getShapeAnchor({ ...anchorOrigin, ...patch } as TShape);
         const dx = anchorNow.x - anchorStart.x;
         const dy = anchorNow.y - anchorStart.y;
-        updateShape(shape.id, patch);
+        documentActions.updateShape(shape.id, patch);
         origin.forEach((originShape, id) => {
           if (id === shape.id) {
             return;
           }
-          updateShape(id, translateShape(originShape, dx, dy));
+          documentActions.updateShape(id, translateShape(originShape, dx, dy));
         });
         return indicator;
       }
@@ -254,10 +253,10 @@ export function useSelectTool(): TUseSelectToolReturn {
         dragTargets([shape.id]),
         snapTolerance / viewScale,
       );
-      updateShape(shape.id, patch);
+      documentActions.updateShape(shape.id, patch);
       return indicator;
     },
-    [updateShape, dragTargets, snapTolerance, viewScale],
+    [dragTargets, snapTolerance, viewScale],
   );
 
   const onDragMove = useCallback(
@@ -272,7 +271,7 @@ export function useSelectTool(): TUseSelectToolReturn {
       applyDrag(shape, node);
       groupDragOrigin.current = null;
       groupDragAnchorId.current = null;
-      useDocumentStore.temporal.getState().resume();
+      documentStore.temporal.getState().resume();
       setSnapIndicator(NO_SNAP);
     },
     [applyDrag],
@@ -292,7 +291,7 @@ export function useSelectTool(): TUseSelectToolReturn {
         selectShape(shape.id);
         manualGroupOrigin.current = null;
       }
-      useDocumentStore.temporal.getState().pause();
+      documentStore.temporal.getState().pause();
     },
     [selectShape, selectedIds, snapshotSelection],
   );
@@ -318,12 +317,12 @@ export function useSelectTool(): TUseSelectToolReturn {
           const anchorNow = getShapeAnchor({ ...drag.origin, ...patch } as TShape);
           const dx = anchorNow.x - anchorStart.x;
           const dy = anchorNow.y - anchorStart.y;
-          updateShape(drag.origin.id, patch);
+          documentActions.updateShape(drag.origin.id, patch);
           groupOrigin.forEach((originShape, id) => {
             if (id === drag.origin.id) {
               return;
             }
-            updateShape(id, translateShape(originShape, dx, dy));
+            documentActions.updateShape(id, translateShape(originShape, dx, dy));
           });
           setSnapIndicator(indicator);
           return;
@@ -335,7 +334,7 @@ export function useSelectTool(): TUseSelectToolReturn {
           dragTargets([drag.origin.id]),
           snapTolerance / viewScale,
         );
-        updateShape(drag.origin.id, patch);
+        documentActions.updateShape(drag.origin.id, patch);
         setSnapIndicator(indicator);
         return;
       }
@@ -360,7 +359,7 @@ export function useSelectTool(): TUseSelectToolReturn {
       if (manualDrag.current) {
         manualDrag.current = null;
         manualGroupOrigin.current = null;
-        useDocumentStore.temporal.getState().resume();
+        documentStore.temporal.getState().resume();
         setSnapIndicator(NO_SNAP);
         return;
       }
@@ -406,7 +405,7 @@ export function useSelectTool(): TUseSelectToolReturn {
       window.removeEventListener('mousemove', onWindowMouseMove);
       window.removeEventListener('mouseup', onWindowMouseUp);
     };
-  }, [dragTargets, snapTolerance, viewScale, updateShape, shapes, components]);
+  }, [dragTargets, snapTolerance, viewScale, shapes, components]);
 
   return {
     registerNode,

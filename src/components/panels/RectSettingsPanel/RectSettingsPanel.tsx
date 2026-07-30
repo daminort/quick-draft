@@ -2,7 +2,7 @@ import { Flex } from '@radix-ui/themes';
 
 import type { TShape, TStyle } from '~/types/document';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 import {
   Section,
@@ -17,14 +17,12 @@ type TRectSettingsPanelProps = {
 };
 
 export function RectSettingsPanel({ shape }: TRectSettingsPanelProps) {
-  const updateShape = useDocumentStore(state => state.updateShape);
-
-  const onXChange = (v: number) => updateShape(shape.id, { x: v });
-  const onYChange = (v: number) => updateShape(shape.id, { y: v });
-  const onWidthChange = (v: number) => updateShape(shape.id, { w: v });
-  const onHeightChange = (v: number) => updateShape(shape.id, { h: v });
-  const onRotationChange = (v: number) => updateShape(shape.id, { rotation: v });
-  const onStyleChange = (style: TStyle) => updateShape(shape.id, { style });
+  const onXChange = (v: number) => documentActions.updateShape(shape.id, { x: v });
+  const onYChange = (v: number) => documentActions.updateShape(shape.id, { y: v });
+  const onWidthChange = (v: number) => documentActions.updateShape(shape.id, { w: v });
+  const onHeightChange = (v: number) => documentActions.updateShape(shape.id, { h: v });
+  const onRotationChange = (v: number) => documentActions.updateShape(shape.id, { rotation: v });
+  const onStyleChange = (style: TStyle) => documentActions.updateShape(shape.id, { style });
 
   return (
     <Flex direction="column" gap="4">

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { loadCurrentDocument } from '~/lib/persistence/indexedDb';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 export function useRestoreDocument() {
   useEffect(() => {
@@ -11,7 +11,7 @@ export function useRestoreDocument() {
       if (cancelled || !doc) {
         return;
       }
-      useDocumentStore.getState().loadDocument(doc);
+      documentActions.loadDocument(doc);
     });
     return () => {
       cancelled = true;

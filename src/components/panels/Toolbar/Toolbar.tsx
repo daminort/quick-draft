@@ -19,7 +19,7 @@ import {
 
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import type { TTool } from '~/stores/toolStore';
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 import { selectionActions } from '~/stores/selectionStore';
 import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 
@@ -55,13 +55,12 @@ const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
 
 export function Toolbar() {
   const activeTool = toolStore(toolSelectors.getActiveTool);
-  const clearDocument = useDocumentStore(state => state.clear);
   const isSettingsOpen = uiStore(uiSelectors.getIsSettingsOpen);
   const isLibraryOpen = uiStore(uiSelectors.getIsLibraryOpen);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
 
   const onClearConfirmed = () => {
-    clearDocument();
+    documentActions.clear();
     selectionActions.clear();
     setIsClearDialogOpen(false);
   };

@@ -8,7 +8,7 @@ import {
   realToInternalLength,
 } from '~/lib/ruler';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 import { toolStore, toolSelectors } from '~/stores/toolStore';
 import { uiStore, uiSelectors } from '~/stores/uiStore';
 import { viewStore, viewSelectors } from '~/stores/viewStore';
@@ -28,9 +28,8 @@ function isTypingTarget(target: EventTarget | null): boolean {
 
 export function useRulerTool(): TUseRulerToolReturn {
   const activeTool = toolStore(toolSelectors.getActiveTool);
-  const documentScale = useDocumentStore(state => state.document.scale);
-  const shapes = useDocumentStore(state => state.document.shapes);
-  const addShape = useDocumentStore(state => state.addShape);
+  const documentScale = documentStore(documentSelectors.getScale);
+  const shapes = documentStore(documentSelectors.getShapes);
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
   const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const viewScale = viewStore(viewSelectors.getScale);
@@ -75,11 +74,21 @@ export function useRulerTool(): TUseRulerToolReturn {
       }
 
       const endpoint = rulerEndpoint(current.start, direction, length);
-      addShape({ id: crypto.randomUUID(), type: 'guide', orientation: 'h', position: endpoint.y });
-      addShape({ id: crypto.randomUUID(), type: 'guide', orientation: 'v', position: endpoint.x });
+      documentActions.addShape({
+        id: crypto.randomUUID(),
+        type: 'guide',
+        orientation: 'h',
+        position: endpoint.y,
+      });
+      documentActions.addShape({
+        id: crypto.randomUUID(),
+        type: 'guide',
+        orientation: 'v',
+        position: endpoint.x,
+      });
       setRuler(null);
     },
-    [addShape, documentScale, setRuler],
+    [documentScale, setRuler],
   );
 
   const onMouseDown = useCallback(

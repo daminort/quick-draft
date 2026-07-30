@@ -2,12 +2,11 @@ import { useState, type ChangeEvent } from 'react';
 
 import { Flex, Text, TextField, Button } from '@radix-ui/themes';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 
 export function ComponentActions() {
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
-  const createComponent = useDocumentStore(state => state.createComponent);
   const [name, setName] = useState('');
 
   if (selectedIds.length <= 1) {
@@ -15,7 +14,7 @@ export function ComponentActions() {
   }
 
   const onCreate = () => {
-    const instanceId = createComponent(selectedIds, name.trim() || 'Component');
+    const instanceId = documentActions.createComponent(selectedIds, name.trim() || 'Component');
     // Deferred: the instance's Konva node registers on mount, one render after this one — selecting
     // it a tick later (instead of in the same batch) lets the Transformer find it immediately.
     if (instanceId) {

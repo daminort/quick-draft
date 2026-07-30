@@ -2,7 +2,7 @@ import { Flex } from '@radix-ui/themes';
 
 import type { TShape, TStyle } from '~/types/document';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 import {
   Section,
@@ -18,12 +18,10 @@ type TCircleSettingsPanelProps = {
 };
 
 export function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
-  const updateShape = useDocumentStore(state => state.updateShape);
-
-  const onCenterXChange = (v: number) => updateShape(shape.id, { cx: v });
-  const onCenterYChange = (v: number) => updateShape(shape.id, { cy: v });
-  const onRadiusChange = (v: number) => updateShape(shape.id, { r: v });
-  const onStyleChange = (style: TStyle) => updateShape(shape.id, { style });
+  const onCenterXChange = (v: number) => documentActions.updateShape(shape.id, { cx: v });
+  const onCenterYChange = (v: number) => documentActions.updateShape(shape.id, { cy: v });
+  const onRadiusChange = (v: number) => documentActions.updateShape(shape.id, { r: v });
+  const onStyleChange = (style: TStyle) => documentActions.updateShape(shape.id, { style });
 
   return (
     <Flex direction="column" gap="4">

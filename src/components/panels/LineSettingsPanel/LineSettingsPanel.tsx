@@ -2,7 +2,7 @@ import { Flex } from '@radix-ui/themes';
 
 import type { TShape, TStyle } from '~/types/document';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 import {
   Section,
@@ -16,13 +16,11 @@ type TLineSettingsPanelProps = {
 };
 
 export function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
-  const updateShape = useDocumentStore(state => state.updateShape);
-
-  const onStartXChange = (v: number) => updateShape(shape.id, { x1: v });
-  const onStartYChange = (v: number) => updateShape(shape.id, { y1: v });
-  const onEndXChange = (v: number) => updateShape(shape.id, { x2: v });
-  const onEndYChange = (v: number) => updateShape(shape.id, { y2: v });
-  const onStyleChange = (style: TStyle) => updateShape(shape.id, { style });
+  const onStartXChange = (v: number) => documentActions.updateShape(shape.id, { x1: v });
+  const onStartYChange = (v: number) => documentActions.updateShape(shape.id, { y1: v });
+  const onEndXChange = (v: number) => documentActions.updateShape(shape.id, { x2: v });
+  const onEndYChange = (v: number) => documentActions.updateShape(shape.id, { y2: v });
+  const onStyleChange = (style: TStyle) => documentActions.updateShape(shape.id, { style });
 
   return (
     <Flex direction="column" gap="4">

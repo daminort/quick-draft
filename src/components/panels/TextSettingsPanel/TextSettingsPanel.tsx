@@ -5,7 +5,7 @@ import type { TShape } from '~/types/document';
 
 import { FONT_FAMILIES } from '~/constants/ui';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 import {
   Section,
@@ -21,30 +21,30 @@ type TTextSettingsPanelProps = {
 };
 
 export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
-  const updateShape = useDocumentStore(state => state.updateShape);
-
   const isBoldClassName = shape.isBold ? s.active : undefined;
   const isItalicClassName = shape.isItalic ? s.active : undefined;
   const isAlignedLeftClassName = shape.align === 'left' ? s.active : undefined;
   const isAlignedCenterClassName = shape.align === 'center' ? s.active : undefined;
   const isAlignedRightClassName = shape.align === 'right' ? s.active : undefined;
 
-  const onXChange = (v: number) => updateShape(shape.id, { x: v });
-  const onYChange = (v: number) => updateShape(shape.id, { y: v });
-  const onToggleBold = () => updateShape(shape.id, { isBold: !shape.isBold });
-  const onToggleItalic = () => updateShape(shape.id, { isItalic: !shape.isItalic });
-  const onAlignLeftClick = () => updateShape(shape.id, { align: 'left' });
-  const onAlignCenterClick = () => updateShape(shape.id, { align: 'center' });
-  const onAlignRightClick = () => updateShape(shape.id, { align: 'right' });
+  const onXChange = (v: number) => documentActions.updateShape(shape.id, { x: v });
+  const onYChange = (v: number) => documentActions.updateShape(shape.id, { y: v });
+  const onToggleBold = () => documentActions.updateShape(shape.id, { isBold: !shape.isBold });
+  const onToggleItalic = () => documentActions.updateShape(shape.id, { isItalic: !shape.isItalic });
+  const onAlignLeftClick = () => documentActions.updateShape(shape.id, { align: 'left' });
+  const onAlignCenterClick = () => documentActions.updateShape(shape.id, { align: 'center' });
+  const onAlignRightClick = () => documentActions.updateShape(shape.id, { align: 'right' });
   const onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-    updateShape(shape.id, { text: e.target.value });
-  const onFontFamilyChange = (value: string) => updateShape(shape.id, { fontFamily: value });
+    documentActions.updateShape(shape.id, { text: e.target.value });
+  const onFontFamilyChange = (value: string) =>
+    documentActions.updateShape(shape.id, { fontFamily: value });
   const onFontSizeChange = (value: number) => {
     if (value > 0) {
-      updateShape(shape.id, { fontSize: value });
+      documentActions.updateShape(shape.id, { fontSize: value });
     }
   };
-  const onFillColorChange = (value: string) => updateShape(shape.id, { fill: value });
+  const onFillColorChange = (value: string) =>
+    documentActions.updateShape(shape.id, { fill: value });
 
   return (
     <Flex direction="column" gap="4">

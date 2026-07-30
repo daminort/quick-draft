@@ -14,7 +14,7 @@ import {
 import { formatDimensionLabel } from '~/lib/dimension';
 import { rulerDirection, rulerEndpoint, internalToRealLength } from '~/lib/ruler';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors } from '~/stores/documentStore';
 
 import type { TRulerState } from '~/components/canvas/tools/useRulerTool';
 
@@ -24,8 +24,8 @@ type TRulerOverlayProps = {
 };
 
 export function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
-  const documentScale = useDocumentStore(state => state.document.scale);
-  const documentUnits = useDocumentStore(state => state.document.units);
+  const documentScale = documentStore(documentSelectors.getScale);
+  const documentUnits = documentStore(documentSelectors.getUnits);
 
   const direction = rulerDirection(ruler.start, ruler.point, ruler.isShiftLocked);
   const internalLength = Math.hypot(ruler.point.x - ruler.start.x, ruler.point.y - ruler.start.y);

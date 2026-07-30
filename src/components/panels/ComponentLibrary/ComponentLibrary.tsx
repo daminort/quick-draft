@@ -19,7 +19,7 @@ import {
   importComponentLibraryFromJsonFile,
 } from '~/lib/persistence/fileIO';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionActions } from '~/stores/selectionStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
@@ -66,9 +66,7 @@ function ComponentPreview({ componentDef, components }: TComponentPreviewProps) 
 }
 
 export function ComponentLibrary() {
-  const components = useDocumentStore(state => state.document.components);
-  const removeComponent = useDocumentStore(state => state.removeComponent);
-  const importComponents = useDocumentStore(state => state.importComponents);
+  const components = documentStore(documentSelectors.getComponents);
   const entries = Object.values(components);
   const [deleteTarget, setDeleteTarget] = useState<TComponentDef | null>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -77,7 +75,7 @@ export function ComponentLibrary() {
     if (!deleteTarget) {
       return;
     }
-    const replacedBy = removeComponent(deleteTarget.id);
+    const replacedBy = documentActions.removeComponent(deleteTarget.id);
     // Swap any selected instance of the deleted component for the freestanding shapes it became.
     const selectedIds = selectionStore.getState().selectedIds;
     const nextSelection = selectedIds.flatMap(id => replacedBy[id] ?? [id]);
@@ -93,7 +91,7 @@ export function ComponentLibrary() {
     }
     try {
       const defs = await importComponentLibraryFromJsonFile(file);
-      importComponents(defs);
+      documentActions.importComponents(defs);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Failed to import the library.');
     }

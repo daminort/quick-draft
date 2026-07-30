@@ -2,7 +2,7 @@ import { Flex, Select } from '@radix-ui/themes';
 
 import type { TShape } from '~/types/document';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 import { Section, LabeledRow, CompactNumberInput } from '~/components/panels/shared/PanelFields';
 
@@ -11,14 +11,16 @@ type TDimensionSettingsPanelProps = {
 };
 
 export function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) {
-  const updateShape = useDocumentStore(state => state.updateShape);
-
-  const onStartXChange = (v: number) => updateShape(shape.id, { x1: v, bindingA: null });
-  const onStartYChange = (v: number) => updateShape(shape.id, { y1: v, bindingA: null });
-  const onEndXChange = (v: number) => updateShape(shape.id, { x2: v, bindingB: null });
-  const onEndYChange = (v: number) => updateShape(shape.id, { y2: v, bindingB: null });
+  const onStartXChange = (v: number) =>
+    documentActions.updateShape(shape.id, { x1: v, bindingA: null });
+  const onStartYChange = (v: number) =>
+    documentActions.updateShape(shape.id, { y1: v, bindingA: null });
+  const onEndXChange = (v: number) =>
+    documentActions.updateShape(shape.id, { x2: v, bindingB: null });
+  const onEndYChange = (v: number) =>
+    documentActions.updateShape(shape.id, { y2: v, bindingB: null });
   const onUnitChange = (value: string) =>
-    updateShape(shape.id, { unit: value as 'mm' | 'cm' | 'm' });
+    documentActions.updateShape(shape.id, { unit: value as 'mm' | 'cm' | 'm' });
 
   return (
     <Flex direction="column" gap="4">

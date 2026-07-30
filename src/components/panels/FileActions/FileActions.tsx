@@ -5,13 +5,12 @@ import { Save, FolderOpen } from 'lucide-react';
 
 import { exportDocumentToJsonFile, importDocumentFromJsonFile } from '~/lib/persistence/fileIO';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 
 import s from './FileActions.module.css';
 
 export function FileActions() {
-  const documentState = useDocumentStore(state => state.document);
-  const loadDocument = useDocumentStore(state => state.loadDocument);
+  const documentState = documentStore(documentSelectors.getDocument);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function onSaveClick() {
@@ -30,7 +29,7 @@ export function FileActions() {
     }
     try {
       const doc = await importDocumentFromJsonFile(file);
-      loadDocument(doc);
+      documentActions.loadDocument(doc);
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Failed to open the file.');
     }

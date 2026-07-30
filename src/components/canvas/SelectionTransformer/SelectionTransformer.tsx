@@ -6,7 +6,7 @@ import type { TShape, TShapePatch } from '~/types/document';
 
 import { COMPONENT_INSTANCE_MIN_SCALE } from '~/constants/componentLibrary';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentActions } from '~/stores/documentStore';
 
 import { MIN_TRANSFORM_SIZE_PX } from './assets';
 
@@ -67,7 +67,6 @@ function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
 
 export function SelectionTransformer({ shape, node }: TSelectionTransformerProps) {
   const transformerRef = useRef<Konva.Transformer>(null);
-  const updateShape = useDocumentStore(state => state.updateShape);
 
   useEffect(() => {
     transformerRef.current?.getLayer()?.batchDraw();
@@ -89,7 +88,8 @@ export function SelectionTransformer({ shape, node }: TSelectionTransformerProps
   const enabledAnchors = isRadialShape
     ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']
     : undefined;
-  const onTransformEnd = () => updateShape(shape.id, computeTransformPatch(shape, node));
+  const onTransformEnd = () =>
+    documentActions.updateShape(shape.id, computeTransformPatch(shape, node));
 
   return (
     <Transformer

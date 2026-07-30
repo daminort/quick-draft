@@ -4,7 +4,7 @@ import type { TShape } from '~/types/document';
 
 import { LARGE_VIEW_BOUNDS as INNER_VIEW_BOUNDS } from '~/constants/componentLibrary';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors } from '~/stores/documentStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
 import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction';
@@ -32,7 +32,7 @@ export function ComponentInstanceShape({
   onDragEnd,
   setNodeRef,
 }: TComponentInstanceShapeProps) {
-  const componentDef = useDocumentStore(state => state.document.components[shape.componentId]);
+  const componentDef = documentStore(documentSelectors.getComponentById(shape.componentId));
   if (!componentDef) {
     return null;
   }

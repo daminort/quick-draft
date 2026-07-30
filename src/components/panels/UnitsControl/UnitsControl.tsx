@@ -4,13 +4,12 @@ import type { TDocument } from '~/types/document';
 
 import { UNIT_OPTIONS } from '~/constants/ui';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 
 export function UnitsControl() {
-  const units = useDocumentStore(state => state.document.units);
-  const setUnits = useDocumentStore(state => state.setUnits);
+  const units = documentStore(documentSelectors.getUnits);
 
-  const onUnitsChange = (value: string) => setUnits(value as TDocument['units']);
+  const onUnitsChange = (value: string) => documentActions.setUnits(value as TDocument['units']);
 
   return (
     <Text as="label" size="2">

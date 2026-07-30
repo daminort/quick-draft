@@ -16,7 +16,7 @@ import {
 import { collectSnapTargets, snapPoint } from '~/lib/snap';
 import { findBindingForPoint } from '~/lib/dimensionBinding';
 
-import { useDocumentStore } from '~/stores/useDocumentStore';
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 import { selectionActions } from '~/stores/selectionStore';
 import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 import { uiStore, uiSelectors } from '~/stores/uiStore';
@@ -60,8 +60,7 @@ function hasSize(shape: TShape): boolean {
 
 export function useDrawingTool(): TUseDrawingToolReturn {
   const activeTool = toolStore(toolSelectors.getActiveTool);
-  const doc = useDocumentStore(state => state.document);
-  const addShape = useDocumentStore(state => state.addShape);
+  const doc = documentStore(documentSelectors.getDocument);
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
   const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const viewScale = viewStore(viewSelectors.getScale);
@@ -141,12 +140,12 @@ export function useDrawingTool(): TUseDrawingToolReturn {
       const endAngle = angleBetween({ x: current.cx, y: current.cy }, point);
       const finalShape = { ...current, endAngle };
       if (hasSize(finalShape)) {
-        addShape(finalShape);
+        documentActions.addShape(finalShape);
       }
       arcPhase.current = null;
       setDraftShape(null);
     },
-    [addShape, setDraftShape],
+    [setDraftShape],
   );
 
   const onDimensionMouseDown = useCallback(
@@ -205,7 +204,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
 
       if (activeTool === 'text') {
         const id = crypto.randomUUID();
-        addShape({
+        documentActions.addShape({
           id,
           type: 'text',
           x: point.x,
@@ -226,7 +225,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
       if (activeTool === 'guide') {
         const id = crypto.randomUUID();
         const orientation = e.evt.shiftKey ? 'v' : 'h';
-        addShape({
+        documentActions.addShape({
           id,
           type: 'guide',
           orientation,
@@ -270,7 +269,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
         });
       }
     },
-    [activeTool, onArcMouseDown, onDimensionMouseDown, addShape, snapCursor, setDraftShape],
+    [activeTool, onArcMouseDown, onDimensionMouseDown, snapCursor, setDraftShape],
   );
 
   const onMouseMove = useCallback(
@@ -357,7 +356,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
 
     const current = draftShapeRef.current;
     if (current && hasSize(current)) {
-      addShape(current);
+      documentActions.addShape(current);
     }
     // Only clear the dimension's two-point sequence once its drag (point B onward) has
     // actually finished — not after the first click that merely placed point A.
@@ -368,7 +367,7 @@ export function useDrawingTool(): TUseDrawingToolReturn {
     setDraftShape(null);
     startPoint.current = null;
     setSnapIndicator(NO_SNAP);
-  }, [activeTool, addShape, setDraftShape]);
+  }, [activeTool, setDraftShape]);
 
   return {
     draftShape: activeTool === 'select' ? null : draftShape,
