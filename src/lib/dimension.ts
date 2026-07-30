@@ -17,9 +17,9 @@ import { listShapeEdges, type TSegment } from '~/lib/bounds';
 
 type TLengthUnit = 'mm' | 'cm' | 'm';
 type TPoint = { x: number; y: number };
-export type TDimensionAxis = 'horizontal' | 'vertical';
+type TDimensionAxis = 'horizontal' | 'vertical';
 
-export type TDimensionGeometry = {
+type TDimensionGeometry = {
   arrowLine: { x1: number; y1: number; x2: number; y2: number };
   /** Null when the extension line would run entirely along a shape's own edge — drawing it there
    * would just double that edge's outline. */
@@ -39,7 +39,7 @@ export type TDimensionGeometry = {
   length: number;
 };
 
-export function convertLength(
+function convertLength(
   internalDistance: number,
   documentScale: number,
   fromUnit: TLengthUnit,
@@ -50,7 +50,7 @@ export function convertLength(
   return lengthInMm / UNIT_TO_MM[toUnit];
 }
 
-export function formatLength(length: number): string {
+function formatLength(length: number): string {
   return (Math.round(length * 100) / 100).toString();
 }
 
@@ -165,7 +165,7 @@ function buildLabelAndLeader(
   };
 }
 
-export function formatDimensionLabel(
+function formatDimensionLabel(
   length: number,
   dimensionUnit: TLengthUnit,
   shouldShowUnit: boolean,
@@ -173,7 +173,7 @@ export function formatDimensionLabel(
   return shouldShowUnit ? `${formatLength(length)} ${dimensionUnit}` : formatLength(length);
 }
 
-export function computeDimensionGeometry(
+function computeDimensionGeometry(
   x1: number,
   y1: number,
   x2: number,
@@ -227,3 +227,5 @@ export function computeDimensionGeometry(
     length,
   };
 }
+
+export { convertLength, formatDimensionLabel, computeDimensionGeometry };

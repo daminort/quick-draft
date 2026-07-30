@@ -6,7 +6,7 @@ type TPoint = { x: number; y: number };
  * in useDrawingTool.ts. Falls back to pointing right/down when start and point coincide, so
  * callers always get a usable direction to multiply a typed length by.
  */
-export function rulerDirection(start: TPoint, point: TPoint, isShiftLocked: boolean): TPoint {
+function rulerDirection(start: TPoint, point: TPoint, isShiftLocked: boolean): TPoint {
   const dx = point.x - start.x;
   const dy = point.y - start.y;
 
@@ -23,7 +23,7 @@ export function rulerDirection(start: TPoint, point: TPoint, isShiftLocked: bool
   return { x: dx / distance, y: dy / distance };
 }
 
-export function rulerEndpoint(start: TPoint, direction: TPoint, internalLength: number): TPoint {
+function rulerEndpoint(start: TPoint, direction: TPoint, internalLength: number): TPoint {
   return { x: start.x + direction.x * internalLength, y: start.y + direction.y * internalLength };
 }
 
@@ -32,10 +32,12 @@ export function rulerEndpoint(start: TPoint, direction: TPoint, internalLength: 
  * `internalDistance * documentScale` step in lib/dimension.ts's convertLength for the
  * same-unit case (the ruler always displays/accepts lengths in the document's own units).
  */
-export function internalToRealLength(internalLength: number, documentScale: number): number {
+function internalToRealLength(internalLength: number, documentScale: number): number {
   return internalLength * documentScale;
 }
 
-export function realToInternalLength(realLength: number, documentScale: number): number {
+function realToInternalLength(realLength: number, documentScale: number): number {
   return realLength / documentScale;
 }
+
+export { rulerDirection, rulerEndpoint, internalToRealLength, realToInternalLength };

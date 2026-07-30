@@ -1,4 +1,6 @@
-export const PAGE_MARGIN_MM = 10;
+const PAGE_MARGIN_MM = 10;
 
 /** Used only when the document has no printable shapes. */
-export const EMPTY_PAGE_SIZE_MM = { width: 210, height: 297 };
+const EMPTY_PAGE_SIZE_MM = { width: 210, height: 297 };
+
+export { PAGE_MARGIN_MM, EMPTY_PAGE_SIZE_MM };

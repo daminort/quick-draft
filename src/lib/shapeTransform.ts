@@ -3,7 +3,7 @@ import type { TComponentDef, TShape, TShapePatch } from '~/types/document';
 type TPoint = { x: number; y: number };
 
 /** Used to measure how far a shape moved. */
-export function getShapeAnchor(shape: TShape): TPoint {
+function getShapeAnchor(shape: TShape): TPoint {
   switch (shape.type) {
     case 'rect':
     case 'text':
@@ -23,7 +23,7 @@ export function getShapeAnchor(shape: TShape): TPoint {
 }
 
 /** Patch that rigidly translates a shape by (dx, dy), independent of any snapping. */
-export function translateShape(shape: TShape, dx: number, dy: number): TShapePatch {
+function translateShape(shape: TShape, dx: number, dy: number): TShapePatch {
   switch (shape.type) {
     case 'line':
       return { x1: shape.x1 + dx, y1: shape.y1 + dy, x2: shape.x2 + dx, y2: shape.y2 + dy };
@@ -155,7 +155,7 @@ function transformShape(
  * used when a component definition is deleted so its existing instances survive as plain shapes
  * instead of vanishing along with it.
  */
-export function flattenComponentInstance(
+function flattenComponentInstance(
   instance: Extract<TShape, { type: 'component-instance' }>,
   componentDef: TComponentDef,
 ): TShape[] {
@@ -164,3 +164,5 @@ export function flattenComponentInstance(
     id: crypto.randomUUID(),
   }));
 }
+
+export { getShapeAnchor, translateShape, flattenComponentInstance };

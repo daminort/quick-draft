@@ -2,14 +2,14 @@ import type { TComponentDef, TShape } from '~/types/document';
 
 import { GUIDE_SPAN, TEXT_CHAR_WIDTH_RATIO } from '~/constants/shapes';
 
-export type TBounds = {
+type TBounds = {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
 };
 
-export function rotatePoint(
+function rotatePoint(
   point: { x: number; y: number },
   origin: { x: number; y: number },
   angleDeg: number,
@@ -23,7 +23,7 @@ export function rotatePoint(
 }
 
 /** Union of all shapes' bounds, used to place a new component's local anchor / preview scale. */
-export function getUnionBounds(
+function getUnionBounds(
   shapes: TShape[],
   components: Record<string, TComponentDef> = {},
 ): TBounds | null {
@@ -46,7 +46,7 @@ export function getUnionBounds(
 }
 
 /** Used for marquee-selection hit testing. */
-export function getShapeBounds(
+function getShapeBounds(
   shape: TShape,
   components: Record<string, TComponentDef> = {},
 ): TBounds | null {
@@ -135,11 +135,11 @@ export function getShapeBounds(
   }
 }
 
-export function areBoundsIntersecting(a: TBounds, b: TBounds): boolean {
+function areBoundsIntersecting(a: TBounds, b: TBounds): boolean {
   return a.x1 <= b.x2 && a.x2 >= b.x1 && a.y1 <= b.y2 && a.y2 >= b.y1;
 }
 
-export type TSegment = {
+type TSegment = {
   x1: number;
   y1: number;
   x2: number;
@@ -149,7 +149,7 @@ export type TSegment = {
 /** Straight edges of a shape, used to detect when a dimension's extension line runs along one of
  * them and would just double the shape's own outline. Curved shapes (circle, arc) have no straight
  * edges to coincide with, so they contribute none. */
-export function listShapeEdges(shape: TShape): TSegment[] {
+function listShapeEdges(shape: TShape): TSegment[] {
   switch (shape.type) {
     case 'line':
       return [{ x1: shape.x1, y1: shape.y1, x2: shape.x2, y2: shape.y2 }];
@@ -170,3 +170,6 @@ export function listShapeEdges(shape: TShape): TSegment[] {
       return [];
   }
 }
+
+export type { TSegment };
+export { rotatePoint, getUnionBounds, getShapeBounds, areBoundsIntersecting, listShapeEdges };

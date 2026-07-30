@@ -3,7 +3,7 @@ function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   return { x: cx + r * Math.cos(angleRad), y: cy + r * Math.sin(angleRad) };
 }
 
-export function computeArcPath(
+function computeArcPath(
   cx: number,
   cy: number,
   r: number,
@@ -21,3 +21,5 @@ export function computeArcPath(
 
   return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`;
 }
+
+export { computeArcPath };

@@ -1,5 +1,5 @@
 /** The subset of useUIStore state that's a user preference (vs. transient panel-open state) and gets autosaved to IndexedDB. */
-export type TPersistedUISettings = {
+type TPersistedUISettings = {
   areGuidesVisible: boolean;
   snapTolerance: number;
   shouldShowDimensionUnit: boolean;
@@ -8,3 +8,5 @@ export type TPersistedUISettings = {
   isRulerVisible: boolean;
   areRulerGuidesVisible: boolean;
 };
+
+export type { TPersistedUISettings };

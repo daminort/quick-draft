@@ -1,6 +1,6 @@
-export type TShapeId = string;
+type TShapeId = string;
 
-export type TStyle = {
+type TStyle = {
   strokeWidth: number;
   stroke: string;
   fill?: string;
@@ -9,14 +9,14 @@ export type TStyle = {
 };
 
 /** A named point on a shape that a dimension's endpoint can bind to. */
-export type TShapePointKey = 'p1' | 'p2' | 'tl' | 'tr' | 'br' | 'bl' | 'center' | 'origin';
+type TShapePointKey = 'p1' | 'p2' | 'tl' | 'tr' | 'br' | 'bl' | 'center' | 'origin';
 
-export type TDimensionBinding = {
+type TDimensionBinding = {
   shapeId: TShapeId;
   point: TShapePointKey;
 };
 
-export type TShape =
+type TShape =
   | { id: TShapeId; type: 'line'; x1: number; y1: number; x2: number; y2: number; style: TStyle }
   | {
       id: TShapeId;
@@ -84,17 +84,28 @@ export type TShape =
 
 type TDistributivePartial<T> = T extends unknown ? Partial<T> : never;
 
-export type TShapePatch = TDistributivePartial<TShape>;
+type TShapePatch = TDistributivePartial<TShape>;
 
-export type TComponentDef = {
+type TComponentDef = {
   id: string;
   name: string;
   shapes: TShape[];
 };
 
-export type TDocument = {
+type TDocument = {
   shapes: TShape[];
   components: Record<string, TComponentDef>;
   units: 'mm' | 'cm' | 'm';
   scale: number;
+};
+
+export type {
+  TShapeId,
+  TStyle,
+  TShapePointKey,
+  TDimensionBinding,
+  TShape,
+  TShapePatch,
+  TComponentDef,
+  TDocument,
 };

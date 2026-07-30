@@ -1,6 +1,6 @@
 import type { TDocument } from '~/types/document';
 
-export const FONT_FAMILIES = [
+const FONT_FAMILIES = [
   'Arial',
   'Helvetica',
   'Times New Roman',
@@ -9,4 +9,6 @@ export const FONT_FAMILIES = [
   'Verdana',
 ];
 
-export const UNIT_OPTIONS: TDocument['units'][] = ['mm', 'cm', 'm'];
+const UNIT_OPTIONS: TDocument['units'][] = ['mm', 'cm', 'm'];
+
+export { FONT_FAMILIES, UNIT_OPTIONS };

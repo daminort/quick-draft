@@ -1,7 +1,14 @@
-export const COMPONENT_DRAG_MIME_TYPE = 'application/x-quickdraft-component-id';
+const COMPONENT_DRAG_MIME_TYPE = 'application/x-quickdraft-component-id';
 
-export const DEFAULT_DOCUMENT_FILENAME = 'drawing.json';
+const DEFAULT_DOCUMENT_FILENAME = 'drawing.json';
 
-export const DEFAULT_COMPONENT_LIBRARY_FILENAME = 'component-library.json';
+const DEFAULT_COMPONENT_LIBRARY_FILENAME = 'component-library.json';
 
-export const JSON_MIME_TYPE = 'application/json';
+const JSON_MIME_TYPE = 'application/json';
+
+export {
+  COMPONENT_DRAG_MIME_TYPE,
+  DEFAULT_DOCUMENT_FILENAME,
+  DEFAULT_COMPONENT_LIBRARY_FILENAME,
+  JSON_MIME_TYPE,
+};

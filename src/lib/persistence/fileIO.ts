@@ -6,7 +6,7 @@ import {
   JSON_MIME_TYPE,
 } from '~/constants/fileIO';
 
-export function downloadBlob(blob: Blob, fileName: string): void {
+function downloadBlob(blob: Blob, fileName: string): void {
   const url = URL.createObjectURL(blob);
   const link = window.document.createElement('a');
   link.href = url;
@@ -15,7 +15,7 @@ export function downloadBlob(blob: Blob, fileName: string): void {
   URL.revokeObjectURL(url);
 }
 
-export function exportDocumentToJsonFile(doc: TDocument): void {
+function exportDocumentToJsonFile(doc: TDocument): void {
   const json = JSON.stringify(doc, null, 2);
   downloadBlob(new Blob([json], { type: JSON_MIME_TYPE }), DEFAULT_DOCUMENT_FILENAME);
 }
@@ -44,7 +44,7 @@ function parseJsonFile(file: File): Promise<unknown> {
   });
 }
 
-export async function importDocumentFromJsonFile(file: File): Promise<TDocument> {
+async function importDocumentFromJsonFile(file: File): Promise<TDocument> {
   const parsed = await parseJsonFile(file);
   if (!isDocumentShape(parsed)) {
     throw new Error(
@@ -54,7 +54,7 @@ export async function importDocumentFromJsonFile(file: File): Promise<TDocument>
   return parsed;
 }
 
-export function exportComponentLibraryToJsonFile(components: Record<string, TComponentDef>): void {
+function exportComponentLibraryToJsonFile(components: Record<string, TComponentDef>): void {
   const json = JSON.stringify(components, null, 2);
   downloadBlob(new Blob([json], { type: JSON_MIME_TYPE }), DEFAULT_COMPONENT_LIBRARY_FILENAME);
 }
@@ -71,7 +71,7 @@ function isComponentDef(value: unknown): value is TComponentDef {
   );
 }
 
-export async function importComponentLibraryFromJsonFile(file: File): Promise<TComponentDef[]> {
+async function importComponentLibraryFromJsonFile(file: File): Promise<TComponentDef[]> {
   const parsed = await parseJsonFile(file);
   if (!parsed || typeof parsed !== 'object') {
     throw new Error(`"${file.name}" doesn't look like a component library file.`);
@@ -82,3 +82,10 @@ export async function importComponentLibraryFromJsonFile(file: File): Promise<TC
   }
   return defs;
 }
+
+export {
+  exportDocumentToJsonFile,
+  importDocumentFromJsonFile,
+  exportComponentLibraryToJsonFile,
+  importComponentLibraryFromJsonFile,
+};
