@@ -37,7 +37,7 @@ function remapDimensionBindings(shape: TShape, idMap: Map<TShapeId, TShapeId>): 
   return { ...shape, bindingA, bindingB };
 }
 
-export function useCopyPasteTool(): TUseCopyPasteToolReturn {
+function useCopyPasteTool(): TUseCopyPasteToolReturn {
   const shapes = documentStore(documentSelectors.getShapes);
   const components = documentStore(documentSelectors.getComponents);
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
@@ -115,3 +115,5 @@ export function useCopyPasteTool(): TUseCopyPasteToolReturn {
 
   return { onMouseMove };
 }
+
+export { useCopyPasteTool };

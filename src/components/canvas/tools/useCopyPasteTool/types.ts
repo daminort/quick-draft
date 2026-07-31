@@ -1,7 +1,9 @@
 import type Konva from 'konva';
 
-export type TPoint = { x: number; y: number };
+type TPoint = { x: number; y: number };
 
-export type TUseCopyPasteToolReturn = {
+type TUseCopyPasteToolReturn = {
   onMouseMove: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 };
+
+export type { TPoint, TUseCopyPasteToolReturn };

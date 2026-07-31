@@ -1,6 +1,8 @@
 import type Konva from 'konva';
 
-export type TUseCanvasPanReturn = {
+type TUseCanvasPanReturn = {
   isPanning: boolean;
   onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => boolean;
 };
+
+export type { TUseCanvasPanReturn };

@@ -52,7 +52,7 @@ const TOOL_HOTKEYS: Partial<Record<string, TTool>> = {
   KeyU: 'ruler',
 };
 
-export function CanvasStage() {
+function CanvasStage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const staticLayerRef = useRef<Konva.Layer>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -524,3 +524,5 @@ export function CanvasStage() {
     </Box>
   );
 }
+
+export { CanvasStage };

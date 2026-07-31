@@ -16,7 +16,7 @@ type TTextEditOverlayProps = {
   onCancel: () => void;
 };
 
-export function TextEditOverlay({
+function TextEditOverlay({
   shape,
   scale,
   offsetX,
@@ -85,3 +85,5 @@ export function TextEditOverlay({
     />
   );
 }
+
+export { TextEditOverlay };

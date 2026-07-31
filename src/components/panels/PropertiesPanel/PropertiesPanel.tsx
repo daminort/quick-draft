@@ -49,7 +49,7 @@ function ShapeSettings({ shape }: { shape: TShape }) {
   }
 }
 
-export function PropertiesPanel() {
+function PropertiesPanel() {
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const shapes = documentStore(documentSelectors.getShapes);
 
@@ -80,3 +80,5 @@ export function PropertiesPanel() {
     </Flex>
   );
 }
+
+export { PropertiesPanel };

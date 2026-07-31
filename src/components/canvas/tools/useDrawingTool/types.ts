@@ -2,15 +2,17 @@ import type { TShape } from '~/types/document';
 
 import type Konva from 'konva';
 
-export type TPoint = { x: number; y: number };
-export type TArcPhase = 'radius' | 'angle';
-export type TDimensionPhase = 'second-point';
-export type TSnapIndicator = { x: number | null; y: number | null };
+type TPoint = { x: number; y: number };
+type TArcPhase = 'radius' | 'angle';
+type TDimensionPhase = 'second-point';
+type TSnapIndicator = { x: number | null; y: number | null };
 
-export type TUseDrawingToolReturn = {
+type TUseDrawingToolReturn = {
   draftShape: TShape | null;
   snapIndicator: TSnapIndicator;
   onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onMouseMove: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onMouseUp: () => void;
 };
+
+export type { TPoint, TArcPhase, TDimensionPhase, TSnapIndicator, TUseDrawingToolReturn };

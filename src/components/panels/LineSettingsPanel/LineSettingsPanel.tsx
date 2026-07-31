@@ -15,7 +15,7 @@ type TLineSettingsPanelProps = {
   shape: Extract<TShape, { type: 'line' }>;
 };
 
-export function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
+function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
   const onStartXChange = (v: number) => documentActions.updateShape(shape.id, { x1: v });
   const onStartYChange = (v: number) => documentActions.updateShape(shape.id, { y1: v });
   const onEndXChange = (v: number) => documentActions.updateShape(shape.id, { x2: v });
@@ -39,3 +39,5 @@ export function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
     </Flex>
   );
 }
+
+export { LineSettingsPanel };

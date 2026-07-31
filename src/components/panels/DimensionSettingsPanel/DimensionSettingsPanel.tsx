@@ -10,7 +10,7 @@ type TDimensionSettingsPanelProps = {
   shape: Extract<TShape, { type: 'dimension' }>;
 };
 
-export function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) {
+function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) {
   const onStartXChange = (v: number) =>
     documentActions.updateShape(shape.id, { x1: v, bindingA: null });
   const onStartYChange = (v: number) =>
@@ -48,3 +48,5 @@ export function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) 
     </Flex>
   );
 }
+
+export { DimensionSettingsPanel };

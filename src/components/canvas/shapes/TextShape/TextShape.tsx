@@ -19,7 +19,7 @@ type TTextShapeProps = {
   setNodeRef: (node: Konva.Text | null) => void;
 };
 
-export function TextShape({
+function TextShape({
   shape,
   isDraggable,
   isSelected = false,
@@ -61,3 +61,5 @@ export function TextShape({
     />
   );
 }
+
+export { TextShape };

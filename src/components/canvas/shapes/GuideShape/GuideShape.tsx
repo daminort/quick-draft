@@ -21,7 +21,7 @@ type TGuideShapeProps = {
   setNodeRef: (node: Konva.Line | null) => void;
 };
 
-export function GuideShape({
+function GuideShape({
   shape,
   viewBounds,
   isDraggable,
@@ -90,3 +90,5 @@ export function GuideShape({
     />
   );
 }
+
+export { GuideShape };

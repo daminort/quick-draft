@@ -83,7 +83,7 @@ function computeTicks(
   return ticks;
 }
 
-export function CanvasRulers({
+function CanvasRulers({
   width,
   height,
   scale,
@@ -206,3 +206,5 @@ export function CanvasRulers({
     </Box>
   );
 }
+
+export { CanvasRulers };

@@ -15,7 +15,7 @@ type TPrintViewProps = {
   onClose: () => void;
 };
 
-export function PrintView({ isOpen, onClose }: TPrintViewProps) {
+function PrintView({ isOpen, onClose }: TPrintViewProps) {
   const document = documentStore(documentSelectors.getDocument);
   const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
   const dimensionColor = uiStore(uiSelectors.getDimensionColor);
@@ -51,3 +51,5 @@ export function PrintView({ isOpen, onClose }: TPrintViewProps) {
     </Flex>
   );
 }
+
+export { PrintView };

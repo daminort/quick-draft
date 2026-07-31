@@ -1,8 +1,8 @@
 import type Konva from 'konva';
 
-export type TPoint = { x: number; y: number };
+type TPoint = { x: number; y: number };
 
-export type TRulerState = {
+type TRulerState = {
   start: TPoint;
   point: TPoint;
   isShiftLocked: boolean;
@@ -10,9 +10,11 @@ export type TRulerState = {
   lengthOverride: string | null;
 };
 
-export type TUseRulerToolReturn = {
+type TUseRulerToolReturn = {
   draftRuler: TRulerState | null;
   liveLength: number;
   onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onMouseMove: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 };
+
+export type { TPoint, TRulerState, TUseRulerToolReturn };

@@ -5,7 +5,7 @@ import { Flex, Text, TextField, Button } from '@radix-ui/themes';
 import { documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 
-export function ComponentActions() {
+function ComponentActions() {
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const [name, setName] = useState('');
 
@@ -54,3 +54,5 @@ export function ComponentActions() {
     </Flex>
   );
 }
+
+export { ComponentActions };

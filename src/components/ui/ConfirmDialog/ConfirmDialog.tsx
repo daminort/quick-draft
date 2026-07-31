@@ -10,7 +10,7 @@ type TConfirmDialogProps = {
   onCancel: () => void;
 };
 
-export function ConfirmDialog({
+function ConfirmDialog({
   isOpen,
   title,
   message,
@@ -40,3 +40,5 @@ export function ConfirmDialog({
     </AlertDialog.Root>
   );
 }
+
+export { ConfirmDialog };

@@ -26,7 +26,7 @@ type TDimensionShapeProps = {
   setNodeRef: (node: Konva.Group | null) => void;
 };
 
-export function DimensionShape({
+function DimensionShape({
   shape,
   isSelected = false,
   isInteractive,
@@ -141,3 +141,5 @@ export function DimensionShape({
     </Group>
   );
 }
+
+export { DimensionShape };

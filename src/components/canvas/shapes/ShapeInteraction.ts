@@ -2,7 +2,7 @@ import type { TShape, TShapeId } from '~/types/document';
 
 import type Konva from 'konva';
 
-export type TShapeInteraction = {
+type TShapeInteraction = {
   registerNode: (id: TShapeId, node: Konva.Node | null) => void;
   selectShape: (id: TShapeId) => void;
   onDragStart: (shape: TShape) => void;
@@ -11,7 +11,7 @@ export type TShapeInteraction = {
   onManualMouseDown: (shape: TShape, e: Konva.KonvaEventObject<MouseEvent>) => void;
 };
 
-export type TViewBounds = {
+type TViewBounds = {
   left: number;
   top: number;
   right: number;
@@ -19,7 +19,7 @@ export type TViewBounds = {
 };
 
 /** Renders shapes read-only: no click/drag handlers attached, nodes not registered anywhere. */
-export const noopShapeInteraction: TShapeInteraction = {
+const noopShapeInteraction: TShapeInteraction = {
   registerNode: () => {},
   selectShape: () => {},
   onDragStart: () => {},
@@ -27,3 +27,6 @@ export const noopShapeInteraction: TShapeInteraction = {
   onDragEnd: () => {},
   onManualMouseDown: () => {},
 };
+
+export type { TShapeInteraction, TViewBounds };
+export { noopShapeInteraction };

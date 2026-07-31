@@ -22,7 +22,7 @@ type TShapeRendererProps = {
   onStartEditText?: (id: TShapeId) => void;
 };
 
-export function ShapeRenderer({
+function ShapeRenderer({
   shape,
   isInteractive,
   interaction,
@@ -96,3 +96,5 @@ export function ShapeRenderer({
       return null;
   }
 }
+
+export { ShapeRenderer };

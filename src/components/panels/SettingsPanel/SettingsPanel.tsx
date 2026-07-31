@@ -10,7 +10,7 @@ import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
 import s from './SettingsPanel.module.css';
 
-export function SettingsPanel() {
+function SettingsPanel() {
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
   const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
@@ -147,3 +147,5 @@ export function SettingsPanel() {
     </Flex>
   );
 }
+
+export { SettingsPanel };

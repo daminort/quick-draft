@@ -17,7 +17,7 @@ type TCircleShapeProps = {
   setNodeRef: (node: Konva.Circle | null) => void;
 };
 
-export function CircleShape({
+function CircleShape({
   shape,
   isDraggable,
   isSelected = false,
@@ -54,3 +54,5 @@ export function CircleShape({
     />
   );
 }
+
+export { CircleShape };

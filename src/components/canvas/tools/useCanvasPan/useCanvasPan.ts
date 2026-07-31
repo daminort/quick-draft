@@ -7,7 +7,7 @@ import { viewStore, viewActions } from '~/stores/viewStore';
 import type { TUseCanvasPanReturn } from './types';
 import type Konva from 'konva';
 
-export function useCanvasPan(): TUseCanvasPanReturn {
+function useCanvasPan(): TUseCanvasPanReturn {
   const [isPanning, setIsPanning] = useState(false);
   const lastPointer = useRef<{ x: number; y: number } | null>(null);
 
@@ -52,3 +52,5 @@ export function useCanvasPan(): TUseCanvasPanReturn {
 
   return { isPanning, onMouseDown };
 }
+
+export { useCanvasPan };

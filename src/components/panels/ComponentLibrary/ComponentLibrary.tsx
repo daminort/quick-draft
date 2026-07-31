@@ -65,7 +65,7 @@ function ComponentPreview({ componentDef, components }: TComponentPreviewProps) 
   );
 }
 
-export function ComponentLibrary() {
+function ComponentLibrary() {
   const components = documentStore(documentSelectors.getComponents);
   const entries = Object.values(components);
   const [deleteTarget, setDeleteTarget] = useState<TComponentDef | null>(null);
@@ -210,3 +210,5 @@ export function ComponentLibrary() {
     </Flex>
   );
 }
+
+export { ComponentLibrary };

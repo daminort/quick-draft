@@ -16,7 +16,7 @@ type TRectSettingsPanelProps = {
   shape: Extract<TShape, { type: 'rect' }>;
 };
 
-export function RectSettingsPanel({ shape }: TRectSettingsPanelProps) {
+function RectSettingsPanel({ shape }: TRectSettingsPanelProps) {
   const onXChange = (v: number) => documentActions.updateShape(shape.id, { x: v });
   const onYChange = (v: number) => documentActions.updateShape(shape.id, { y: v });
   const onWidthChange = (v: number) => documentActions.updateShape(shape.id, { w: v });
@@ -50,3 +50,5 @@ export function RectSettingsPanel({ shape }: TRectSettingsPanelProps) {
     </Flex>
   );
 }
+
+export { RectSettingsPanel };

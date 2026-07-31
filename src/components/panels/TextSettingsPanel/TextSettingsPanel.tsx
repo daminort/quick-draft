@@ -20,7 +20,7 @@ type TTextSettingsPanelProps = {
   shape: Extract<TShape, { type: 'text' }>;
 };
 
-export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
+function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
   const isBoldClassName = shape.isBold ? s.active : undefined;
   const isItalicClassName = shape.isItalic ? s.active : undefined;
   const isAlignedLeftClassName = shape.align === 'left' ? s.active : undefined;
@@ -140,3 +140,5 @@ export function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
     </Flex>
   );
 }
+
+export { TextSettingsPanel };

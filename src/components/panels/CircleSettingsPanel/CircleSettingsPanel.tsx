@@ -17,7 +17,7 @@ type TCircleSettingsPanelProps = {
   shape: Extract<TShape, { type: 'circle' }>;
 };
 
-export function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
+function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
   const onCenterXChange = (v: number) => documentActions.updateShape(shape.id, { cx: v });
   const onCenterYChange = (v: number) => documentActions.updateShape(shape.id, { cy: v });
   const onRadiusChange = (v: number) => documentActions.updateShape(shape.id, { r: v });
@@ -44,3 +44,5 @@ export function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
     </Flex>
   );
 }
+
+export { CircleSettingsPanel };

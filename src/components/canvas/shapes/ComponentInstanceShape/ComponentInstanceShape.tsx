@@ -22,7 +22,7 @@ type TComponentInstanceShapeProps = {
   setNodeRef: (node: Konva.Group | null) => void;
 };
 
-export function ComponentInstanceShape({
+function ComponentInstanceShape({
   shape,
   isDraggable,
   isSelected = false,
@@ -69,3 +69,5 @@ export function ComponentInstanceShape({
     </Group>
   );
 }
+
+export { ComponentInstanceShape };

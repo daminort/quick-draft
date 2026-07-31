@@ -12,7 +12,7 @@ type TZoomControlProps = {
   onReset: () => void;
 };
 
-export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomControlProps) {
+function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomControlProps) {
   const isZoomOutDisabled = scale <= MIN_SCALE;
   const isZoomInDisabled = scale >= MAX_SCALE;
   const zoomPercentage = Math.round(scale * 100);
@@ -58,3 +58,5 @@ export function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomContro
     </Flex>
   );
 }
+
+export { ZoomControl };

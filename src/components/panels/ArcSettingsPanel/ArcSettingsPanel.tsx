@@ -17,7 +17,7 @@ type TArcSettingsPanelProps = {
   shape: Extract<TShape, { type: 'arc' }>;
 };
 
-export function ArcSettingsPanel({ shape }: TArcSettingsPanelProps) {
+function ArcSettingsPanel({ shape }: TArcSettingsPanelProps) {
   const onCenterXChange = (v: number) => documentActions.updateShape(shape.id, { cx: v });
   const onCenterYChange = (v: number) => documentActions.updateShape(shape.id, { cy: v });
   const onRadiusChange = (v: number) => documentActions.updateShape(shape.id, { r: v });
@@ -56,3 +56,5 @@ export function ArcSettingsPanel({ shape }: TArcSettingsPanelProps) {
     </Flex>
   );
 }
+
+export { ArcSettingsPanel };

@@ -18,7 +18,7 @@ type TLineShapeProps = {
   setNodeRef: (node: Konva.Line | null) => void;
 };
 
-export function LineShape({
+function LineShape({
   shape,
   isDraggable,
   isSelected = false,
@@ -52,3 +52,5 @@ export function LineShape({
     />
   );
 }
+
+export { LineShape };

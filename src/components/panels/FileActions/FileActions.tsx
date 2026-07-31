@@ -9,7 +9,7 @@ import { documentStore, documentSelectors, documentActions } from '~/stores/docu
 
 import s from './FileActions.module.css';
 
-export function FileActions() {
+function FileActions() {
   const documentState = documentStore(documentSelectors.getDocument);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -67,3 +67,5 @@ export function FileActions() {
     </>
   );
 }
+
+export { FileActions };

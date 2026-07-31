@@ -5,7 +5,7 @@ import { Box, Flex, Button } from '@radix-ui/themes';
 
 import s from './ContextMenu.module.css';
 
-export type TContextMenuItem = {
+type TContextMenuItem = {
   label: string;
   icon: ReactNode;
   onClick: () => void;
@@ -18,7 +18,7 @@ type TContextMenuProps = {
   onClose: () => void;
 };
 
-export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
+function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -70,3 +70,5 @@ export function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
     </Box>
   );
 }
+
+export { ContextMenu };

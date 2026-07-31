@@ -98,10 +98,12 @@ type TGeometryPanelProps = {
   shape: Extract<TShape, { type: 'guide' | 'component-instance' }>;
 };
 
-export function GeometryPanel({ shape }: TGeometryPanelProps) {
+function GeometryPanel({ shape }: TGeometryPanelProps) {
   return (
     <Flex direction="column" gap="2">
       <GeometryFields shape={shape} />
     </Flex>
   );
 }
+
+export { GeometryPanel };

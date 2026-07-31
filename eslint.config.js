@@ -48,5 +48,7 @@ export default tseslint.config({ ignores: ['dist'] }, prettier, {
         'newlines-between': 'always',
       },
     ],
+    'import-x/exports-last': 'error',
+    'import-x/group-exports': 'error',
   },
 });

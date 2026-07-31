@@ -11,7 +11,7 @@ function clampScale(scale: number): number {
   return Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
 }
 
-export function useCanvasZoom(stageSize: TStageSize): TUseCanvasZoomReturn {
+function useCanvasZoom(stageSize: TStageSize): TUseCanvasZoomReturn {
   const scale = viewStore(viewSelectors.getScale);
   const x = viewStore(viewSelectors.getX);
   const y = viewStore(viewSelectors.getY);
@@ -58,3 +58,5 @@ export function useCanvasZoom(stageSize: TStageSize): TUseCanvasZoomReturn {
 
   return { scale, x, y, onWheel, zoomIn, zoomOut, resetZoom: viewActions.resetZoom };
 }
+
+export { useCanvasZoom };

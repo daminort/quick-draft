@@ -18,7 +18,7 @@ type TArcShapeProps = {
   setNodeRef: (node: Konva.Path | null) => void;
 };
 
-export function ArcShape({
+function ArcShape({
   shape,
   isInteractive,
   isSelected = false,
@@ -51,3 +51,5 @@ export function ArcShape({
     />
   );
 }
+
+export { ArcShape };

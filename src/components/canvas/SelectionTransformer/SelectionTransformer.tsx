@@ -65,7 +65,7 @@ function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
   }
 }
 
-export function SelectionTransformer({ shape, node }: TSelectionTransformerProps) {
+function SelectionTransformer({ shape, node }: TSelectionTransformerProps) {
   const transformerRef = useRef<Konva.Transformer>(null);
 
   useEffect(() => {
@@ -102,3 +102,5 @@ export function SelectionTransformer({ shape, node }: TSelectionTransformerProps
     />
   );
 }
+
+export { SelectionTransformer };

@@ -23,7 +23,7 @@ type TRulerOverlayProps = {
   scale: number;
 };
 
-export function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
+function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
   const documentScale = documentStore(documentSelectors.getScale);
   const documentUnits = documentStore(documentSelectors.getUnits);
 
@@ -84,3 +84,5 @@ export function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
     </Group>
   );
 }
+
+export { RulerOverlay };

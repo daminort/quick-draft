@@ -124,7 +124,7 @@ function computeManualDragPatch(
   }
 }
 
-export function useSelectTool(): TUseSelectToolReturn {
+function useSelectTool(): TUseSelectToolReturn {
   const shapes = documentStore(documentSelectors.getShapes);
   const components = documentStore(documentSelectors.getComponents);
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
@@ -420,3 +420,5 @@ export function useSelectTool(): TUseSelectToolReturn {
     marqueeRect,
   };
 }
+
+export { useSelectTool };

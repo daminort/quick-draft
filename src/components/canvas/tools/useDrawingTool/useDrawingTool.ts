@@ -58,7 +58,7 @@ function hasSize(shape: TShape): boolean {
   }
 }
 
-export function useDrawingTool(): TUseDrawingToolReturn {
+function useDrawingTool(): TUseDrawingToolReturn {
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const doc = documentStore(documentSelectors.getDocument);
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
@@ -377,3 +377,5 @@ export function useDrawingTool(): TUseDrawingToolReturn {
     onMouseUp,
   };
 }
+
+export { useDrawingTool };

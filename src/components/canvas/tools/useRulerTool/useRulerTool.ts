@@ -26,7 +26,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || !!el?.isContentEditable;
 }
 
-export function useRulerTool(): TUseRulerToolReturn {
+function useRulerTool(): TUseRulerToolReturn {
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const documentScale = documentStore(documentSelectors.getScale);
   const shapes = documentStore(documentSelectors.getShapes);
@@ -203,3 +203,5 @@ export function useRulerTool(): TUseRulerToolReturn {
     onMouseMove,
   };
 }
+
+export { useRulerTool };

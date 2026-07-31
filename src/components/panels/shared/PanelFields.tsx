@@ -11,7 +11,7 @@ type TSectionProps = {
   children: ReactNode;
 };
 
-export function Section({ title, children }: TSectionProps) {
+function Section({ title, children }: TSectionProps) {
   return (
     <Flex direction="column" gap="2">
       <Text as="div" size="2" className={s.sectionTitle}>
@@ -28,7 +28,7 @@ type TCompactNumberInputProps = {
   onChange: (value: number) => void;
 };
 
-export function CompactNumberInput({ value, min, onChange }: TCompactNumberInputProps) {
+function CompactNumberInput({ value, min, onChange }: TCompactNumberInputProps) {
   function onFieldChange(e: ChangeEvent<HTMLInputElement>) {
     const next = Number(e.target.value);
     if (Number.isFinite(next)) {
@@ -46,7 +46,7 @@ type TInlineFieldProps = {
   onChange: (value: number) => void;
 };
 
-export function InlineField({ label, value, min, onChange }: TInlineFieldProps) {
+function InlineField({ label, value, min, onChange }: TInlineFieldProps) {
   return (
     <Flex align="center" gap="1" flexGrow="1">
       <Text as="label" size="2">
@@ -63,7 +63,7 @@ type TLabeledRowProps = {
 };
 
 /** The label has a fixed width so inputs in stacked rows (Start/End, …) line up vertically. */
-export function LabeledRow({ label, children }: TLabeledRowProps) {
+function LabeledRow({ label, children }: TLabeledRowProps) {
   return (
     <Flex align="center" gap="2">
       <Text as="div" size="2" className={s.rowLabel}>
@@ -76,13 +76,7 @@ export function LabeledRow({ label, children }: TLabeledRowProps) {
   );
 }
 
-export function ColorInput({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-}) {
+function ColorInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   function onColorChange(e: ChangeEvent<HTMLInputElement>) {
     onChange(e.target.value);
   }
@@ -99,7 +93,7 @@ type TStrokeSectionProps = {
   onChange: (style: TStyle) => void;
 };
 
-export function StrokeSection({ style, onChange }: TStrokeSectionProps) {
+function StrokeSection({ style, onChange }: TStrokeSectionProps) {
   const onStrokeWidthChange = (value: number) => {
     if (value > 0) {
       onChange({ ...style, strokeWidth: value });
@@ -122,7 +116,7 @@ type TFillSectionProps = {
   onChange: (style: TStyle) => void;
 };
 
-export function FillSection({ style, onChange }: TFillSectionProps) {
+function FillSection({ style, onChange }: TFillSectionProps) {
   const enabled = style.fill !== undefined;
   const fillColor = style.fill ?? '#ffffff';
   const fillOpacity = style.fillOpacity ?? 1;
@@ -159,3 +153,13 @@ export function FillSection({ style, onChange }: TFillSectionProps) {
     </Flex>
   );
 }
+
+export {
+  Section,
+  CompactNumberInput,
+  InlineField,
+  LabeledRow,
+  ColorInput,
+  StrokeSection,
+  FillSection,
+};

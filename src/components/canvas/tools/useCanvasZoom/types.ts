@@ -1,8 +1,8 @@
 import type Konva from 'konva';
 
-export type TStageSize = { width: number; height: number };
+type TStageSize = { width: number; height: number };
 
-export type TUseCanvasZoomReturn = {
+type TUseCanvasZoomReturn = {
   scale: number;
   x: number;
   y: number;
@@ -11,3 +11,5 @@ export type TUseCanvasZoomReturn = {
   zoomOut: () => void;
   resetZoom: () => void;
 };
+
+export type { TStageSize, TUseCanvasZoomReturn };

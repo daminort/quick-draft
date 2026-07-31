@@ -17,7 +17,7 @@ type TRectShapeProps = {
   setNodeRef: (node: Konva.Rect | null) => void;
 };
 
-export function RectShape({
+function RectShape({
   shape,
   isDraggable,
   isSelected = false,
@@ -56,3 +56,5 @@ export function RectShape({
     />
   );
 }
+
+export { RectShape };
