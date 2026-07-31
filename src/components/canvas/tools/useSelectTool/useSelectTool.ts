@@ -4,7 +4,8 @@ import type { TShape, TShapeId, TShapePatch } from '~/types/document';
 
 import { MARQUEE_CLICK_THRESHOLD_PX } from '~/constants/canvas';
 
-import { collectSnapTargets, snapPoint, type TSnapTargets } from '~/lib/snap';
+import type { TSnapTargets } from '~/lib/snap';
+import { collectSnapTargets, snapPoint } from '~/lib/snap';
 import { getShapeBounds, areBoundsIntersecting } from '~/lib/bounds';
 import { getShapeAnchor, translateShape } from '~/lib/shapeTransform';
 

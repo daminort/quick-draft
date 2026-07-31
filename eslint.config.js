@@ -50,5 +50,18 @@ export default tseslint.config({ ignores: ['dist'] }, prettier, {
     ],
     'import-x/exports-last': 'error',
     'import-x/group-exports': 'error',
+    'import-x/no-relative-parent-imports': 'error',
+    'import-x/consistent-type-specifier-style': ['error', 'prefer-top-level'],
+    'import-x/newline-after-import': ['error', { count: 1 }],
+    'import-x/extensions': [
+      'error',
+      'never',
+      {
+        fix: true,
+        json: 'always',
+        css: 'always',
+        svg: 'always',
+      },
+    ],
   },
 });

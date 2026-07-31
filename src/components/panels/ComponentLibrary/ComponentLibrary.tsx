@@ -1,4 +1,5 @@
-import { useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { useRef, useState } from 'react';
+import type { ChangeEvent, DragEvent } from 'react';
 
 import { Stage, Layer, Group } from 'react-konva';
 import { Flex, Text, Button, IconButton } from '@radix-ui/themes';

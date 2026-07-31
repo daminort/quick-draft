@@ -1,4 +1,5 @@
-import { useRef, type ChangeEvent } from 'react';
+import { useRef } from 'react';
+import type { ChangeEvent } from 'react';
 
 import { IconButton } from '@radix-ui/themes';
 import { Save, FolderOpen } from 'lucide-react';

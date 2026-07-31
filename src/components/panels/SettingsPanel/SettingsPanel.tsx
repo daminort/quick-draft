@@ -1,4 +1,5 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 
 import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes';
 

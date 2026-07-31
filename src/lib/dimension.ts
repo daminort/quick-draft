@@ -13,7 +13,8 @@ import {
   EDGE_EPSILON,
 } from '~/constants/dimension';
 
-import { listShapeEdges, type TSegment } from '~/lib/bounds';
+import { listShapeEdges } from '~/lib/bounds';
+import type { TSegment } from '~/lib/bounds';
 
 type TLengthUnit = 'mm' | 'cm' | 'm';
 type TPoint = { x: number; y: number };
