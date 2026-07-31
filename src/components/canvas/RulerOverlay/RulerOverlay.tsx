@@ -18,7 +18,7 @@ import { documentStore, documentSelectors } from '~/stores/documentStore';
 
 import type { TRulerOverlayProps } from './RulerOverlay.props';
 
-function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
+const RulerOverlay = ({ ruler, scale }: TRulerOverlayProps) => {
   const documentScale = documentStore(documentSelectors.getScale);
   const documentUnits = documentStore(documentSelectors.getUnits);
 
@@ -78,6 +78,6 @@ function RulerOverlay({ ruler, scale }: TRulerOverlayProps) {
       />
     </Group>
   );
-}
+};
 
 export { RulerOverlay };

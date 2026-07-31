@@ -13,7 +13,7 @@ import {
 
 import type { TLineSettingsPanelProps } from './LineSettingsPanel.props';
 
-function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
+const LineSettingsPanel = ({ shape }: TLineSettingsPanelProps) => {
   const onStartXChange = (v: number) => documentActions.updateShape(shape.id, { x1: v });
   const onStartYChange = (v: number) => documentActions.updateShape(shape.id, { y1: v });
   const onEndXChange = (v: number) => documentActions.updateShape(shape.id, { x2: v });
@@ -36,6 +36,6 @@ function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
       <StrokeSection style={shape.style} onChange={onStyleChange} />
     </Flex>
   );
-}
+};
 
 export { LineSettingsPanel };

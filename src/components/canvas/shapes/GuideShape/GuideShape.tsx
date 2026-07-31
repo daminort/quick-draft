@@ -6,7 +6,7 @@ import { HIT_STROKE_WIDTH } from '~/constants/canvas';
 import type { TGuideShapeProps } from './GuideShape.props';
 import type Konva from 'konva';
 
-function GuideShape({
+const GuideShape = ({
   shape,
   viewBounds,
   isDraggable,
@@ -16,7 +16,7 @@ function GuideShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: TGuideShapeProps) {
+}: TGuideShapeProps) => {
   const strokeColor = isSelected ? SELECTED_COLOR : GUIDE_COLOR;
   const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
   const onNodeDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => onDragEnd(e.target);
@@ -74,6 +74,6 @@ function GuideShape({
       dragBoundFunc={restrictDragToVertical}
     />
   );
-}
+};
 
 export { GuideShape };

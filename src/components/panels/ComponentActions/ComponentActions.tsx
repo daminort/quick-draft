@@ -6,7 +6,7 @@ import { Flex, Text, TextField, Button } from '@radix-ui/themes';
 import { documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
 
-function ComponentActions() {
+const ComponentActions = () => {
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const [name, setName] = useState('');
 
@@ -26,9 +26,9 @@ function ComponentActions() {
 
   const selectedCount = selectedIds.length;
 
-  function onNameChange(e: ChangeEvent<HTMLInputElement>) {
+  const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
-  }
+  };
 
   return (
     <Flex direction="column" gap="2">
@@ -54,6 +54,6 @@ function ComponentActions() {
       </Button>
     </Flex>
   );
-}
+};
 
 export { ComponentActions };

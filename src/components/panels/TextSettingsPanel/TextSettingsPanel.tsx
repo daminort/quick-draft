@@ -1,3 +1,5 @@
+import type { ChangeEvent } from 'react';
+
 import { Flex, IconButton, Select, TextArea } from '@radix-ui/themes';
 import { Bold, Italic, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 
@@ -16,7 +18,7 @@ import s from './TextSettingsPanel.module.css';
 
 import type { TTextSettingsPanelProps } from './TextSettingsPanel.props';
 
-function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
+const TextSettingsPanel = ({ shape }: TTextSettingsPanelProps) => {
   const isBoldClassName = shape.isBold ? s.active : undefined;
   const isItalicClassName = shape.isItalic ? s.active : undefined;
   const isAlignedLeftClassName = shape.align === 'left' ? s.active : undefined;
@@ -30,7 +32,7 @@ function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
   const onAlignLeftClick = () => documentActions.updateShape(shape.id, { align: 'left' });
   const onAlignCenterClick = () => documentActions.updateShape(shape.id, { align: 'center' });
   const onAlignRightClick = () => documentActions.updateShape(shape.id, { align: 'right' });
-  const onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+  const onTextChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
     documentActions.updateShape(shape.id, { text: e.target.value });
   const onFontFamilyChange = (value: string) =>
     documentActions.updateShape(shape.id, { fontFamily: value });
@@ -135,6 +137,6 @@ function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
       </Section>
     </Flex>
   );
-}
+};
 
 export { TextSettingsPanel };

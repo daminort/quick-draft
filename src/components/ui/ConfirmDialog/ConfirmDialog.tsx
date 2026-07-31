@@ -2,7 +2,7 @@ import { AlertDialog, Button, Flex } from '@radix-ui/themes';
 
 import type { TConfirmDialogProps } from './ConfirmDialog.props';
 
-function ConfirmDialog({
+const ConfirmDialog = ({
   isOpen,
   title,
   message,
@@ -10,7 +10,7 @@ function ConfirmDialog({
   cancelLabel = 'Cancel',
   onConfirm,
   onCancel,
-}: TConfirmDialogProps) {
+}: TConfirmDialogProps) => {
   return (
     <AlertDialog.Root open={isOpen} onOpenChange={next => !next && onCancel()}>
       <AlertDialog.Content maxWidth="320px">
@@ -31,6 +31,6 @@ function ConfirmDialog({
       </AlertDialog.Content>
     </AlertDialog.Root>
   );
-}
+};
 
 export { ConfirmDialog };

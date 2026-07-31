@@ -11,7 +11,7 @@ import { SettingsPanel } from '~/components/panels/SettingsPanel';
 import { ComponentLibrary } from '~/components/panels/ComponentLibrary';
 import { PrintView } from '~/components/print/PrintView';
 
-function App() {
+const App = () => {
   useRestoreDocument();
   useRestoreUISettings();
   const isSettingsOpen = uiStore(uiSelectors.getIsSettingsOpen);
@@ -36,6 +36,6 @@ function App() {
       <PrintView isOpen={isPrintOpen} onClose={uiActions.closePrint} />
     </Flex>
   );
-}
+};
 
 export { App };

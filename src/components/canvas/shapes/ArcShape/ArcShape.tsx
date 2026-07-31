@@ -7,14 +7,14 @@ import { computeArcPath } from '~/lib/arcPath';
 
 import type { TArcShapeProps } from './ArcShape.props';
 
-function ArcShape({
+const ArcShape = ({
   shape,
   isInteractive,
   isSelected = false,
   onSelect,
   onMouseDown,
   setNodeRef,
-}: TArcShapeProps) {
+}: TArcShapeProps) => {
   const pathData = computeArcPath(shape.cx, shape.cy, shape.r, shape.startAngle, shape.endAngle);
   const strokeColor = isSelected ? SELECTED_COLOR : shape.style.stroke;
   const fillOpacity = shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1;
@@ -39,6 +39,6 @@ function ArcShape({
       hitStrokeWidth={HIT_STROKE_WIDTH}
     />
   );
-}
+};
 
 export { ArcShape };

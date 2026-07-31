@@ -12,7 +12,7 @@ import s from './PrintView.module.css';
 
 import type { TPrintViewProps } from './PrintView.props';
 
-function PrintView({ isOpen, onClose }: TPrintViewProps) {
+const PrintView = ({ isOpen, onClose }: TPrintViewProps) => {
   const document = documentStore(documentSelectors.getDocument);
   const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
   const dimensionColor = uiStore(uiSelectors.getDimensionColor);
@@ -47,6 +47,6 @@ function PrintView({ isOpen, onClose }: TPrintViewProps) {
       <Box dangerouslySetInnerHTML={{ __html: svg }} className="print-page" flexShrink="0" />
     </Flex>
   );
-}
+};
 
 export { PrintView };

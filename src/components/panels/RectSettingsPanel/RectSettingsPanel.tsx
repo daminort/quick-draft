@@ -14,7 +14,7 @@ import {
 
 import type { TRectSettingsPanelProps } from './RectSettingsPanel.props';
 
-function RectSettingsPanel({ shape }: TRectSettingsPanelProps) {
+const RectSettingsPanel = ({ shape }: TRectSettingsPanelProps) => {
   const onXChange = (v: number) => documentActions.updateShape(shape.id, { x: v });
   const onYChange = (v: number) => documentActions.updateShape(shape.id, { y: v });
   const onWidthChange = (v: number) => documentActions.updateShape(shape.id, { w: v });
@@ -47,6 +47,6 @@ function RectSettingsPanel({ shape }: TRectSettingsPanelProps) {
       <FillSection style={shape.style} onChange={onStyleChange} />
     </Flex>
   );
-}
+};
 
 export { RectSettingsPanel };

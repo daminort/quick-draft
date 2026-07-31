@@ -6,7 +6,7 @@ import { HIT_STROKE_WIDTH } from '~/constants/canvas';
 import type { TLineShapeProps } from './LineShape.props';
 import type Konva from 'konva';
 
-function LineShape({
+const LineShape = ({
   shape,
   isDraggable,
   isSelected = false,
@@ -15,7 +15,7 @@ function LineShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: TLineShapeProps) {
+}: TLineShapeProps) => {
   const strokeColor = isSelected ? SELECTED_COLOR : shape.style.stroke;
   const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
   const onNodeDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => onDragEnd(e.target);
@@ -39,6 +39,6 @@ function LineShape({
       hitStrokeWidth={HIT_STROKE_WIDTH}
     />
   );
-}
+};
 
 export { LineShape };

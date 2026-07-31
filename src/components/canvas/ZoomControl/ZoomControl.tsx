@@ -7,7 +7,7 @@ import s from './ZoomControl.module.css';
 
 import type { TZoomControlProps } from './ZoomControl.props';
 
-function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomControlProps) {
+const ZoomControl = ({ scale, onZoomIn, onZoomOut, onReset }: TZoomControlProps) => {
   const isZoomOutDisabled = scale <= MIN_SCALE;
   const isZoomInDisabled = scale >= MAX_SCALE;
   const zoomPercentage = Math.round(scale * 100);
@@ -52,6 +52,6 @@ function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomControlProps)
       </IconButton>
     </Flex>
   );
-}
+};
 
 export { ZoomControl };

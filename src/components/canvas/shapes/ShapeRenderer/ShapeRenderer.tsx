@@ -10,7 +10,7 @@ import { ComponentInstanceShape } from '~/components/canvas/shapes/ComponentInst
 import type { TShapeRendererProps } from './ShapeRenderer.props';
 import type Konva from 'konva';
 
-function ShapeRenderer({
+const ShapeRenderer = ({
   shape,
   isInteractive,
   interaction,
@@ -18,7 +18,7 @@ function ShapeRenderer({
   isSelected = false,
   editingTextId = null,
   onStartEditText,
-}: TShapeRendererProps) {
+}: TShapeRendererProps) => {
   const onSelect = isInteractive ? () => interaction.selectShape(shape.id) : () => {};
   const onDragStart = () => interaction.onDragStart(shape);
   const onDragMove = (node: Konva.Node) => interaction.onDragMove(shape, node);
@@ -83,6 +83,6 @@ function ShapeRenderer({
     default:
       return null;
   }
-}
+};
 
 export { ShapeRenderer };

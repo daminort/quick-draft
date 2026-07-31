@@ -6,7 +6,7 @@ import { UNIT_OPTIONS } from '~/constants/ui';
 
 import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 
-function UnitsControl() {
+const UnitsControl = () => {
   const units = documentStore(documentSelectors.getUnits);
 
   const onUnitsChange = (value: string) => documentActions.setUnits(value as TDocument['units']);
@@ -28,6 +28,6 @@ function UnitsControl() {
       </Flex>
     </Text>
   );
-}
+};
 
 export { UnitsControl };

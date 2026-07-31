@@ -10,7 +10,7 @@ import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteractio
 import type { TComponentInstanceShapeProps } from './ComponentInstanceShape.props';
 import type Konva from 'konva';
 
-function ComponentInstanceShape({
+const ComponentInstanceShape = ({
   shape,
   isDraggable,
   isSelected = false,
@@ -19,7 +19,7 @@ function ComponentInstanceShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: TComponentInstanceShapeProps) {
+}: TComponentInstanceShapeProps) => {
   const componentDef = documentStore(documentSelectors.getComponentById(shape.componentId));
   if (!componentDef) {
     return null;
@@ -56,6 +56,6 @@ function ComponentInstanceShape({
       ))}
     </Group>
   );
-}
+};
 
 export { ComponentInstanceShape };

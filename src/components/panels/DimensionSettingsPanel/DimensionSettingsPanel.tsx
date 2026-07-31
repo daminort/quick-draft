@@ -6,7 +6,7 @@ import { Section, LabeledRow, CompactNumberInput } from '~/components/panels/sha
 
 import type { TDimensionSettingsPanelProps } from './DimensionSettingsPanel.props';
 
-function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) {
+const DimensionSettingsPanel = ({ shape }: TDimensionSettingsPanelProps) => {
   const onStartXChange = (v: number) =>
     documentActions.updateShape(shape.id, { x1: v, bindingA: null });
   const onStartYChange = (v: number) =>
@@ -43,6 +43,6 @@ function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) {
       </Section>
     </Flex>
   );
-}
+};
 
 export { DimensionSettingsPanel };

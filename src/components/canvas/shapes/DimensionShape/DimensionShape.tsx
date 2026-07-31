@@ -15,14 +15,14 @@ import { documentStore, documentSelectors } from '~/stores/documentStore';
 
 import type { TDimensionShapeProps } from './DimensionShape.props';
 
-function DimensionShape({
+const DimensionShape = ({
   shape,
   isSelected = false,
   isInteractive,
   onSelect,
   onMouseDown,
   setNodeRef,
-}: TDimensionShapeProps) {
+}: TDimensionShapeProps) => {
   const documentScale = documentStore(documentSelectors.getScale);
   const documentUnits = documentStore(documentSelectors.getUnits);
   const shapes = documentStore(documentSelectors.getShapes);
@@ -129,6 +129,6 @@ function DimensionShape({
       />
     </Group>
   );
-}
+};
 
 export { DimensionShape };

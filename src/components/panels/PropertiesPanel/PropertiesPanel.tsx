@@ -29,7 +29,7 @@ const SHAPE_TYPE_LABELS: Record<TShape['type'], string> = {
   'component-instance': 'Component instance',
 };
 
-function ShapeSettings({ shape }: TShapeSettingsProps) {
+const ShapeSettings = ({ shape }: TShapeSettingsProps) => {
   switch (shape.type) {
     case 'line':
       return <LineSettingsPanel shape={shape} />;
@@ -49,9 +49,9 @@ function ShapeSettings({ shape }: TShapeSettingsProps) {
     default:
       return null;
   }
-}
+};
 
-function PropertiesPanel() {
+const PropertiesPanel = () => {
   const selectedIds = selectionStore(selectionSelectors.getSelectedIds);
   const shapes = documentStore(documentSelectors.getShapes);
 
@@ -81,6 +81,6 @@ function PropertiesPanel() {
       <ShapeSettings shape={shape} />
     </Flex>
   );
-}
+};
 
 export { PropertiesPanel };

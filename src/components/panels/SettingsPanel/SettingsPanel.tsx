@@ -11,7 +11,7 @@ import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
 import s from './SettingsPanel.module.css';
 
-function SettingsPanel() {
+const SettingsPanel = () => {
   const areGuidesVisible = uiStore(uiSelectors.getAreGuidesVisible);
   const snapTolerance = uiStore(uiSelectors.getSnapTolerance);
   const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
@@ -26,24 +26,24 @@ function SettingsPanel() {
     setIsDeleteGuidesDialogOpen(false);
   };
 
-  function onOpenDeleteGuidesDialog() {
+  const onOpenDeleteGuidesDialog = () => {
     setIsDeleteGuidesDialogOpen(true);
-  }
+  };
 
-  function onCancelDeleteGuides() {
+  const onCancelDeleteGuides = () => {
     setIsDeleteGuidesDialogOpen(false);
-  }
+  };
 
-  function onSnapToleranceChange(e: ChangeEvent<HTMLInputElement>) {
+  const onSnapToleranceChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (Number.isFinite(value)) {
       uiActions.setSnapTolerance(value);
     }
-  }
+  };
 
-  function onDimensionColorChange(e: ChangeEvent<HTMLInputElement>) {
+  const onDimensionColorChange = (e: ChangeEvent<HTMLInputElement>) => {
     uiActions.setDimensionColor(e.target.value);
-  }
+  };
 
   return (
     <Flex direction="column" gap="4" width="220px" p="3" className={s.panel}>
@@ -147,6 +147,6 @@ function SettingsPanel() {
       />
     </Flex>
   );
-}
+};
 
 export { SettingsPanel };

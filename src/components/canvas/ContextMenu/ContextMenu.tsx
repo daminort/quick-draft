@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { useEffect, useRef } from 'react';
 
 import { Box, Flex, Button } from '@radix-ui/themes';
@@ -6,21 +7,21 @@ import s from './ContextMenu.module.css';
 
 import type { TContextMenuItem, TContextMenuProps } from './ContextMenu.props';
 
-function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
+const ContextMenu = ({ x, y, items, onClose }: TContextMenuProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function onPointerDown(e: MouseEvent) {
+    const onPointerDown = (e: MouseEvent) => {
       if (menuRef.current?.contains(e.target as Node)) {
         return;
       }
       onClose();
-    }
-    function onKeyDown(e: KeyboardEvent) {
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
-    }
+    };
     window.addEventListener('mousedown', onPointerDown);
     window.addEventListener('keydown', onKeyDown);
     return () => {
@@ -29,7 +30,7 @@ function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
     };
   }, [onClose]);
 
-  const menuStyle = { '--menu-left': `${x}px`, '--menu-top': `${y}px` } as React.CSSProperties;
+  const menuStyle = { '--menu-left': `${x}px`, '--menu-top': `${y}px` } as CSSProperties;
   const onItemClick = (item: TContextMenuItem) => () => {
     item.onClick();
     onClose();
@@ -57,6 +58,6 @@ function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
       </Flex>
     </Box>
   );
-}
+};
 
 export { ContextMenu };

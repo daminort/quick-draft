@@ -15,7 +15,7 @@ import {
 
 import type { TArcSettingsPanelProps } from './ArcSettingsPanel.props';
 
-function ArcSettingsPanel({ shape }: TArcSettingsPanelProps) {
+const ArcSettingsPanel = ({ shape }: TArcSettingsPanelProps) => {
   const onCenterXChange = (v: number) => documentActions.updateShape(shape.id, { cx: v });
   const onCenterYChange = (v: number) => documentActions.updateShape(shape.id, { cy: v });
   const onRadiusChange = (v: number) => documentActions.updateShape(shape.id, { r: v });
@@ -53,6 +53,6 @@ function ArcSettingsPanel({ shape }: TArcSettingsPanelProps) {
       <FillSection style={shape.style} onChange={onStyleChange} />
     </Flex>
   );
-}
+};
 
 export { ArcSettingsPanel };

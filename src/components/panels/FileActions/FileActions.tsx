@@ -10,17 +10,17 @@ import { documentStore, documentSelectors, documentActions } from '~/stores/docu
 
 import s from './FileActions.module.css';
 
-function FileActions() {
+const FileActions = () => {
   const documentState = documentStore(documentSelectors.getDocument);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function onSaveClick() {
+  const onSaveClick = () => {
     exportDocumentToJsonFile(documentState);
-  }
+  };
 
-  function onOpenClick() {
+  const onOpenClick = () => {
     inputRef.current?.click();
-  }
+  };
 
   const onOpen = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -67,6 +67,6 @@ function FileActions() {
       />
     </>
   );
-}
+};
 
 export { FileActions };

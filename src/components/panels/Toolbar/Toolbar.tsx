@@ -53,7 +53,7 @@ const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
   },
 ];
 
-function Toolbar() {
+const Toolbar = () => {
   const activeTool = toolStore(toolSelectors.getActiveTool);
   const isSettingsOpen = uiStore(uiSelectors.getIsSettingsOpen);
   const isLibraryOpen = uiStore(uiSelectors.getIsLibraryOpen);
@@ -155,6 +155,6 @@ function Toolbar() {
       />
     </Flex>
   );
-}
+};
 
 export { Toolbar };

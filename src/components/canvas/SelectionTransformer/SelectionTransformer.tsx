@@ -61,7 +61,7 @@ function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
   }
 }
 
-function SelectionTransformer({ shape, node }: TSelectionTransformerProps) {
+const SelectionTransformer = ({ shape, node }: TSelectionTransformerProps) => {
   const transformerRef = useRef<Konva.Transformer>(null);
 
   useEffect(() => {
@@ -97,6 +97,6 @@ function SelectionTransformer({ shape, node }: TSelectionTransformerProps) {
       enabledAnchors={enabledAnchors}
     />
   );
-}
+};
 
 export { SelectionTransformer };

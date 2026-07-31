@@ -5,7 +5,7 @@ import { SELECTED_COLOR } from '~/constants/shapes';
 import type { TTextShapeProps } from './TextShape.props';
 import type Konva from 'konva';
 
-function TextShape({
+const TextShape = ({
   shape,
   isDraggable,
   isSelected = false,
@@ -16,7 +16,7 @@ function TextShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: TTextShapeProps) {
+}: TTextShapeProps) => {
   const fontStyle =
     [shape.isBold && 'bold', shape.isItalic && 'italic'].filter(Boolean).join(' ') || 'normal';
   const fillColor = isSelected ? SELECTED_COLOR : shape.fill;
@@ -46,6 +46,6 @@ function TextShape({
       visible={isVisible}
     />
   );
-}
+};
 
 export { TextShape };

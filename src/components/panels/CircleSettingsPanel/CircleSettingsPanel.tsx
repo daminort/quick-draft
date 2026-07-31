@@ -15,7 +15,7 @@ import {
 
 import type { TCircleSettingsPanelProps } from './CircleSettingsPanel.props';
 
-function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
+const CircleSettingsPanel = ({ shape }: TCircleSettingsPanelProps) => {
   const onCenterXChange = (v: number) => documentActions.updateShape(shape.id, { cx: v });
   const onCenterYChange = (v: number) => documentActions.updateShape(shape.id, { cy: v });
   const onRadiusChange = (v: number) => documentActions.updateShape(shape.id, { r: v });
@@ -41,6 +41,6 @@ function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
       <FillSection style={shape.style} onChange={onStyleChange} />
     </Flex>
   );
-}
+};
 
 export { CircleSettingsPanel };

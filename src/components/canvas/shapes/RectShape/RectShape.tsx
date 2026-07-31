@@ -5,7 +5,7 @@ import { SELECTED_COLOR } from '~/constants/shapes';
 import type { TRectShapeProps } from './RectShape.props';
 import type Konva from 'konva';
 
-function RectShape({
+const RectShape = ({
   shape,
   isDraggable,
   isSelected = false,
@@ -14,7 +14,7 @@ function RectShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: TRectShapeProps) {
+}: TRectShapeProps) => {
   const strokeColor = isSelected ? SELECTED_COLOR : shape.style.stroke;
   const fillOpacity = shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1;
   const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
@@ -43,6 +43,6 @@ function RectShape({
       dash={shape.style.dash}
     />
   );
-}
+};
 
 export { RectShape };

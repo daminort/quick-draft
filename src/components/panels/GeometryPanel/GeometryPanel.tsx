@@ -12,13 +12,13 @@ import type {
   TGeometryPanelProps,
 } from './GeometryPanel.props';
 
-function NumberField({ label, value, min, onChange }: TNumberFieldProps) {
-  function onFieldChange(e: ChangeEvent<HTMLInputElement>) {
+const NumberField = ({ label, value, min, onChange }: TNumberFieldProps) => {
+  const onFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
     const next = Number(e.target.value);
     if (Number.isFinite(next)) {
       onChange(next);
     }
-  }
+  };
 
   return (
     <Text as="label" size="2">
@@ -28,9 +28,9 @@ function NumberField({ label, value, min, onChange }: TNumberFieldProps) {
       </Flex>
     </Text>
   );
-}
+};
 
-function GeometryFields({ shape }: TGeometryFieldsProps) {
+const GeometryFields = ({ shape }: TGeometryFieldsProps) => {
   switch (shape.type) {
     case 'guide': {
       const onOrientationChange = (value: string) =>
@@ -85,14 +85,14 @@ function GeometryFields({ shape }: TGeometryFieldsProps) {
     default:
       return null;
   }
-}
+};
 
-function GeometryPanel({ shape }: TGeometryPanelProps) {
+const GeometryPanel = ({ shape }: TGeometryPanelProps) => {
   return (
     <Flex direction="column" gap="2">
       <GeometryFields shape={shape} />
     </Flex>
   );
-}
+};
 
 export { GeometryPanel };

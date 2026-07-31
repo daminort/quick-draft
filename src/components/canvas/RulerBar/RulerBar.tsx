@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 import { Box } from '@radix-ui/themes';
 
 import {
@@ -66,7 +68,7 @@ function computeTicks(
   return ticks;
 }
 
-function CanvasRulers({
+const CanvasRulers = ({
   width,
   height,
   scale,
@@ -75,12 +77,12 @@ function CanvasRulers({
   documentScale,
   documentUnits,
   cursor,
-}: TCanvasRulersProps) {
+}: TCanvasRulersProps) => {
   const horizontalLength = Math.max(0, width - THICKNESS);
   const horizontalTicks = computeTicks(horizontalLength, scale, offsetX - THICKNESS, documentScale);
   const verticalTicks = computeTicks(height, scale, offsetY, documentScale);
 
-  const horizontalRulerStyle = { '--ruler-thickness': `${THICKNESS}px` } as React.CSSProperties;
+  const horizontalRulerStyle = { '--ruler-thickness': `${THICKNESS}px` } as CSSProperties;
 
   return (
     <Box className={s.overlay}>
@@ -188,6 +190,6 @@ function CanvasRulers({
       </svg>
     </Box>
   );
-}
+};
 
 export { CanvasRulers };

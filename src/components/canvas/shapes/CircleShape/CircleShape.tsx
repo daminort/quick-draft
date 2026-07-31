@@ -5,7 +5,7 @@ import { SELECTED_COLOR } from '~/constants/shapes';
 import type { TCircleShapeProps } from './CircleShape.props';
 import type Konva from 'konva';
 
-function CircleShape({
+const CircleShape = ({
   shape,
   isDraggable,
   isSelected = false,
@@ -14,7 +14,7 @@ function CircleShape({
   onDragMove,
   onDragEnd,
   setNodeRef,
-}: TCircleShapeProps) {
+}: TCircleShapeProps) => {
   const strokeColor = isSelected ? SELECTED_COLOR : shape.style.stroke;
   const fillOpacity = shape.style.fill !== undefined ? (shape.style.fillOpacity ?? 1) : 1;
   const onNodeDragMove = (e: Konva.KonvaEventObject<DragEvent>) => onDragMove(e.target);
@@ -41,6 +41,6 @@ function CircleShape({
       dash={shape.style.dash}
     />
   );
-}
+};
 
 export { CircleShape };

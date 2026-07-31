@@ -1,3 +1,4 @@
+import type { DragEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Stage, Layer, Line, Rect } from 'react-konva';
@@ -52,7 +53,7 @@ const TOOL_HOTKEYS: Partial<Record<string, TTool>> = {
   KeyU: 'ruler',
 };
 
-function CanvasStage() {
+const CanvasStage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const staticLayerRef = useRef<Konva.Layer>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -103,7 +104,7 @@ function CanvasStage() {
   }, []);
 
   useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
+    const onKeyDown = (e: KeyboardEvent) => {
       const tool = TOOL_HOTKEYS[e.code];
       if (!tool) {
         return;
@@ -117,14 +118,14 @@ function CanvasStage() {
         return;
       }
       toolActions.setTool(tool);
-    }
+    };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
   useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Delete' && e.key !== 'Backspace') {
         return;
       }
@@ -139,14 +140,14 @@ function CanvasStage() {
       e.preventDefault();
       selectedIds.forEach(id => documentActions.removeShape(id));
       selectionActions.clear();
-    }
+    };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [selectedIds]);
 
   useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.code !== 'KeyZ') {
         return;
       }
@@ -160,14 +161,14 @@ function CanvasStage() {
       }
       e.preventDefault();
       documentStore.temporal.getState().undo();
-    }
+    };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
   useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') {
         return;
       }
@@ -177,7 +178,7 @@ function CanvasStage() {
         return;
       }
       toolActions.setTool('select');
-    }
+    };
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
@@ -219,7 +220,7 @@ function CanvasStage() {
 
   const rulerCursor = areRulerGuidesVisible ? cursorPos : null;
 
-  function startEditText(id: TShapeId) {
+  const startEditText = (id: TShapeId) => {
     const shape = shapes.find(s => s.id === id);
     if (!shape || shape.type !== 'text') {
       return;
@@ -228,24 +229,24 @@ function CanvasStage() {
     originalTextRef.current = shape.text;
     documentStore.temporal.getState().pause();
     setEditingTextId(id);
-  }
+  };
 
-  function commitEditText() {
+  const commitEditText = () => {
     documentStore.temporal.getState().resume();
     originalTextRef.current = null;
     setEditingTextId(null);
-  }
+  };
 
-  function cancelEditText() {
+  const cancelEditText = () => {
     if (editingTextId !== null && originalTextRef.current !== null) {
       documentActions.updateShape(editingTextId, { text: originalTextRef.current });
     }
     documentStore.temporal.getState().resume();
     originalTextRef.current = null;
     setEditingTextId(null);
-  }
+  };
 
-  function onComponentDrop(e: React.DragEvent<HTMLDivElement>) {
+  const onComponentDrop = (e: DragEvent<HTMLDivElement>) => {
     const componentId = e.dataTransfer.getData(COMPONENT_DRAG_MIME_TYPE);
     if (!componentId || !components[componentId]) {
       return;
@@ -261,9 +262,9 @@ function CanvasStage() {
     // Deferred: the instance's Konva node registers on mount, one render after this one — selecting
     // it a tick later (instead of in the same batch) lets the Transformer find it immediately.
     setTimeout(() => selectionActions.select([instanceId]), 0);
-  }
+  };
 
-  function onContextMenu(e: Konva.KonvaEventObject<PointerEvent>) {
+  const onContextMenu = (e: Konva.KonvaEventObject<PointerEvent>) => {
     e.evt.preventDefault();
     if (!isInteractive) {
       return;
@@ -284,79 +285,79 @@ function CanvasStage() {
     selectionActions.select([shapeId]);
     setEmptyContextMenu(null);
     setContextMenu({ x: e.evt.clientX, y: e.evt.clientY, shapeId });
-  }
+  };
 
-  function onComponentDragOver(e: React.DragEvent<HTMLDivElement>) {
+  const onComponentDragOver = (e: DragEvent<HTMLDivElement>) => {
     if (!e.dataTransfer.types.includes(COMPONENT_DRAG_MIME_TYPE)) {
       return;
     }
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
-  }
+  };
 
-  function onStageMouseDown(e: Konva.KonvaEventObject<MouseEvent>) {
+  const onStageMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (pan.onMouseDown(e)) {
       return;
     }
     selectTool.onStageMouseDown(e);
     drawingTool.onMouseDown(e);
     rulerTool.onMouseDown(e);
-  }
+  };
 
-  function onStageMouseMove(e: Konva.KonvaEventObject<MouseEvent>) {
+  const onStageMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
     drawingTool.onMouseMove(e);
     rulerTool.onMouseMove(e);
     copyPasteTool.onMouseMove(e);
     if (isRulerVisible && areRulerGuidesVisible) {
       setCursorPos(e.target.getStage()?.getPointerPosition() ?? null);
     }
-  }
+  };
 
-  function onStageMouseLeave() {
+  const onStageMouseLeave = () => {
     setCursorPos(null);
-  }
+  };
 
-  function onEditingTextChange(text: string) {
+  const onEditingTextChange = (text: string) => {
     if (!editingShape) {
       return;
     }
     documentActions.updateShape(editingShape.id, { text });
-  }
+  };
 
-  function onContextMenuClose() {
+  const onContextMenuClose = () => {
     setContextMenu(null);
-  }
+  };
 
-  function onEmptyContextMenuClose() {
+  const onEmptyContextMenuClose = () => {
     setEmptyContextMenu(null);
-  }
+  };
 
-  function onBringToFrontClick() {
+  const onBringToFrontClick = () => {
     if (!contextMenu) {
       return;
     }
     documentActions.bringToFront(contextMenu.shapeId);
-  }
+  };
 
-  function onSendToBackClick() {
+  const onSendToBackClick = () => {
     if (!contextMenu) {
       return;
     }
     documentActions.sendToBack(contextMenu.shapeId);
-  }
+  };
 
-  function onOpenDeleteGuidesDialog() {
+  const onOpenDeleteGuidesDialog = () => {
     setIsDeleteGuidesDialogOpen(true);
-  }
+  };
 
-  function onConfirmDeleteGuides() {
+  const onConfirmDeleteGuides = () => {
     documentActions.clearGuides();
     setIsDeleteGuidesDialogOpen(false);
-  }
+  };
 
-  function onCancelDeleteGuides() {
+  const onCancelDeleteGuides = () => {
     setIsDeleteGuidesDialogOpen(false);
-  }
+  };
 
   const contextMenuItems = [
     { label: 'Bring to Front', icon: <ArrowUpToLine size={14} />, onClick: onBringToFrontClick },
@@ -523,6 +524,6 @@ function CanvasStage() {
       />
     </Box>
   );
-}
+};
 
 export { CanvasStage };

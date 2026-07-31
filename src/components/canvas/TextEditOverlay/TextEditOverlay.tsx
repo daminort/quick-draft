@@ -1,3 +1,4 @@
+import type { CSSProperties, FormEvent, KeyboardEvent } from 'react';
 import { useEffect, useRef } from 'react';
 
 import { TEXT_EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
@@ -6,7 +7,7 @@ import s from './TextEditOverlay.module.css';
 
 import type { TTextEditOverlayProps } from './TextEditOverlay.props';
 
-function TextEditOverlay({
+const TextEditOverlay = ({
   shape,
   scale,
   offsetX,
@@ -14,7 +15,7 @@ function TextEditOverlay({
   onChange,
   onCommit,
   onCancel,
-}: TTextEditOverlayProps) {
+}: TTextEditOverlayProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   // Seeded once on mount so re-renders triggered by our own onChange calls don't reset the
@@ -37,9 +38,8 @@ function TextEditOverlay({
   const fontStyle =
     [shape.isBold && 'bold', shape.isItalic && 'italic'].filter(Boolean).join(' ') || 'normal';
 
-  const onInput = (e: React.FormEvent<HTMLDivElement>) =>
-    onChange(e.currentTarget.textContent ?? '');
-  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+  const onInput = (e: FormEvent<HTMLDivElement>) => onChange(e.currentTarget.textContent ?? '');
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Escape') {
       e.preventDefault();
       onCancel();
@@ -47,7 +47,7 @@ function TextEditOverlay({
       e.preventDefault();
       onCommit();
     }
-  }
+  };
 
   const overlayStyle = {
     '--overlay-left': `${offsetX + shape.x * scale - TEXT_EDIT_OVERLAY_PADDING_PX}px`,
@@ -59,7 +59,7 @@ function TextEditOverlay({
     '--overlay-font-style': fontStyle,
     '--overlay-text-align': shape.align,
     '--overlay-color': shape.fill,
-  } as React.CSSProperties;
+  } as CSSProperties;
 
   return (
     <div
@@ -74,6 +74,6 @@ function TextEditOverlay({
       style={overlayStyle}
     />
   );
-}
+};
 
 export { TextEditOverlay };

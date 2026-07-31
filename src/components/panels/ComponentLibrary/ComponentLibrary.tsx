@@ -31,7 +31,7 @@ import s from './ComponentLibrary.module.css';
 
 import type { TComponentPreviewProps } from './ComponentLibrary.props';
 
-function ComponentPreview({ componentDef, components }: TComponentPreviewProps) {
+const ComponentPreview = ({ componentDef, components }: TComponentPreviewProps) => {
   const bounds = getUnionBounds(componentDef.shapes, components);
   const width = bounds ? Math.max(1, bounds.x2 - bounds.x1) : 1;
   const height = bounds ? Math.max(1, bounds.y2 - bounds.y1) : 1;
@@ -61,9 +61,9 @@ function ComponentPreview({ componentDef, components }: TComponentPreviewProps) 
       </Layer>
     </Stage>
   );
-}
+};
 
-function ComponentLibrary() {
+const ComponentLibrary = () => {
   const components = documentStore(documentSelectors.getComponents);
   const entries = Object.values(components);
   const [deleteTarget, setDeleteTarget] = useState<TComponentDef | null>(null);
@@ -100,17 +100,17 @@ function ComponentLibrary() {
     ? `This will remove "${deleteTarget.name}" from the library. Existing instances on the canvas will become independent, ungrouped shapes.`
     : '';
 
-  function onExportClick() {
+  const onExportClick = () => {
     exportComponentLibraryToJsonFile(components);
-  }
+  };
 
-  function onImportClick() {
+  const onImportClick = () => {
     importInputRef.current?.click();
-  }
+  };
 
-  function onCancelDelete() {
+  const onCancelDelete = () => {
     setDeleteTarget(null);
-  }
+  };
 
   const onEntryDragStart = (componentDef: TComponentDef) => (e: DragEvent) => {
     e.dataTransfer.setData(COMPONENT_DRAG_MIME_TYPE, componentDef.id);
@@ -207,6 +207,6 @@ function ComponentLibrary() {
       />
     </Flex>
   );
-}
+};
 
 export { ComponentLibrary };
