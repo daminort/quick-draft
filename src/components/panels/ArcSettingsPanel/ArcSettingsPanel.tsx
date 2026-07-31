@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes';
 
-import type { TShape, TStyle } from '~/types/document';
+import type { TStyle } from '~/types/document';
 
 import { documentActions } from '~/stores/documentStore';
 
@@ -13,9 +13,7 @@ import {
   FillSection,
 } from '~/components/panels/shared/PanelFields';
 
-type TArcSettingsPanelProps = {
-  shape: Extract<TShape, { type: 'arc' }>;
-};
+import type { TArcSettingsPanelProps } from './ArcSettingsPanel.props';
 
 function ArcSettingsPanel({ shape }: TArcSettingsPanelProps) {
   const onCenterXChange = (v: number) => documentActions.updateShape(shape.id, { cx: v });

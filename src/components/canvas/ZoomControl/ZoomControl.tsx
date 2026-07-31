@@ -5,12 +5,7 @@ import { MIN_SCALE, MAX_SCALE } from '~/constants/canvas';
 
 import s from './ZoomControl.module.css';
 
-type TZoomControlProps = {
-  scale: number;
-  onZoomIn: () => void;
-  onZoomOut: () => void;
-  onReset: () => void;
-};
+import type { TZoomControlProps } from './ZoomControl.props';
 
 function ZoomControl({ scale, onZoomIn, onZoomOut, onReset }: TZoomControlProps) {
   const isZoomOutDisabled = scale <= MIN_SCALE;

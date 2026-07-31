@@ -1,22 +1,11 @@
 import { Path } from 'react-konva';
 
-import type { TShape } from '~/types/document';
-
 import { SELECTED_COLOR } from '~/constants/shapes';
 import { HIT_STROKE_WIDTH } from '~/constants/canvas';
 
 import { computeArcPath } from '~/lib/arcPath';
 
-import type Konva from 'konva';
-
-type TArcShapeProps = {
-  shape: Extract<TShape, { type: 'arc' }>;
-  isInteractive: boolean;
-  isSelected?: boolean;
-  onSelect: () => void;
-  onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
-  setNodeRef: (node: Konva.Path | null) => void;
-};
+import type { TArcShapeProps } from './ArcShape.props';
 
 function ArcShape({
   shape,

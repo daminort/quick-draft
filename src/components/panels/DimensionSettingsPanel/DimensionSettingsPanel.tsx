@@ -1,14 +1,10 @@
 import { Flex, Select } from '@radix-ui/themes';
 
-import type { TShape } from '~/types/document';
-
 import { documentActions } from '~/stores/documentStore';
 
 import { Section, LabeledRow, CompactNumberInput } from '~/components/panels/shared/PanelFields';
 
-type TDimensionSettingsPanelProps = {
-  shape: Extract<TShape, { type: 'dimension' }>;
-};
+import type { TDimensionSettingsPanelProps } from './DimensionSettingsPanel.props';
 
 function DimensionSettingsPanel({ shape }: TDimensionSettingsPanelProps) {
   const onStartXChange = (v: number) =>

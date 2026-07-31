@@ -10,12 +10,8 @@ import { documentActions } from '~/stores/documentStore';
 
 import { MIN_TRANSFORM_SIZE_PX } from './assets';
 
+import type { TSelectionTransformerProps } from './SelectionTransformer.props';
 import type Konva from 'konva';
-
-type TSelectionTransformerProps = {
-  shape: TShape | null;
-  node: Konva.Node | null;
-};
 
 function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
   switch (shape.type) {

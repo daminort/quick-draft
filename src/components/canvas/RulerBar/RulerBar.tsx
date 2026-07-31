@@ -20,24 +20,7 @@ import {
 } from './assets';
 import s from './RulerBar.module.css';
 
-type TLengthUnit = 'mm' | 'cm' | 'm';
-
-type TCanvasRulersProps = {
-  width: number;
-  height: number;
-  scale: number;
-  offsetX: number;
-  offsetY: number;
-  documentScale: number;
-  documentUnits: TLengthUnit;
-  cursor?: { x: number; y: number } | null;
-};
-
-type TTick = {
-  screenPos: number;
-  isMajor: boolean;
-  label: string;
-};
+import type { TCanvasRulersProps, TTick } from './RulerBar.props';
 
 /** Rounds `rawStep` up to the nearest "nice" 1-2-5 * 10^n number, standard for ruler/axis ticks. */
 function niceStep(rawStep: number): number {

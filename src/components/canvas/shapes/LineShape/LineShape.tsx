@@ -1,22 +1,10 @@
 import { Line } from 'react-konva';
 
-import type { TShape } from '~/types/document';
-
 import { SELECTED_COLOR } from '~/constants/shapes';
 import { HIT_STROKE_WIDTH } from '~/constants/canvas';
 
+import type { TLineShapeProps } from './LineShape.props';
 import type Konva from 'konva';
-
-type TLineShapeProps = {
-  shape: Extract<TShape, { type: 'line' }>;
-  isDraggable: boolean;
-  isSelected?: boolean;
-  onSelect: () => void;
-  onDragStart: () => void;
-  onDragMove: (node: Konva.Node) => void;
-  onDragEnd: (node: Konva.Node) => void;
-  setNodeRef: (node: Konva.Line | null) => void;
-};
 
 function LineShape({
   shape,

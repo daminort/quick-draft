@@ -1,4 +1,4 @@
-# Agent Rules
+# Coding Standards
 
 This document defines coding rules and conventions for AI agents working on this codebase.
 These rules should be strictly followed to maintain code consistency and quality.
@@ -122,12 +122,18 @@ const doubled = items.map(item => {
   - `MyComponent.props.ts` - props definitions (optional)
   - `assets.ts` - additional logic (optional)
 
+> IMPORTANT NOTE: file with component implementation must not contain any type declaration.
+> All must be put into `MyComponent.props.ts`
+
 ### Hooks
 
 - Each custom hook must be inside its own folder, containing at least:
   - `index.ts` - for exports
   - `useMyHook.ts` - hook implementation
   - `types.ts` - the hook's return type (if it returns a value) and any types used internally by the hook
+
+> IMPORTANT NOTE: file with hook implementation must not contain any type declaration.
+> All must be put into `types.ts`
 
 ## Function Patterns
 

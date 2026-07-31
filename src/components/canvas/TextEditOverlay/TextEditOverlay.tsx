@@ -1,20 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import type { TShape } from '~/types/document';
-
 import { TEXT_EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
 
 import s from './TextEditOverlay.module.css';
 
-type TTextEditOverlayProps = {
-  shape: Extract<TShape, { type: 'text' }>;
-  scale: number;
-  offsetX: number;
-  offsetY: number;
-  onChange: (text: string) => void;
-  onCommit: () => void;
-  onCancel: () => void;
-};
+import type { TTextEditOverlayProps } from './TextEditOverlay.props';
 
 function TextEditOverlay({
   shape,

@@ -29,10 +29,7 @@ import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
 import s from './ComponentLibrary.module.css';
 
-type TComponentPreviewProps = {
-  componentDef: TComponentDef;
-  components: Record<string, TComponentDef>;
-};
+import type { TComponentPreviewProps } from './ComponentLibrary.props';
 
 function ComponentPreview({ componentDef, components }: TComponentPreviewProps) {
   const bounds = getUnionBounds(componentDef.shapes, components);

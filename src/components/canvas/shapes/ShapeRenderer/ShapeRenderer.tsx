@@ -1,6 +1,3 @@
-import type { TShape, TShapeId } from '~/types/document';
-
-import type { TShapeInteraction, TViewBounds } from '~/components/canvas/shapes/ShapeInteraction';
 import { LineShape } from '~/components/canvas/shapes/LineShape';
 import { RectShape } from '~/components/canvas/shapes/RectShape';
 import { CircleShape } from '~/components/canvas/shapes/CircleShape';
@@ -10,17 +7,8 @@ import { GuideShape } from '~/components/canvas/shapes/GuideShape';
 import { DimensionShape } from '~/components/canvas/shapes/DimensionShape';
 import { ComponentInstanceShape } from '~/components/canvas/shapes/ComponentInstanceShape';
 
+import type { TShapeRendererProps } from './ShapeRenderer.props';
 import type Konva from 'konva';
-
-type TShapeRendererProps = {
-  shape: TShape;
-  isInteractive: boolean;
-  interaction: TShapeInteraction;
-  viewBounds: TViewBounds;
-  isSelected?: boolean;
-  editingTextId?: TShapeId | null;
-  onStartEditText?: (id: TShapeId) => void;
-};
 
 function ShapeRenderer({
   shape,

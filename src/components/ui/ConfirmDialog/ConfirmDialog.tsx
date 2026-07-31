@@ -1,14 +1,6 @@
 import { AlertDialog, Button, Flex } from '@radix-ui/themes';
 
-type TConfirmDialogProps = {
-  isOpen: boolean;
-  title: string;
-  message: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-};
+import type { TConfirmDialogProps } from './ConfirmDialog.props';
 
 function ConfirmDialog({
   isOpen,

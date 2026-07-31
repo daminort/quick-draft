@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes';
 
-import type { TShape, TStyle } from '~/types/document';
+import type { TStyle } from '~/types/document';
 
 import { documentActions } from '~/stores/documentStore';
 
@@ -13,9 +13,7 @@ import {
   FillSection,
 } from '~/components/panels/shared/PanelFields';
 
-type TCircleSettingsPanelProps = {
-  shape: Extract<TShape, { type: 'circle' }>;
-};
+import type { TCircleSettingsPanelProps } from './CircleSettingsPanel.props';
 
 function CircleSettingsPanel({ shape }: TCircleSettingsPanelProps) {
   const onCenterXChange = (v: number) => documentActions.updateShape(shape.id, { cx: v });

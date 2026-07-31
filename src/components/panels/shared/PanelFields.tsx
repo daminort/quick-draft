@@ -1,15 +1,18 @@
-import type { ReactNode, ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 
 import { Box, Checkbox, Flex, Slider, Text, TextField } from '@radix-ui/themes';
 
-import type { TStyle } from '~/types/document';
-
 import s from './PanelFields.module.css';
 
-type TSectionProps = {
-  title: string;
-  children: ReactNode;
-};
+import type {
+  TSectionProps,
+  TCompactNumberInputProps,
+  TInlineFieldProps,
+  TLabeledRowProps,
+  TColorInputProps,
+  TStrokeSectionProps,
+  TFillSectionProps,
+} from './PanelFields.props';
 
 function Section({ title, children }: TSectionProps) {
   return (
@@ -22,12 +25,6 @@ function Section({ title, children }: TSectionProps) {
   );
 }
 
-type TCompactNumberInputProps = {
-  value: number;
-  min?: number;
-  onChange: (value: number) => void;
-};
-
 function CompactNumberInput({ value, min, onChange }: TCompactNumberInputProps) {
   function onFieldChange(e: ChangeEvent<HTMLInputElement>) {
     const next = Number(e.target.value);
@@ -39,13 +36,6 @@ function CompactNumberInput({ value, min, onChange }: TCompactNumberInputProps) 
   return <TextField.Root type="number" min={min} value={value} onChange={onFieldChange} />;
 }
 
-type TInlineFieldProps = {
-  label: string;
-  value: number;
-  min?: number;
-  onChange: (value: number) => void;
-};
-
 function InlineField({ label, value, min, onChange }: TInlineFieldProps) {
   return (
     <Flex align="center" gap="1" flexGrow="1">
@@ -56,11 +46,6 @@ function InlineField({ label, value, min, onChange }: TInlineFieldProps) {
     </Flex>
   );
 }
-
-type TLabeledRowProps = {
-  label: string;
-  children: ReactNode;
-};
 
 /** The label has a fixed width so inputs in stacked rows (Start/End, …) line up vertically. */
 function LabeledRow({ label, children }: TLabeledRowProps) {
@@ -76,7 +61,7 @@ function LabeledRow({ label, children }: TLabeledRowProps) {
   );
 }
 
-function ColorInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+function ColorInput({ value, onChange }: TColorInputProps) {
   function onColorChange(e: ChangeEvent<HTMLInputElement>) {
     onChange(e.target.value);
   }
@@ -87,11 +72,6 @@ function ColorInput({ value, onChange }: { value: string; onChange: (value: stri
     </Box>
   );
 }
-
-type TStrokeSectionProps = {
-  style: TStyle;
-  onChange: (style: TStyle) => void;
-};
 
 function StrokeSection({ style, onChange }: TStrokeSectionProps) {
   const onStrokeWidthChange = (value: number) => {
@@ -110,11 +90,6 @@ function StrokeSection({ style, onChange }: TStrokeSectionProps) {
     </Section>
   );
 }
-
-type TFillSectionProps = {
-  style: TStyle;
-  onChange: (style: TStyle) => void;
-};
 
 function FillSection({ style, onChange }: TFillSectionProps) {
   const enabled = style.fill !== undefined;

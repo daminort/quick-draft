@@ -1,7 +1,5 @@
 import { Group } from 'react-konva';
 
-import type { TShape } from '~/types/document';
-
 import { LARGE_VIEW_BOUNDS as INNER_VIEW_BOUNDS } from '~/constants/componentLibrary';
 
 import { documentStore, documentSelectors } from '~/stores/documentStore';
@@ -9,18 +7,8 @@ import { documentStore, documentSelectors } from '~/stores/documentStore';
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
 import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction';
 
+import type { TComponentInstanceShapeProps } from './ComponentInstanceShape.props';
 import type Konva from 'konva';
-
-type TComponentInstanceShapeProps = {
-  shape: Extract<TShape, { type: 'component-instance' }>;
-  isDraggable: boolean;
-  isSelected?: boolean;
-  onSelect: () => void;
-  onDragStart: () => void;
-  onDragMove: (node: Konva.Node) => void;
-  onDragEnd: (node: Konva.Node) => void;
-  setNodeRef: (node: Konva.Group | null) => void;
-};
 
 function ComponentInstanceShape({
   shape,

@@ -61,6 +61,8 @@ export default tseslint.config({ ignores: ['dist'] }, prettier, {
         json: 'always',
         css: 'always',
         svg: 'always',
+        props: 'always',
+        types: 'always',
       },
     ],
   },

@@ -1,7 +1,5 @@
 import { Group, Line, Arrow, Text } from 'react-konva';
 
-import type { TShape } from '~/types/document';
-
 import {
   DIMENSION_LABEL_FONT_SIZE,
   DIMENSION_STROKE_WIDTH,
@@ -15,16 +13,7 @@ import { computeDimensionGeometry, formatDimensionLabel } from '~/lib/dimension'
 import { uiStore, uiSelectors } from '~/stores/uiStore';
 import { documentStore, documentSelectors } from '~/stores/documentStore';
 
-import type Konva from 'konva';
-
-type TDimensionShapeProps = {
-  shape: Extract<TShape, { type: 'dimension' }>;
-  isSelected?: boolean;
-  isInteractive: boolean;
-  onSelect: () => void;
-  onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
-  setNodeRef: (node: Konva.Group | null) => void;
-};
+import type { TDimensionShapeProps } from './DimensionShape.props';
 
 function DimensionShape({
   shape,

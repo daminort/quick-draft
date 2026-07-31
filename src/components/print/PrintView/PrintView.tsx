@@ -10,10 +10,7 @@ import { renderDocumentToSvg } from '~/render/svg/renderDocumentToSvg';
 
 import s from './PrintView.module.css';
 
-type TPrintViewProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
+import type { TPrintViewProps } from './PrintView.props';
 
 function PrintView({ isOpen, onClose }: TPrintViewProps) {
   const document = documentStore(documentSelectors.getDocument);

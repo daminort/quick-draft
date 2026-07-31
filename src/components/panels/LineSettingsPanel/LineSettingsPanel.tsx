@@ -1,6 +1,6 @@
 import { Flex } from '@radix-ui/themes';
 
-import type { TShape, TStyle } from '~/types/document';
+import type { TStyle } from '~/types/document';
 
 import { documentActions } from '~/stores/documentStore';
 
@@ -11,9 +11,7 @@ import {
   StrokeSection,
 } from '~/components/panels/shared/PanelFields';
 
-type TLineSettingsPanelProps = {
-  shape: Extract<TShape, { type: 'line' }>;
-};
+import type { TLineSettingsPanelProps } from './LineSettingsPanel.props';
 
 function LineSettingsPanel({ shape }: TLineSettingsPanelProps) {
   const onStartXChange = (v: number) => documentActions.updateShape(shape.id, { x1: v });

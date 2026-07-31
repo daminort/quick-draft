@@ -1,22 +1,10 @@
 import { useEffect, useRef } from 'react';
-import type { ReactNode } from 'react';
 
 import { Box, Flex, Button } from '@radix-ui/themes';
 
 import s from './ContextMenu.module.css';
 
-type TContextMenuItem = {
-  label: string;
-  icon: ReactNode;
-  onClick: () => void;
-};
-
-type TContextMenuProps = {
-  x: number;
-  y: number;
-  items: TContextMenuItem[];
-  onClose: () => void;
-};
+import type { TContextMenuItem, TContextMenuProps } from './ContextMenu.props';
 
 function ContextMenu({ x, y, items, onClose }: TContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);

@@ -1,8 +1,6 @@
 import { Flex, IconButton, Select, TextArea } from '@radix-ui/themes';
 import { Bold, Italic, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 
-import type { TShape } from '~/types/document';
-
 import { FONT_FAMILIES } from '~/constants/ui';
 
 import { documentActions } from '~/stores/documentStore';
@@ -16,9 +14,7 @@ import {
 
 import s from './TextSettingsPanel.module.css';
 
-type TTextSettingsPanelProps = {
-  shape: Extract<TShape, { type: 'text' }>;
-};
+import type { TTextSettingsPanelProps } from './TextSettingsPanel.props';
 
 function TextSettingsPanel({ shape }: TTextSettingsPanelProps) {
   const isBoldClassName = shape.isBold ? s.active : undefined;

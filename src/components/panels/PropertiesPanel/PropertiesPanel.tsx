@@ -16,6 +16,8 @@ import { ComponentActions } from '~/components/panels/ComponentActions';
 
 import s from './PropertiesPanel.module.css';
 
+import type { TShapeSettingsProps } from './PropertiesPanel.props';
+
 const SHAPE_TYPE_LABELS: Record<TShape['type'], string> = {
   line: 'Line',
   rect: 'Rectangle',
@@ -27,7 +29,7 @@ const SHAPE_TYPE_LABELS: Record<TShape['type'], string> = {
   'component-instance': 'Component instance',
 };
 
-function ShapeSettings({ shape }: { shape: TShape }) {
+function ShapeSettings({ shape }: TShapeSettingsProps) {
   switch (shape.type) {
     case 'line':
       return <LineSettingsPanel shape={shape} />;

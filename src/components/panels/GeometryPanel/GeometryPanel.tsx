@@ -2,18 +2,15 @@ import type { ChangeEvent } from 'react';
 
 import { Flex, Text, TextField, Select } from '@radix-ui/themes';
 
-import type { TShape } from '~/types/document';
-
 import { COMPONENT_INSTANCE_MIN_SCALE } from '~/constants/componentLibrary';
 
 import { documentActions } from '~/stores/documentStore';
 
-type TNumberFieldProps = {
-  label: string;
-  value: number;
-  min?: number;
-  onChange: (value: number) => void;
-};
+import type {
+  TNumberFieldProps,
+  TGeometryFieldsProps,
+  TGeometryPanelProps,
+} from './GeometryPanel.props';
 
 function NumberField({ label, value, min, onChange }: TNumberFieldProps) {
   function onFieldChange(e: ChangeEvent<HTMLInputElement>) {
@@ -32,10 +29,6 @@ function NumberField({ label, value, min, onChange }: TNumberFieldProps) {
     </Text>
   );
 }
-
-type TGeometryFieldsProps = {
-  shape: Extract<TShape, { type: 'guide' | 'component-instance' }>;
-};
 
 function GeometryFields({ shape }: TGeometryFieldsProps) {
   switch (shape.type) {
@@ -93,10 +86,6 @@ function GeometryFields({ shape }: TGeometryFieldsProps) {
       return null;
   }
 }
-
-type TGeometryPanelProps = {
-  shape: Extract<TShape, { type: 'guide' | 'component-instance' }>;
-};
 
 function GeometryPanel({ shape }: TGeometryPanelProps) {
   return (

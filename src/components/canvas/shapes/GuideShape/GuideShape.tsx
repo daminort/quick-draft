@@ -1,25 +1,10 @@
 import { Line } from 'react-konva';
 
-import type { TShape } from '~/types/document';
-
 import { SELECTED_COLOR, GUIDE_COLOR, GUIDE_DASH, GUIDE_REACH } from '~/constants/shapes';
 import { HIT_STROKE_WIDTH } from '~/constants/canvas';
 
-import type { TViewBounds } from '~/components/canvas/shapes/ShapeInteraction';
-
+import type { TGuideShapeProps } from './GuideShape.props';
 import type Konva from 'konva';
-
-type TGuideShapeProps = {
-  shape: Extract<TShape, { type: 'guide' }>;
-  viewBounds: TViewBounds;
-  isDraggable: boolean;
-  isSelected?: boolean;
-  onSelect: () => void;
-  onDragStart: () => void;
-  onDragMove: (node: Konva.Node) => void;
-  onDragEnd: (node: Konva.Node) => void;
-  setNodeRef: (node: Konva.Line | null) => void;
-};
 
 function GuideShape({
   shape,
