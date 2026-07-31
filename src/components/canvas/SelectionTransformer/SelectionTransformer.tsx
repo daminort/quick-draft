@@ -56,6 +56,23 @@ function computeTransformPatch(shape: TShape, node: Konva.Node): TShapePatch {
       node.y(0);
       return { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y };
     }
+    case 'arc': {
+      const center = node.getTransform().point({ x: shape.cx, y: shape.cy });
+      const scale = node.scaleX();
+      const rotation = node.rotation();
+      node.scaleX(1);
+      node.scaleY(1);
+      node.rotation(0);
+      node.x(0);
+      node.y(0);
+      return {
+        cx: center.x,
+        cy: center.y,
+        r: Math.max(MIN_TRANSFORM_SIZE_PX, shape.r * scale),
+        startAngle: shape.startAngle + rotation,
+        endAngle: shape.endAngle + rotation,
+      };
+    }
     default:
       return {};
   }
@@ -71,7 +88,6 @@ const SelectionTransformer = ({ shape, node }: TSelectionTransformerProps) => {
   if (
     !shape ||
     !node ||
-    shape.type === 'arc' ||
     shape.type === 'text' ||
     shape.type === 'guide' ||
     shape.type === 'dimension'
@@ -79,7 +95,8 @@ const SelectionTransformer = ({ shape, node }: TSelectionTransformerProps) => {
     return null;
   }
 
-  const isRadialShape = shape.type === 'circle' || shape.type === 'component-instance';
+  const isRadialShape =
+    shape.type === 'circle' || shape.type === 'arc' || shape.type === 'component-instance';
   const isRotateEnabled = shape.type !== 'line';
   const enabledAnchors = isRadialShape
     ? ['top-left', 'top-right', 'bottom-left', 'bottom-right']
