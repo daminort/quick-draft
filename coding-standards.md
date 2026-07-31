@@ -90,7 +90,7 @@ export { App };
 
 Rule: `as-needed`. ESLint (`@stylistic/arrow-parens`) and Prettier (`arrowParens: "avoid"`) enforce this together.
 
-- Single parameter → **no parentheses**, regardless of block or expression body (Prettier's `arrowParens` option has no way to distinguish block-body from expression-body, so both tools apply the same rule to both cases — see `.ai/standards-refactor.md`, Этап 1, for why `requireForBlockBody` was dropped)
+- Single parameter → **no parentheses**, regardless of block or expression body (Prettier's `arrowParens` option has no way to distinguish block-body from expression-body, so both tools apply the same rule to both cases)
 - Multiple parameters → always parentheses
 
 ✅ **Correct:**
