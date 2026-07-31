@@ -27,6 +27,10 @@ drawings and diagrams — a CAD-lite tool built with React, TypeScript, and Konv
 - Zustand + zundo (state management with undo/redo)
 - Radix UI
 
+## Demo
+
+Check live demo here: [Quick Draft](https://daminort.github.io/quick-draft/)
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
