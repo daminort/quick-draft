@@ -46,19 +46,45 @@ function translateShape(shape: TShape, dx: number, dy: number): TShapePatch {
   }
 }
 
-/** Maps a component-local point through an instance's scale → rotate → translate transform. */
+/** Patch that mirrors a shape about its own center, in place. */
+function flipShape(shape: TShape, axis: 'horizontal' | 'vertical'): TShapePatch {
+  switch (shape.type) {
+    case 'line':
+      // A segment's midpoint is the mirror axis, so reflecting it is just swapping the endpoints'
+      // coordinate on that axis.
+      return axis === 'horizontal'
+        ? { x1: shape.x2, x2: shape.x1 }
+        : { y1: shape.y2, y2: shape.y1 };
+    case 'arc': {
+      // Mirroring reverses the sweep direction; swapping start/end while reflecting each angle
+      // keeps the same visual sweep (see transformShape for the identity applied through a parent).
+      const reflect = (angle: number) => (axis === 'horizontal' ? 180 - angle : -angle);
+      return { startAngle: reflect(shape.endAngle), endAngle: reflect(shape.startAngle) };
+    }
+    case 'component-instance':
+      return axis === 'horizontal' ? { flipX: !shape.flipX } : { flipY: !shape.flipY };
+    default:
+      return {};
+  }
+}
+
+/**
+ * Maps a component-local point through an instance's scale → rotate → translate transform.
+ * `scaleX`/`scaleY` may be negative to represent a flipped axis.
+ */
 function transformPoint(
   point: TPoint,
   x: number,
   y: number,
-  scale: number,
+  scaleX: number,
+  scaleY: number,
   rotationDeg: number,
 ): TPoint {
   const rad = (rotationDeg * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
-  const sx = point.x * scale;
-  const sy = point.y * scale;
+  const sx = point.x * scaleX;
+  const sy = point.y * scaleY;
   return { x: x + sx * cos - sy * sin, y: y + sx * sin + sy * cos };
 }
 
@@ -71,50 +97,76 @@ function transformShape(
   shape: TShape,
   x: number,
   y: number,
-  scale: number,
+  scaleX: number,
+  scaleY: number,
   rotation: number,
 ): TShape {
+  // Net axis flips: an odd number of flipped axes mirrors (reverses chirality); an even number
+  // (including zero) is chirality-preserving and, for rotation-bearing shapes, equivalent to a
+  // plain extra 180° rotation.
+  const isFlippedX = scaleX < 0;
+  const isFlippedY = scaleY < 0;
+  const isMirrored = isFlippedX !== isFlippedY;
+  const uniformRotationAdjust = !isMirrored && isFlippedX ? 180 : 0;
+  const magnitude = Math.abs(scaleX);
+
   switch (shape.type) {
     case 'line': {
-      const p1 = transformPoint({ x: shape.x1, y: shape.y1 }, x, y, scale, rotation);
-      const p2 = transformPoint({ x: shape.x2, y: shape.y2 }, x, y, scale, rotation);
+      const p1 = transformPoint({ x: shape.x1, y: shape.y1 }, x, y, scaleX, scaleY, rotation);
+      const p2 = transformPoint({ x: shape.x2, y: shape.y2 }, x, y, scaleX, scaleY, rotation);
       return { ...shape, x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y };
     }
     case 'rect': {
-      const p = transformPoint({ x: shape.x, y: shape.y }, x, y, scale, rotation);
+      // Exact for the non-mirrored case (uniform scale, possibly +180°). Under a single-axis flip
+      // combined with the child's own rotation, a plain {x,y,w,h,rotation} can't represent true
+      // mirroring exactly, so this is a best-effort placement — same tradeoff as 'dimension' below.
+      const p = transformPoint({ x: shape.x, y: shape.y }, x, y, scaleX, scaleY, rotation);
       return {
         ...shape,
         x: p.x,
         y: p.y,
-        w: shape.w * scale,
-        h: shape.h * scale,
-        rotation: shape.rotation + rotation,
+        w: shape.w * magnitude,
+        h: shape.h * magnitude,
+        rotation: shape.rotation + rotation + uniformRotationAdjust,
       };
     }
     case 'circle': {
-      const p = transformPoint({ x: shape.cx, y: shape.cy }, x, y, scale, rotation);
-      return { ...shape, cx: p.x, cy: p.y, r: shape.r * scale };
+      const p = transformPoint({ x: shape.cx, y: shape.cy }, x, y, scaleX, scaleY, rotation);
+      return { ...shape, cx: p.x, cy: p.y, r: shape.r * magnitude };
     }
     case 'arc': {
-      const p = transformPoint({ x: shape.cx, y: shape.cy }, x, y, scale, rotation);
+      const p = transformPoint({ x: shape.cx, y: shape.cy }, x, y, scaleX, scaleY, rotation);
+      if (isMirrored) {
+        // Mirroring reverses the sweep direction; swapping start/end while reflecting each angle
+        // keeps the same visual sweep (see flipShape for the same identity applied directly).
+        const reflect = (angle: number) => (isFlippedX ? 180 - angle : -angle) + rotation;
+        return {
+          ...shape,
+          cx: p.x,
+          cy: p.y,
+          r: shape.r * magnitude,
+          startAngle: reflect(shape.endAngle),
+          endAngle: reflect(shape.startAngle),
+        };
+      }
       return {
         ...shape,
         cx: p.x,
         cy: p.y,
-        r: shape.r * scale,
-        startAngle: shape.startAngle + rotation,
-        endAngle: shape.endAngle + rotation,
+        r: shape.r * magnitude,
+        startAngle: shape.startAngle + rotation + uniformRotationAdjust,
+        endAngle: shape.endAngle + rotation + uniformRotationAdjust,
       };
     }
     case 'text': {
-      const p = transformPoint({ x: shape.x, y: shape.y }, x, y, scale, rotation);
-      return { ...shape, x: p.x, y: p.y, fontSize: shape.fontSize * scale };
+      const p = transformPoint({ x: shape.x, y: shape.y }, x, y, scaleX, scaleY, rotation);
+      return { ...shape, x: p.x, y: p.y, fontSize: shape.fontSize * magnitude };
     }
     case 'dimension': {
       // Axis-aligned by construction; a rotated instance can't be represented exactly, so this is
       // a best-effort placement (points transform correctly, axis/offset assume no rotation).
-      const p1 = transformPoint({ x: shape.x1, y: shape.y1 }, x, y, scale, rotation);
-      const p2 = transformPoint({ x: shape.x2, y: shape.y2 }, x, y, scale, rotation);
+      const p1 = transformPoint({ x: shape.x1, y: shape.y1 }, x, y, scaleX, scaleY, rotation);
+      const p2 = transformPoint({ x: shape.x2, y: shape.y2 }, x, y, scaleX, scaleY, rotation);
       // Bindings reference shape ids that are regenerated on flatten, so they'd otherwise dangle.
       return {
         ...shape,
@@ -122,27 +174,31 @@ function transformShape(
         y1: p1.y,
         x2: p2.x,
         y2: p2.y,
-        offset: shape.offset * scale,
+        offset: shape.offset * magnitude,
         bindingA: null,
         bindingB: null,
       };
     }
     case 'guide': {
       if (shape.orientation === 'v') {
-        const p = transformPoint({ x: shape.position, y: 0 }, x, y, scale, rotation);
+        const p = transformPoint({ x: shape.position, y: 0 }, x, y, scaleX, scaleY, rotation);
         return { ...shape, position: p.x };
       }
-      const p = transformPoint({ x: 0, y: shape.position }, x, y, scale, rotation);
+      const p = transformPoint({ x: 0, y: shape.position }, x, y, scaleX, scaleY, rotation);
       return { ...shape, position: p.y };
     }
     case 'component-instance': {
-      const p = transformPoint({ x: shape.x, y: shape.y }, x, y, scale, rotation);
+      // Best-effort under a single-axis flip combined with the child instance's own rotation, for
+      // the same reason as 'rect' above.
+      const p = transformPoint({ x: shape.x, y: shape.y }, x, y, scaleX, scaleY, rotation);
       return {
         ...shape,
         x: p.x,
         y: p.y,
-        scale: shape.scale * scale,
-        rotation: shape.rotation + rotation,
+        scale: shape.scale * magnitude,
+        rotation: shape.rotation + rotation + uniformRotationAdjust,
+        flipX: shape.flipX !== isFlippedX,
+        flipY: shape.flipY !== isFlippedY,
       };
     }
     default:
@@ -159,10 +215,12 @@ function flattenComponentInstance(
   instance: Extract<TShape, { type: 'component-instance' }>,
   componentDef: TComponentDef,
 ): TShape[] {
+  const scaleX = instance.flipX ? -instance.scale : instance.scale;
+  const scaleY = instance.flipY ? -instance.scale : instance.scale;
   return componentDef.shapes.map(shape => ({
-    ...transformShape(shape, instance.x, instance.y, instance.scale, instance.rotation),
+    ...transformShape(shape, instance.x, instance.y, scaleX, scaleY, instance.rotation),
     id: crypto.randomUUID(),
   }));
 }
 
-export { getShapeAnchor, translateShape, flattenComponentInstance };
+export { getShapeAnchor, translateShape, flattenComponentInstance, flipShape };

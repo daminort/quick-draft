@@ -3,7 +3,14 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Stage, Layer, Line, Rect } from 'react-konva';
 import { Box } from '@radix-ui/themes';
-import { ArrowUpToLine, ArrowDownFromLine, RulerDimensionLine, Trash2 } from 'lucide-react';
+import {
+  ArrowUpToLine,
+  ArrowDownFromLine,
+  FlipHorizontal2,
+  FlipVertical2,
+  RulerDimensionLine,
+  Trash2,
+} from 'lucide-react';
 
 import type { TShapeId } from '~/types/document';
 
@@ -346,6 +353,20 @@ const CanvasStage = () => {
     documentActions.sendToBack(contextMenu.shapeId);
   };
 
+  const onFlipHorizontalClick = () => {
+    if (!contextMenu) {
+      return;
+    }
+    documentActions.flipHorizontal(contextMenu.shapeId);
+  };
+
+  const onFlipVerticalClick = () => {
+    if (!contextMenu) {
+      return;
+    }
+    documentActions.flipVertical(contextMenu.shapeId);
+  };
+
   const onOpenDeleteGuidesDialog = () => {
     setIsDeleteGuidesDialogOpen(true);
   };
@@ -359,9 +380,31 @@ const CanvasStage = () => {
     setIsDeleteGuidesDialogOpen(false);
   };
 
+  const contextMenuShape = contextMenu
+    ? shapes.find(shape => shape.id === contextMenu.shapeId)
+    : undefined;
+  const canFlip =
+    contextMenuShape?.type === 'line' ||
+    contextMenuShape?.type === 'arc' ||
+    contextMenuShape?.type === 'component-instance';
+
   const contextMenuItems = [
     { label: 'Bring to Front', icon: <ArrowUpToLine size={14} />, onClick: onBringToFrontClick },
     { label: 'Send to Back', icon: <ArrowDownFromLine size={14} />, onClick: onSendToBackClick },
+    ...(canFlip
+      ? [
+          {
+            label: 'Flip Horizontal',
+            icon: <FlipHorizontal2 size={14} />,
+            onClick: onFlipHorizontalClick,
+          },
+          {
+            label: 'Flip Vertical',
+            icon: <FlipVertical2 size={14} />,
+            onClick: onFlipVerticalClick,
+          },
+        ]
+      : []),
   ];
 
   const emptyContextMenuItems = [

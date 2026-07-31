@@ -1,7 +1,7 @@
 import type { TComponentDef, TDocument, TShape, TShapeId, TShapePatch } from '~/types/document';
 
 import { getUnionBounds } from '~/lib/bounds';
-import { translateShape, flattenComponentInstance } from '~/lib/shapeTransform';
+import { translateShape, flattenComponentInstance, flipShape } from '~/lib/shapeTransform';
 import { resyncDimensionBindings } from '~/lib/dimensionBinding';
 
 import { documentStore } from './store';
@@ -70,6 +70,34 @@ const documentActions = {
     });
   },
 
+  flipHorizontal: (id: TShapeId) => {
+    documentStore.setState(state => {
+      const shape = state.document.shapes.find(s => s.id === id);
+      if (!shape) {
+        return state;
+      }
+      const patch = flipShape(shape, 'horizontal');
+      const shapes = state.document.shapes.map(s =>
+        s.id === id ? ({ ...s, ...patch } as TShape) : s,
+      );
+      return { document: { ...state.document, shapes } };
+    });
+  },
+
+  flipVertical: (id: TShapeId) => {
+    documentStore.setState(state => {
+      const shape = state.document.shapes.find(s => s.id === id);
+      if (!shape) {
+        return state;
+      }
+      const patch = flipShape(shape, 'vertical');
+      const shapes = state.document.shapes.map(s =>
+        s.id === id ? ({ ...s, ...patch } as TShape) : s,
+      );
+      return { document: { ...state.document, shapes } };
+    });
+  },
+
   clear: () => {
     documentStore.setState(state => ({
       document: { ...state.document, shapes: [] },
@@ -116,6 +144,8 @@ const documentActions = {
       y: anchor.y,
       scale: 1,
       rotation: 0,
+      flipX: false,
+      flipY: false,
     };
 
     documentStore.setState(state => ({
@@ -139,6 +169,8 @@ const documentActions = {
       y,
       scale: 1,
       rotation: 0,
+      flipX: false,
+      flipY: false,
     };
     documentStore.setState(state => ({
       document: { ...state.document, shapes: [...state.document.shapes, instance] },

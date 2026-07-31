@@ -80,6 +80,8 @@ type TShape =
       y: number;
       scale: number;
       rotation: number;
+      flipX: boolean;
+      flipY: boolean;
     };
 
 type TDistributivePartial<T> = T extends unknown ? Partial<T> : never;
