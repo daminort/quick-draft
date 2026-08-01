@@ -2,46 +2,9 @@ import type { TDimensionBinding, TShape, TShapePointKey } from '~/types/document
 
 import { BINDING_EPSILON } from '~/constants/dimension';
 
-import { rotatePoint, listCircularAnchorPoints } from '~/lib/bounds';
+import { listBindablePoints } from '~/lib/bounds';
 
 type TPoint = { x: number; y: number };
-
-/** Points on a shape that a dimension's endpoint can bind to. Mirrors the point set offered by
- * collectSnapTargets, but keyed per-shape (and rotation-aware for rects) so a binding can be
- * resolved back to a live coordinate later. Guides and dimensions have no bindable points. */
-function listBindablePoints(shape: TShape): { key: TShapePointKey; point: TPoint }[] {
-  switch (shape.type) {
-    case 'line':
-      return [
-        { key: 'p1', point: { x: shape.x1, y: shape.y1 } },
-        { key: 'p2', point: { x: shape.x2, y: shape.y2 } },
-      ];
-    case 'rect': {
-      const origin = { x: shape.x, y: shape.y };
-      const corners: { key: TShapePointKey; local: TPoint }[] = [
-        { key: 'tl', local: { x: 0, y: 0 } },
-        { key: 'tr', local: { x: shape.w, y: 0 } },
-        { key: 'br', local: { x: shape.w, y: shape.h } },
-        { key: 'bl', local: { x: 0, y: shape.h } },
-      ];
-      return corners.map(({ key, local }) => ({
-        key,
-        point: rotatePoint({ x: shape.x + local.x, y: shape.y + local.y }, origin, shape.rotation),
-      }));
-    }
-    case 'circle':
-    case 'arc':
-      return [
-        { key: 'center', point: { x: shape.cx, y: shape.cy } },
-        ...listCircularAnchorPoints(shape),
-      ];
-    case 'text':
-    case 'component-instance':
-      return [{ key: 'origin', point: { x: shape.x, y: shape.y } }];
-    default:
-      return [];
-  }
-}
 
 function getBoundPoint(shape: TShape, key: TShapePointKey): TPoint | null {
   const found = listBindablePoints(shape).find(candidate => candidate.key === key);

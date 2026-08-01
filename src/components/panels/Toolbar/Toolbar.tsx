@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Flex, IconButton } from '@radix-ui/themes';
 import {
   MousePointer2,
+  Move,
   PencilLine,
   Square,
   Circle,
@@ -30,6 +31,11 @@ import s from './Toolbar.module.css';
 
 const TOOLS: { tool: TTool; label: string; Icon: typeof MousePointer2 }[] = [
   { tool: 'select', label: 'Select', Icon: MousePointer2 },
+  {
+    tool: 'move',
+    label: 'Move (M) — pick an anchor point on the selected shape, then click the target',
+    Icon: Move,
+  },
   { tool: 'line', label: 'Line (L)', Icon: PencilLine },
   { tool: 'rect', label: 'Rectangle (R)', Icon: Square },
   { tool: 'circle', label: 'Circle (C)', Icon: Circle },

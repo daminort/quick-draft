@@ -37,6 +37,10 @@ const GUIDE_SPAN = 1e6;
  * arc's angular sweep. */
 const ARC_ANGLE_EPSILON = 1e-6;
 
+/** Ghost-preview color for the Move tool's dragged copy — a translucent red, distinct from any
+ * real shape color, so the preview clearly reads as provisional. */
+const MOVE_PREVIEW_COLOR = 'rgba(239, 68, 68, 0.45)';
+
 export {
   SELECTED_COLOR,
   GUIDE_COLOR,
@@ -53,4 +57,5 @@ export {
   TEXT_CHAR_WIDTH_RATIO,
   GUIDE_SPAN,
   ARC_ANGLE_EPSILON,
+  MOVE_PREVIEW_COLOR,
 };

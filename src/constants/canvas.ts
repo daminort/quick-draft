@@ -23,6 +23,9 @@ const SNAP_INDICATOR_COLOR = '#ff3b8d';
 
 const SNAP_POINT_SIZE = 5;
 
+/** Radius (screen px, before dividing by zoom scale) of a Move tool anchor-point marker. */
+const MOVE_ANCHOR_RADIUS_PX = 5;
+
 const MARQUEE_STROKE_COLOR = '#2563eb';
 
 const MARQUEE_FILL_COLOR = 'rgba(37, 99, 235, 0.1)';
@@ -41,6 +44,7 @@ export {
   HIT_STROKE_WIDTH,
   SNAP_INDICATOR_COLOR,
   SNAP_POINT_SIZE,
+  MOVE_ANCHOR_RADIUS_PX,
   MARQUEE_STROKE_COLOR,
   MARQUEE_FILL_COLOR,
   EDIT_OVERLAY_PADDING_PX,

@@ -1,5 +1,5 @@
 type TTool =
-  'select' | 'line' | 'rect' | 'circle' | 'arc' | 'text' | 'guide' | 'dimension' | 'ruler';
+  'select' | 'move' | 'line' | 'rect' | 'circle' | 'arc' | 'text' | 'guide' | 'dimension' | 'ruler';
 
 type TToolState = {
   activeTool: TTool;

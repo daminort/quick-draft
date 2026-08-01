@@ -1,7 +1,7 @@
 import type { DragEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import { Stage, Layer, Line, Rect } from 'react-konva';
+import { Stage, Layer, Line, Rect, Circle } from 'react-konva';
 import { Box } from '@radix-ui/themes';
 import {
   ArrowUpToLine,
@@ -18,6 +18,7 @@ import { COMPONENT_DRAG_MIME_TYPE } from '~/constants/fileIO';
 import {
   SNAP_INDICATOR_COLOR,
   SNAP_POINT_SIZE,
+  MOVE_ANCHOR_RADIUS_PX,
   MARQUEE_STROKE_COLOR,
   MARQUEE_FILL_COLOR,
 } from '~/constants/canvas';
@@ -35,6 +36,7 @@ import type { TTool } from '~/stores/toolStore';
 import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
+import { noopShapeInteraction } from '~/components/canvas/shapes/ShapeInteraction';
 import { TextEditOverlay } from '~/components/canvas/TextEditOverlay';
 import { DimensionEditOverlay } from '~/components/canvas/DimensionEditOverlay';
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer';
@@ -42,6 +44,8 @@ import { ZoomControl } from '~/components/canvas/ZoomControl';
 import { ContextMenu } from '~/components/canvas/ContextMenu';
 import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool';
+import { useMoveTool } from '~/components/canvas/tools/useMoveTool';
+import type { TPoint } from '~/components/canvas/tools/useMoveTool';
 import { useRulerTool } from '~/components/canvas/tools/useRulerTool';
 import { RulerOverlay } from '~/components/canvas/RulerOverlay';
 import { CanvasRulers } from '~/components/canvas/RulerBar';
@@ -57,6 +61,7 @@ import type Konva from 'konva';
 // Keyed by e.code (physical key position), not e.key, so the shortcut still matches when a
 // non-Latin keyboard layout (e.g. Cyrillic) is active and e.key would report a different character.
 const TOOL_HOTKEYS: Partial<Record<string, TTool>> = {
+  KeyM: 'move',
   KeyG: 'guide',
   KeyL: 'line',
   KeyR: 'rect',
@@ -96,6 +101,7 @@ const CanvasStage = () => {
   const [editingDimensionId, setEditingDimensionId] = useState<TShapeId | null>(null);
 
   const drawingTool = useDrawingTool();
+  const moveTool = useMoveTool();
   const rulerTool = useRulerTool();
   const selectTool = useSelectTool();
   const copyPasteTool = useCopyPasteTool();
@@ -379,11 +385,18 @@ const CanvasStage = () => {
     }
     selectTool.onStageMouseDown(e);
     drawingTool.onMouseDown(e);
+    moveTool.onMouseDown(e);
     rulerTool.onMouseDown(e);
+  };
+
+  const onAnchorMouseDown = (point: TPoint) => (e: Konva.KonvaEventObject<MouseEvent>) => {
+    e.cancelBubble = true;
+    moveTool.onPickAnchor(point);
   };
 
   const onStageMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
     drawingTool.onMouseMove(e);
+    moveTool.onMouseMove(e);
     rulerTool.onMouseMove(e);
     copyPasteTool.onMouseMove(e);
     if (isRulerVisible && areRulerGuidesVisible) {
@@ -538,7 +551,27 @@ const CanvasStage = () => {
               viewBounds={viewBounds}
             />
           )}
-          <SelectionTransformer shape={selectedShape} node={selectedNode} />
+          {moveTool.previewShape && (
+            <ShapeRenderer
+              shape={moveTool.previewShape}
+              isInteractive={false}
+              interaction={noopShapeInteraction}
+              viewBounds={viewBounds}
+            />
+          )}
+          {moveTool.anchors?.map(anchor => (
+            <Circle
+              key={anchor.key}
+              x={anchor.point.x}
+              y={anchor.point.y}
+              radius={MOVE_ANCHOR_RADIUS_PX / zoom.scale}
+              onMouseDown={onAnchorMouseDown(anchor.point)}
+              fill={SELECTED_COLOR}
+            />
+          ))}
+          {activeTool !== 'move' && (
+            <SelectionTransformer shape={selectedShape} node={selectedNode} />
+          )}
           {rulerTool.draftRuler && <RulerOverlay ruler={rulerTool.draftRuler} scale={zoom.scale} />}
           {snapIndicator.x !== null && (
             <Line
