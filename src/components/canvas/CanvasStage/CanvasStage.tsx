@@ -21,6 +21,12 @@ import {
   MARQUEE_STROKE_COLOR,
   MARQUEE_FILL_COLOR,
 } from '~/constants/canvas';
+import { DIMENSION_LABEL_FONT_SIZE } from '~/constants/dimension';
+import { SELECTED_COLOR } from '~/constants/shapes';
+
+import { findDimensionResizeTarget } from '~/lib/dimensionBinding';
+import { resizeShapeAlongAxis } from '~/lib/shapeTransform';
+import { computeDimensionGeometry, convertLengthToInternal, formatLength } from '~/lib/dimension';
 
 import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
@@ -30,6 +36,7 @@ import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 
 import { ShapeRenderer } from '~/components/canvas/shapes/ShapeRenderer';
 import { TextEditOverlay } from '~/components/canvas/TextEditOverlay';
+import { DimensionEditOverlay } from '~/components/canvas/DimensionEditOverlay';
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer';
 import { ZoomControl } from '~/components/canvas/ZoomControl';
 import { ContextMenu } from '~/components/canvas/ContextMenu';
@@ -75,6 +82,7 @@ const CanvasStage = () => {
   const areRulerGuidesVisible = uiStore(uiSelectors.getAreRulerGuidesVisible);
   const documentScale = documentStore(documentSelectors.getScale);
   const documentUnits = documentStore(documentSelectors.getUnits);
+  const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -85,6 +93,7 @@ const CanvasStage = () => {
   const [isDeleteGuidesDialogOpen, setIsDeleteGuidesDialogOpen] = useState(false);
   const [editingTextId, setEditingTextId] = useState<TShapeId | null>(null);
   const originalTextRef = useRef<string | null>(null);
+  const [editingDimensionId, setEditingDimensionId] = useState<TShapeId | null>(null);
 
   const drawingTool = useDrawingTool();
   const rulerTool = useRulerTool();
@@ -212,6 +221,23 @@ const CanvasStage = () => {
     selectedIds.length === 1 ? (shapes.find(shape => shape.id === selectedIds[0]) ?? null) : null;
   const selectedNode = selectedShape ? selectTool.getNode(selectedShape.id) : null;
   const editingShape = shapes.find(shape => shape.id === editingTextId);
+  const editingDimensionShape = shapes.find(shape => shape.id === editingDimensionId);
+  const editingDimensionGeometry =
+    editingDimensionShape && editingDimensionShape.type === 'dimension'
+      ? computeDimensionGeometry(
+          editingDimensionShape.x1,
+          editingDimensionShape.y1,
+          editingDimensionShape.x2,
+          editingDimensionShape.y2,
+          editingDimensionShape.axis,
+          editingDimensionShape.offset,
+          documentScale,
+          documentUnits,
+          editingDimensionShape.unit,
+          shouldShowDimensionUnit,
+          shapes,
+        )
+      : null;
 
   const snapIndicator =
     drawingTool.snapIndicator.x !== null || drawingTool.snapIndicator.y !== null
@@ -251,6 +277,51 @@ const CanvasStage = () => {
     documentStore.temporal.getState().resume();
     originalTextRef.current = null;
     setEditingTextId(null);
+  };
+
+  const startEditDimension = (id: TShapeId) => {
+    const shape = shapes.find(s => s.id === id);
+    if (!shape || shape.type !== 'dimension') {
+      return;
+    }
+    if (!findDimensionResizeTarget(shape, shapes)) {
+      return;
+    }
+    selectionActions.select([id]);
+    setEditingDimensionId(id);
+  };
+
+  const commitEditDimension = (rawValue: string) => {
+    const shape = editingDimensionShape;
+    setEditingDimensionId(null);
+    if (!shape || shape.type !== 'dimension') {
+      return;
+    }
+    const target = findDimensionResizeTarget(shape, shapes);
+    if (!target) {
+      return;
+    }
+    const enteredLength = Number(rawValue.replace(',', '.'));
+    if (!Number.isFinite(enteredLength) || enteredLength <= 0) {
+      return;
+    }
+    const currentInternal =
+      shape.axis === 'vertical' ? Math.abs(shape.y2 - shape.y1) : Math.abs(shape.x2 - shape.x1);
+    const newInternal = convertLengthToInternal(
+      enteredLength,
+      documentScale,
+      documentUnits,
+      shape.unit,
+    );
+    const delta = newInternal - currentInternal;
+    if (delta === 0) {
+      return;
+    }
+    documentActions.updateShape(target.id, resizeShapeAlongAxis(target, shape.axis, delta));
+  };
+
+  const cancelEditDimension = () => {
+    setEditingDimensionId(null);
   };
 
   const onComponentDrop = (e: DragEvent<HTMLDivElement>) => {
@@ -453,6 +524,8 @@ const CanvasStage = () => {
               isSelected={selectedIds.includes(shape.id)}
               editingTextId={editingTextId}
               onStartEditText={startEditText}
+              editingDimensionId={editingDimensionId}
+              onStartEditDimension={startEditDimension}
             />
           ))}
         </Layer>
@@ -523,6 +596,24 @@ const CanvasStage = () => {
           onCancel={cancelEditText}
         />
       )}
+      {editingDimensionShape &&
+        editingDimensionShape.type === 'dimension' &&
+        editingDimensionGeometry && (
+          <DimensionEditOverlay
+            initialValue={formatLength(editingDimensionGeometry.length)}
+            x={editingDimensionGeometry.label.x}
+            y={editingDimensionGeometry.label.y}
+            align={editingDimensionGeometry.label.align}
+            baseline={editingDimensionGeometry.label.baseline}
+            scale={zoom.scale}
+            offsetX={zoom.x}
+            offsetY={zoom.y}
+            fontSize={DIMENSION_LABEL_FONT_SIZE}
+            color={SELECTED_COLOR}
+            onCommit={commitEditDimension}
+            onCancel={cancelEditDimension}
+          />
+        )}
       {isRulerVisible && (
         <CanvasRulers
           width={size.width}

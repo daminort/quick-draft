@@ -1,0 +1,17 @@
+.overlay {
+  position: absolute;
+  left: var(--overlay-left);
+  top: var(--overlay-top);
+  transform: var(--overlay-transform);
+  padding: var(--overlay-padding);
+  min-width: 1em;
+  font-size: var(--overlay-font-size);
+  font-style: italic;
+  color: var(--overlay-color);
+  line-height: 1;
+  white-space: pre;
+  text-align: center;
+  outline: 1px dashed var(--accent-9);
+  background: var(--color-background);
+  cursor: text;
+}

@@ -51,6 +51,19 @@ function convertLength(
   return lengthInMm / UNIT_TO_MM[toUnit];
 }
 
+/** Inverse of `convertLength`: turns a length typed by the user in `fromUnit` back into an
+ * internal canvas distance, given the document's scale and base unit. */
+function convertLengthToInternal(
+  displayLength: number,
+  documentScale: number,
+  documentUnits: TLengthUnit,
+  fromUnit: TLengthUnit,
+): number {
+  const lengthInMm = displayLength * UNIT_TO_MM[fromUnit];
+  const realLength = lengthInMm / UNIT_TO_MM[documentUnits];
+  return realLength / documentScale;
+}
+
 function formatLength(length: number): string {
   return (Math.round(length * 100) / 100).toString();
 }
@@ -229,4 +242,10 @@ function computeDimensionGeometry(
   };
 }
 
-export { convertLength, formatDimensionLabel, computeDimensionGeometry };
+export {
+  convertLength,
+  convertLengthToInternal,
+  formatLength,
+  formatDimensionLabel,
+  computeDimensionGeometry,
+};

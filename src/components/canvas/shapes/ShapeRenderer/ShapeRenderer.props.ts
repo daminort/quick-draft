@@ -10,6 +10,8 @@ type TShapeRendererProps = {
   isSelected?: boolean;
   editingTextId?: TShapeId | null;
   onStartEditText?: (id: TShapeId) => void;
+  editingDimensionId?: TShapeId | null;
+  onStartEditDimension?: (id: TShapeId) => void;
 };
 
 export type { TShapeRendererProps };

@@ -45,6 +45,29 @@ function getBoundPoint(shape: TShape, key: TShapePointKey): TPoint | null {
   return found ? found.point : null;
 }
 
+/**
+ * Resolves the shape a dimension's length actually measures, so editing the dimension's value
+ * can resize it in turn. Only defined when both endpoints are bound to the same shape and that
+ * shape exposes two distinct bindable points (`rect`, `line`) — every other shape type offers a
+ * single point (`center`/`origin`), so a dimension spanning it can't represent its own size.
+ */
+function findDimensionResizeTarget(
+  dimension: Extract<TShape, { type: 'dimension' }>,
+  shapes: TShape[],
+): Extract<TShape, { type: 'rect' | 'line' }> | null {
+  if (!dimension.bindingA || !dimension.bindingB) {
+    return null;
+  }
+  if (dimension.bindingA.shapeId !== dimension.bindingB.shapeId) {
+    return null;
+  }
+  const target = shapes.find(shape => shape.id === dimension.bindingA!.shapeId);
+  if (!target || (target.type !== 'rect' && target.type !== 'line')) {
+    return null;
+  }
+  return target;
+}
+
 /** Finds the shape+point that exactly matches `point` (already snapped by the caller), if any. */
 function findBindingForPoint(shapes: TShape[], point: TPoint): TDimensionBinding | null {
   for (const shape of shapes) {
@@ -104,4 +127,4 @@ function resyncDimensionBindings(shapes: TShape[]): TShape[] {
   return changed ? next : shapes;
 }
 
-export { findBindingForPoint, resyncDimensionBindings };
+export { findBindingForPoint, resyncDimensionBindings, findDimensionResizeTarget };

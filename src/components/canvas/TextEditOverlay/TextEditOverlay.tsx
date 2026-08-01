@@ -1,7 +1,7 @@
 import type { CSSProperties, FormEvent, KeyboardEvent } from 'react';
 import { useEffect, useRef } from 'react';
 
-import { TEXT_EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
+import { EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
 
 import s from './TextEditOverlay.module.css';
 
@@ -50,9 +50,9 @@ const TextEditOverlay = ({
   };
 
   const overlayStyle = {
-    '--overlay-left': `${offsetX + shape.x * scale - TEXT_EDIT_OVERLAY_PADDING_PX}px`,
-    '--overlay-top': `${offsetY + shape.y * scale - TEXT_EDIT_OVERLAY_PADDING_PX}px`,
-    '--overlay-padding': `${TEXT_EDIT_OVERLAY_PADDING_PX}px`,
+    '--overlay-left': `${offsetX + shape.x * scale - EDIT_OVERLAY_PADDING_PX}px`,
+    '--overlay-top': `${offsetY + shape.y * scale - EDIT_OVERLAY_PADDING_PX}px`,
+    '--overlay-padding': `${EDIT_OVERLAY_PADDING_PX}px`,
     '--overlay-font-family': shape.fontFamily,
     '--overlay-font-size': `${shape.fontSize * scale}px`,
     '--overlay-font-weight': shape.isBold ? 'bold' : 'normal',

@@ -46,6 +46,26 @@ function translateShape(shape: TShape, dx: number, dy: number): TShapePatch {
   }
 }
 
+/**
+ * Patch that grows a shape by `delta` along one axis, used when a bound dimension's value is
+ * edited directly. The shape always grows outward in the positive direction (right for
+ * horizontal, down for vertical) and keeps its other extent fixed: for a `rect` that's simply its
+ * `x`/`y` origin; for a `line` it's whichever endpoint has the smaller coordinate on that axis.
+ */
+function resizeShapeAlongAxis(
+  shape: Extract<TShape, { type: 'rect' | 'line' }>,
+  axis: 'horizontal' | 'vertical',
+  delta: number,
+): TShapePatch {
+  if (shape.type === 'rect') {
+    return axis === 'horizontal' ? { w: shape.w + delta } : { h: shape.h + delta };
+  }
+  if (axis === 'horizontal') {
+    return shape.x1 >= shape.x2 ? { x1: shape.x1 + delta } : { x2: shape.x2 + delta };
+  }
+  return shape.y1 >= shape.y2 ? { y1: shape.y1 + delta } : { y2: shape.y2 + delta };
+}
+
 /** Patch that mirrors a shape about its own center, in place. */
 function flipShape(shape: TShape, axis: 'horizontal' | 'vertical'): TShapePatch {
   switch (shape.type) {
@@ -223,4 +243,10 @@ function flattenComponentInstance(
   }));
 }
 
-export { getShapeAnchor, translateShape, flattenComponentInstance, flipShape };
+export {
+  getShapeAnchor,
+  translateShape,
+  resizeShapeAlongAxis,
+  flattenComponentInstance,
+  flipShape,
+};

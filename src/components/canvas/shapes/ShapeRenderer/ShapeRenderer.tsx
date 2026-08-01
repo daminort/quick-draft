@@ -18,6 +18,8 @@ const ShapeRenderer = ({
   isSelected = false,
   editingTextId = null,
   onStartEditText,
+  editingDimensionId = null,
+  onStartEditDimension,
 }: TShapeRendererProps) => {
   const onSelect = isInteractive ? () => interaction.selectShape(shape.id) : () => {};
   const onDragStart = () => interaction.onDragStart(shape);
@@ -27,6 +29,7 @@ const ShapeRenderer = ({
   const onMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) =>
     interaction.onManualMouseDown(shape, e);
   const onDblClick = isInteractive ? () => onStartEditText?.(shape.id) : undefined;
+  const onDimensionDblClick = isInteractive ? () => onStartEditDimension?.(shape.id) : undefined;
 
   const shared = {
     isDraggable: isInteractive,
@@ -74,7 +77,9 @@ const ShapeRenderer = ({
           shape={shape}
           isSelected={isSelected}
           isInteractive={isInteractive}
+          isLabelVisible={editingDimensionId !== shape.id}
           onSelect={onSelect}
+          onDblClick={onDimensionDblClick}
           onMouseDown={onMouseDown}
         />
       );

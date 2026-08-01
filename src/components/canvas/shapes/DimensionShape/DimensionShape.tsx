@@ -19,7 +19,9 @@ const DimensionShape = ({
   shape,
   isSelected = false,
   isInteractive,
+  isLabelVisible = true,
   onSelect,
+  onDblClick,
   onMouseDown,
   setNodeRef,
 }: TDimensionShapeProps) => {
@@ -48,6 +50,7 @@ const DimensionShape = ({
   }
 
   const onManualMouseDown = isInteractive ? onMouseDown : undefined;
+  const onLabelDblClick = isInteractive ? onDblClick : undefined;
   const labelText = formatDimensionLabel(geometry.length, shape.unit, shouldShowUnit);
   const labelOffsetX =
     geometry.label.align === 'center'
@@ -121,11 +124,14 @@ const DimensionShape = ({
         x={geometry.label.x}
         y={geometry.label.y}
         text={labelText}
+        onDblClick={onLabelDblClick}
+        onDblTap={onLabelDblClick}
         fontSize={DIMENSION_LABEL_FONT_SIZE}
         fontStyle="italic"
         fill={color}
         offsetX={labelOffsetX}
         offsetY={labelOffsetY}
+        visible={isLabelVisible}
       />
     </Group>
   );

@@ -28,7 +28,7 @@ const MARQUEE_STROKE_COLOR = '#2563eb';
 const MARQUEE_FILL_COLOR = 'rgba(37, 99, 235, 0.1)';
 
 /** Screen px, not zoom-scaled — stays constant regardless of canvas zoom level. */
-const TEXT_EDIT_OVERLAY_PADDING_PX = 4;
+const EDIT_OVERLAY_PADDING_PX = 4;
 
 export {
   MIN_SCALE,
@@ -43,5 +43,5 @@ export {
   SNAP_POINT_SIZE,
   MARQUEE_STROKE_COLOR,
   MARQUEE_FILL_COLOR,
-  TEXT_EDIT_OVERLAY_PADDING_PX,
+  EDIT_OVERLAY_PADDING_PX,
 };
