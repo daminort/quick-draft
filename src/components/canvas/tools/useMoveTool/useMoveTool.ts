@@ -8,8 +8,8 @@ import { listBindablePoints } from '~/lib/bounds';
 import { translateShape } from '~/lib/shapeTransform';
 
 import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
-import { selectionStore, selectionSelectors } from '~/stores/selectionStore';
-import { toolStore, toolSelectors } from '~/stores/toolStore';
+import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
+import { toolStore, toolSelectors, toolActions } from '~/stores/toolStore';
 
 import type { TMoveOrigin, TPoint, TUseMoveToolReturn } from './types';
 import type Konva from 'konva';
@@ -106,6 +106,8 @@ function useMoveTool(): TUseMoveToolReturn {
       documentActions.updateShape(origin.shape.id, translateShape(origin.shape, dx, dy));
       setOrigin(null);
       setPreviewShape(null);
+      selectionActions.select([origin.shape.id]);
+      toolActions.setTool('select');
     },
     [activeTool, origin],
   );
