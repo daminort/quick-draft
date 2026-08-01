@@ -9,7 +9,19 @@ type TStyle = {
 };
 
 /** A named point on a shape that a dimension's endpoint can bind to. */
-type TShapePointKey = 'p1' | 'p2' | 'tl' | 'tr' | 'br' | 'bl' | 'center' | 'origin';
+type TShapePointKey =
+  | 'p1'
+  | 'p2'
+  | 'tl'
+  | 'tr'
+  | 'br'
+  | 'bl'
+  | 'center'
+  | 'origin'
+  | 'top'
+  | 'right'
+  | 'bottom'
+  | 'left';
 
 type TDimensionBinding = {
   shapeId: TShapeId;

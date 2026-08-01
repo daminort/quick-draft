@@ -22,4 +22,4 @@ function computeArcPath(
   return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`;
 }
 
-export { computeArcPath };
+export { polarToCartesian, computeArcPath };

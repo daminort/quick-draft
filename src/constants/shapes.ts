@@ -33,6 +33,10 @@ const TEXT_CHAR_WIDTH_RATIO = 0.6;
  * enough that it's never mistaken for the marquee-selection edge. */
 const GUIDE_SPAN = 1e6;
 
+/** Floating-point tolerance when checking whether a cardinal angle (0/90/180/270°) falls within an
+ * arc's angular sweep. */
+const ARC_ANGLE_EPSILON = 1e-6;
+
 export {
   SELECTED_COLOR,
   GUIDE_COLOR,
@@ -48,4 +52,5 @@ export {
   DEFAULT_DIMENSION_AXIS,
   TEXT_CHAR_WIDTH_RATIO,
   GUIDE_SPAN,
+  ARC_ANGLE_EPSILON,
 };

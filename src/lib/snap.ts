@@ -2,6 +2,8 @@ import type { TShape, TShapeId } from '~/types/document';
 
 import { SNAP_TOLERANCE_PX } from '~/constants/canvas';
 
+import { listCircularAnchorPoints } from '~/lib/bounds';
+
 type TSnapTargets = {
   xs: number[];
   ys: number[];
@@ -49,10 +51,11 @@ function collectSnapTargets(
         addPoint(shape.x + shape.w, shape.y + shape.h);
         break;
       case 'circle':
-        addPoint(shape.cx, shape.cy);
-        break;
       case 'arc':
         addPoint(shape.cx, shape.cy);
+        for (const { point } of listCircularAnchorPoints(shape)) {
+          addPoint(point.x, point.y);
+        }
         break;
       case 'text':
         addPoint(shape.x, shape.y);

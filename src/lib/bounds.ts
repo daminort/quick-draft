@@ -1,6 +1,8 @@
-import type { TComponentDef, TShape } from '~/types/document';
+import type { TComponentDef, TShape, TShapePointKey } from '~/types/document';
 
-import { GUIDE_SPAN, TEXT_CHAR_WIDTH_RATIO } from '~/constants/shapes';
+import { ARC_ANGLE_EPSILON, GUIDE_SPAN, TEXT_CHAR_WIDTH_RATIO } from '~/constants/shapes';
+
+import { polarToCartesian } from '~/lib/arcPath';
 
 type TBounds = {
   x1: number;
@@ -171,5 +173,45 @@ function listShapeEdges(shape: TShape): TSegment[] {
   }
 }
 
+const CARDINAL_ANGLES: { key: TShapePointKey; angle: number }[] = [
+  { key: 'right', angle: 0 },
+  { key: 'bottom', angle: 90 },
+  { key: 'left', angle: 180 },
+  { key: 'top', angle: 270 },
+];
+
+/** Whether `angle` (degrees) falls within the clockwise sweep from `startAngle` to `endAngle`,
+ * mirroring the modulo convention `computeArcPath` uses to pick its large-arc flag. */
+function isAngleOnArc(angle: number, startAngle: number, endAngle: number): boolean {
+  const normalize = (deg: number) => ((deg % 360) + 360) % 360;
+  const sweep = normalize(endAngle - startAngle);
+  const offset = normalize(angle - startAngle);
+  return offset <= sweep + ARC_ANGLE_EPSILON;
+}
+
+/** The (up to) four points on a circle/arc where its tangent runs horizontal or vertical — besides
+ * the center, the only points a horizontal or vertical dimension can bind to precisely. An arc
+ * omits whichever of these fall outside its angular sweep, since they aren't actually drawn. */
+function listCircularAnchorPoints(
+  shape: Extract<TShape, { type: 'circle' | 'arc' }>,
+): { key: TShapePointKey; point: { x: number; y: number } }[] {
+  const candidates =
+    shape.type === 'arc'
+      ? CARDINAL_ANGLES.filter(({ angle }) => isAngleOnArc(angle, shape.startAngle, shape.endAngle))
+      : CARDINAL_ANGLES;
+
+  return candidates.map(({ key, angle }) => ({
+    key,
+    point: polarToCartesian(shape.cx, shape.cy, shape.r, angle),
+  }));
+}
+
 export type { TSegment };
-export { rotatePoint, getUnionBounds, getShapeBounds, areBoundsIntersecting, listShapeEdges };
+export {
+  rotatePoint,
+  getUnionBounds,
+  getShapeBounds,
+  areBoundsIntersecting,
+  listShapeEdges,
+  listCircularAnchorPoints,
+};

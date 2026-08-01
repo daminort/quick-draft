@@ -2,7 +2,7 @@ import type { TDimensionBinding, TShape, TShapePointKey } from '~/types/document
 
 import { BINDING_EPSILON } from '~/constants/dimension';
 
-import { rotatePoint } from '~/lib/bounds';
+import { rotatePoint, listCircularAnchorPoints } from '~/lib/bounds';
 
 type TPoint = { x: number; y: number };
 
@@ -31,7 +31,10 @@ function listBindablePoints(shape: TShape): { key: TShapePointKey; point: TPoint
     }
     case 'circle':
     case 'arc':
-      return [{ key: 'center', point: { x: shape.cx, y: shape.cy } }];
+      return [
+        { key: 'center', point: { x: shape.cx, y: shape.cy } },
+        ...listCircularAnchorPoints(shape),
+      ];
     case 'text':
     case 'component-instance':
       return [{ key: 'origin', point: { x: shape.x, y: shape.y } }];
@@ -48,13 +51,14 @@ function getBoundPoint(shape: TShape, key: TShapePointKey): TPoint | null {
 /**
  * Resolves the shape a dimension's length actually measures, so editing the dimension's value
  * can resize it in turn. Only defined when both endpoints are bound to the same shape and that
- * shape exposes two distinct bindable points (`rect`, `line`) — every other shape type offers a
- * single point (`center`/`origin`), so a dimension spanning it can't represent its own size.
+ * shape exposes at least two distinct bindable points (`rect`, `line`, `circle`, `arc`) — `text`
+ * and `component-instance` expose only a single `origin` point, so a dimension spanning one of
+ * those can't represent its own size.
  */
 function findDimensionResizeTarget(
   dimension: Extract<TShape, { type: 'dimension' }>,
   shapes: TShape[],
-): Extract<TShape, { type: 'rect' | 'line' }> | null {
+): Extract<TShape, { type: 'rect' | 'line' | 'circle' | 'arc' }> | null {
   if (!dimension.bindingA || !dimension.bindingB) {
     return null;
   }
@@ -62,7 +66,13 @@ function findDimensionResizeTarget(
     return null;
   }
   const target = shapes.find(shape => shape.id === dimension.bindingA!.shapeId);
-  if (!target || (target.type !== 'rect' && target.type !== 'line')) {
+  if (
+    !target ||
+    (target.type !== 'rect' &&
+      target.type !== 'line' &&
+      target.type !== 'circle' &&
+      target.type !== 'arc')
+  ) {
     return null;
   }
   return target;

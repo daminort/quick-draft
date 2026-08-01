@@ -1,4 +1,4 @@
-import type { TComponentDef, TShape, TShapePatch } from '~/types/document';
+import type { TComponentDef, TShape, TShapePatch, TShapePointKey } from '~/types/document';
 
 type TPoint = { x: number; y: number };
 
@@ -46,24 +46,60 @@ function translateShape(shape: TShape, dx: number, dy: number): TShapePatch {
   }
 }
 
+/** How far a circle/arc's cardinal point sits from its center along one axis, in units of `r`.
+ * `center` (and the two cardinal points perpendicular to `axis`) sit on the center itself, so they
+ * contribute no offset. */
+function circularPointOffset(key: TShapePointKey, axis: 'horizontal' | 'vertical'): number {
+  if (axis === 'horizontal') {
+    if (key === 'right') {
+      return 1;
+    }
+    if (key === 'left') {
+      return -1;
+    }
+    return 0;
+  }
+  if (key === 'bottom') {
+    return 1;
+  }
+  if (key === 'top') {
+    return -1;
+  }
+  return 0;
+}
+
 /**
  * Patch that grows a shape by `delta` along one axis, used when a bound dimension's value is
- * edited directly. The shape always grows outward in the positive direction (right for
- * horizontal, down for vertical) and keeps its other extent fixed: for a `rect` that's simply its
- * `x`/`y` origin; for a `line` it's whichever endpoint has the smaller coordinate on that axis.
+ * edited directly. For a `rect`/`line`, the shape always grows outward in the positive direction
+ * (right for horizontal, down for vertical) and keeps its other extent fixed: for a `rect` that's
+ * simply its `x`/`y` origin; for a `line` it's whichever endpoint has the smaller coordinate on
+ * that axis. A `circle`/`arc` instead grows symmetrically about its own center — `delta` is the
+ * change in distance between `dimension`'s two bound points, which is either the radius (one
+ * endpoint at `center`) or the diameter (both endpoints on opposite cardinal points), so `r` grows
+ * by `delta` or `delta / 2` accordingly.
  */
 function resizeShapeAlongAxis(
-  shape: Extract<TShape, { type: 'rect' | 'line' }>,
-  axis: 'horizontal' | 'vertical',
+  shape: Extract<TShape, { type: 'rect' | 'line' | 'circle' | 'arc' }>,
+  dimension: Extract<TShape, { type: 'dimension' }>,
   delta: number,
 ): TShapePatch {
+  const { axis } = dimension;
+
   if (shape.type === 'rect') {
     return axis === 'horizontal' ? { w: shape.w + delta } : { h: shape.h + delta };
   }
-  if (axis === 'horizontal') {
-    return shape.x1 >= shape.x2 ? { x1: shape.x1 + delta } : { x2: shape.x2 + delta };
+  if (shape.type === 'line') {
+    if (axis === 'horizontal') {
+      return shape.x1 >= shape.x2 ? { x1: shape.x1 + delta } : { x2: shape.x2 + delta };
+    }
+    return shape.y1 >= shape.y2 ? { y1: shape.y1 + delta } : { y2: shape.y2 + delta };
   }
-  return shape.y1 >= shape.y2 ? { y1: shape.y1 + delta } : { y2: shape.y2 + delta };
+
+  const span = Math.abs(
+    circularPointOffset(dimension.bindingA!.point, axis) -
+      circularPointOffset(dimension.bindingB!.point, axis),
+  );
+  return { r: shape.r + delta / span };
 }
 
 /** Patch that mirrors a shape about its own center, in place. */

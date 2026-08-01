@@ -317,7 +317,7 @@ const CanvasStage = () => {
     if (delta === 0) {
       return;
     }
-    documentActions.updateShape(target.id, resizeShapeAlongAxis(target, shape.axis, delta));
+    documentActions.updateShape(target.id, resizeShapeAlongAxis(target, shape, delta));
   };
 
   const cancelEditDimension = () => {
