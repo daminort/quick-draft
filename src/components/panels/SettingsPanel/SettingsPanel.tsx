@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 
 import { Box, Flex, Text, TextField, Checkbox, Button } from '@radix-ui/themes';
@@ -7,7 +6,6 @@ import { uiStore, uiSelectors, uiActions } from '~/stores/uiStore';
 import { documentActions } from '~/stores/documentStore';
 
 import { UnitsControl } from '~/components/panels/UnitsControl';
-import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 
 import s from './SettingsPanel.module.css';
 
@@ -19,20 +17,6 @@ const SettingsPanel = () => {
   const dimensionColor = uiStore(uiSelectors.getDimensionColor);
   const isRulerVisible = uiStore(uiSelectors.getIsRulerVisible);
   const areRulerGuidesVisible = uiStore(uiSelectors.getAreRulerGuidesVisible);
-  const [isDeleteGuidesDialogOpen, setIsDeleteGuidesDialogOpen] = useState(false);
-
-  const onDeleteGuidesConfirmed = () => {
-    documentActions.clearGuides();
-    setIsDeleteGuidesDialogOpen(false);
-  };
-
-  const onOpenDeleteGuidesDialog = () => {
-    setIsDeleteGuidesDialogOpen(true);
-  };
-
-  const onCancelDeleteGuides = () => {
-    setIsDeleteGuidesDialogOpen(false);
-  };
 
   const onSnapToleranceChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -62,7 +46,7 @@ const SettingsPanel = () => {
             Show guides
           </Flex>
         </Text>
-        <Button type="button" onClick={onOpenDeleteGuidesDialog} variant="soft" color="gray">
+        <Button type="button" onClick={documentActions.clearGuides} variant="soft" color="gray">
           Delete all guides
         </Button>
       </Flex>
@@ -136,15 +120,6 @@ const SettingsPanel = () => {
           </Flex>
         </Text>
       </Flex>
-
-      <ConfirmDialog
-        isOpen={isDeleteGuidesDialogOpen}
-        title="Delete all guides"
-        message="This will remove every guide from the canvas."
-        confirmLabel="Delete"
-        onConfirm={onDeleteGuidesConfirmed}
-        onCancel={onCancelDeleteGuides}
-      />
     </Flex>
   );
 };

@@ -41,8 +41,9 @@ import { TextEditOverlay } from '~/components/canvas/TextEditOverlay';
 import { DimensionEditOverlay } from '~/components/canvas/DimensionEditOverlay';
 import { SelectionTransformer } from '~/components/canvas/SelectionTransformer';
 import { ZoomControl } from '~/components/canvas/ZoomControl';
+import { HintBar } from '~/components/canvas/HintBar';
+import { resolveHintText } from '~/components/canvas/HintBar/assets';
 import { ContextMenu } from '~/components/canvas/ContextMenu';
-import { ConfirmDialog } from '~/components/ui/ConfirmDialog';
 import { useDrawingTool } from '~/components/canvas/tools/useDrawingTool';
 import { useMoveTool } from '~/components/canvas/tools/useMoveTool';
 import type { TPoint } from '~/components/canvas/tools/useMoveTool';
@@ -95,7 +96,6 @@ const CanvasStage = () => {
     shapeId: TShapeId;
   } | null>(null);
   const [emptyContextMenu, setEmptyContextMenu] = useState<{ x: number; y: number } | null>(null);
-  const [isDeleteGuidesDialogOpen, setIsDeleteGuidesDialogOpen] = useState(false);
   const [editingTextId, setEditingTextId] = useState<TShapeId | null>(null);
   const originalTextRef = useRef<string | null>(null);
   const [editingDimensionId, setEditingDimensionId] = useState<TShapeId | null>(null);
@@ -249,6 +249,22 @@ const CanvasStage = () => {
     drawingTool.snapIndicator.x !== null || drawingTool.snapIndicator.y !== null
       ? drawingTool.snapIndicator
       : selectTool.snapIndicator;
+
+  const isHintDismissed =
+    ((activeTool === 'arc' || activeTool === 'dimension') && drawingTool.isHintDismissed) ||
+    (activeTool === 'ruler' && rulerTool.isHintDismissed);
+
+  const hintText = isHintDismissed
+    ? null
+    : resolveHintText({
+        activeTool,
+        arcPhase: drawingTool.arcPhase,
+        dimensionPhase: drawingTool.dimensionPhase,
+        hasDimensionDraft: drawingTool.draftShape?.type === 'dimension',
+        hasRulerStart: rulerTool.draftRuler !== null,
+        hasMoveAnchors: moveTool.anchors !== null,
+        hasMovePreview: moveTool.previewShape !== null,
+      });
 
   const viewBounds = {
     left: -zoom.x / zoom.scale,
@@ -451,19 +467,6 @@ const CanvasStage = () => {
     documentActions.flipVertical(contextMenu.shapeId);
   };
 
-  const onOpenDeleteGuidesDialog = () => {
-    setIsDeleteGuidesDialogOpen(true);
-  };
-
-  const onConfirmDeleteGuides = () => {
-    documentActions.clearGuides();
-    setIsDeleteGuidesDialogOpen(false);
-  };
-
-  const onCancelDeleteGuides = () => {
-    setIsDeleteGuidesDialogOpen(false);
-  };
-
   const contextMenuShape = contextMenu
     ? shapes.find(shape => shape.id === contextMenu.shapeId)
     : undefined;
@@ -497,7 +500,7 @@ const CanvasStage = () => {
       icon: <RulerDimensionLine size={14} />,
       onClick: uiActions.toggleDimensionsVisible,
     },
-    { label: 'Delete guides', icon: <Trash2 size={14} />, onClick: onOpenDeleteGuidesDialog },
+    { label: 'Delete guides', icon: <Trash2 size={14} />, onClick: documentActions.clearGuides },
   ];
 
   const containerClassName = pan.isPanning ? s.panning : undefined;
@@ -665,6 +668,7 @@ const CanvasStage = () => {
         onZoomOut={zoom.zoomOut}
         onReset={zoom.resetZoom}
       />
+      {hintText && <HintBar text={hintText} />}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -681,14 +685,6 @@ const CanvasStage = () => {
           onClose={onEmptyContextMenuClose}
         />
       )}
-      <ConfirmDialog
-        isOpen={isDeleteGuidesDialogOpen}
-        title="Delete all guides"
-        message="This will remove every guide from the canvas."
-        confirmLabel="Delete"
-        onConfirm={onConfirmDeleteGuides}
-        onCancel={onCancelDeleteGuides}
-      />
     </Box>
   );
 };

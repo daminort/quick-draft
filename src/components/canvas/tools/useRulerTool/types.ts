@@ -13,6 +13,9 @@ type TRulerState = {
 type TUseRulerToolReturn = {
   draftRuler: TRulerState | null;
   liveLength: number;
+  /** True once the ruler has committed a measurement — the hint should stop showing until the
+   * user switches away and back. Resets whenever the active tool changes. */
+  isHintDismissed: boolean;
   onMouseDown: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onMouseMove: (e: Konva.KonvaEventObject<MouseEvent>) => void;
 };

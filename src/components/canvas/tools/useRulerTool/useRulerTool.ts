@@ -35,6 +35,7 @@ function useRulerTool(): TUseRulerToolReturn {
   const viewScale = viewStore(viewSelectors.getScale);
 
   const [ruler, setRulerState] = useState<TRulerState | null>(null);
+  const [isHintDismissed, setIsHintDismissed] = useState(false);
   const rulerRef = useRef<TRulerState | null>(null);
 
   // Mirror state into a ref, same reasoning as useDrawingTool's draftShapeRef: handlers below need
@@ -47,6 +48,7 @@ function useRulerTool(): TUseRulerToolReturn {
 
   useEffect(() => {
     setRuler(null);
+    setIsHintDismissed(false);
   }, [activeTool, setRuler]);
 
   const snapCursor = useCallback(
@@ -87,6 +89,7 @@ function useRulerTool(): TUseRulerToolReturn {
         position: endpoint.x,
       });
       setRuler(null);
+      setIsHintDismissed(true);
     },
     [documentScale, setRuler],
   );
@@ -199,6 +202,7 @@ function useRulerTool(): TUseRulerToolReturn {
   return {
     draftRuler: activeTool === 'ruler' ? ruler : null,
     liveLength,
+    isHintDismissed,
     onMouseDown,
     onMouseMove,
   };

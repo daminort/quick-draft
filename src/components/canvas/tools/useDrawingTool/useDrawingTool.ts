@@ -66,6 +66,9 @@ function useDrawingTool(): TUseDrawingToolReturn {
   const viewScale = viewStore(viewSelectors.getScale);
   const [draftShape, setDraftShapeState] = useState<TShape | null>(null);
   const [snapIndicator, setSnapIndicator] = useState<TSnapIndicator>(NO_SNAP);
+  const [arcPhaseState, setArcPhaseState] = useState<TArcPhase | null>(null);
+  const [dimensionPhaseState, setDimensionPhaseState] = useState<TDimensionPhase | null>(null);
+  const [isHintDismissed, setIsHintDismissed] = useState(false);
   const draftShapeRef = useRef<TShape | null>(null);
   const startPoint = useRef<TPoint | null>(null);
   const arcPhase = useRef<TArcPhase | null>(null);
@@ -82,14 +85,25 @@ function useDrawingTool(): TUseDrawingToolReturn {
     setDraftShapeState(value);
   }, []);
 
+  const setArcPhase = useCallback((value: TArcPhase | null) => {
+    arcPhase.current = value;
+    setArcPhaseState(value);
+  }, []);
+
+  const setDimensionPhase = useCallback((value: TDimensionPhase | null) => {
+    dimensionPhase.current = value;
+    setDimensionPhaseState(value);
+  }, []);
+
   useEffect(() => {
     setDraftShape(null);
     setSnapIndicator(NO_SNAP);
     startPoint.current = null;
-    arcPhase.current = null;
-    dimensionPhase.current = null;
+    setArcPhase(null);
+    setDimensionPhase(null);
     dimensionPointA.current = null;
-  }, [activeTool, setDraftShape]);
+    setIsHintDismissed(false);
+  }, [activeTool, setDraftShape, setArcPhase, setDimensionPhase]);
 
   const snapCursor = useCallback(
     (point: TPoint): TPoint => {
@@ -110,7 +124,7 @@ function useDrawingTool(): TUseDrawingToolReturn {
     (point: TPoint) => {
       if (!arcPhase.current) {
         const id = crypto.randomUUID();
-        arcPhase.current = 'radius';
+        setArcPhase('radius');
         setDraftShape({
           id,
           type: 'arc',
@@ -132,7 +146,7 @@ function useDrawingTool(): TUseDrawingToolReturn {
       if (arcPhase.current === 'radius') {
         const r = Math.hypot(point.x - current.cx, point.y - current.cy);
         const startAngle = angleBetween({ x: current.cx, y: current.cy }, point);
-        arcPhase.current = 'angle';
+        setArcPhase('angle');
         setDraftShape({ ...current, r, startAngle, endAngle: startAngle });
         return;
       }
@@ -141,24 +155,25 @@ function useDrawingTool(): TUseDrawingToolReturn {
       const finalShape = { ...current, endAngle };
       if (hasSize(finalShape)) {
         documentActions.addShape(finalShape);
+        setIsHintDismissed(true);
       }
-      arcPhase.current = null;
+      setArcPhase(null);
       setDraftShape(null);
     },
-    [setDraftShape],
+    [setDraftShape, setArcPhase],
   );
 
   const onDimensionMouseDown = useCallback(
     (point: TPoint) => {
       if (!dimensionPhase.current) {
         dimensionPointA.current = point;
-        dimensionPhase.current = 'second-point';
+        setDimensionPhase('second-point');
         return;
       }
 
       const a = dimensionPointA.current;
       if (!a) {
-        dimensionPhase.current = null;
+        setDimensionPhase(null);
         return;
       }
 
@@ -178,7 +193,7 @@ function useDrawingTool(): TUseDrawingToolReturn {
         bindingB: findBindingForPoint(doc.shapes, point),
       });
     },
-    [doc.shapes, doc.units, setDraftShape],
+    [doc.shapes, doc.units, setDraftShape, setDimensionPhase],
   );
 
   const onMouseDown = useCallback(
@@ -357,21 +372,27 @@ function useDrawingTool(): TUseDrawingToolReturn {
     const current = draftShapeRef.current;
     if (current && hasSize(current)) {
       documentActions.addShape(current);
+      if (current.type === 'dimension') {
+        setIsHintDismissed(true);
+      }
     }
     // Only clear the dimension's two-point sequence once its drag (point B onward) has
     // actually finished — not after the first click that merely placed point A.
     if (current) {
-      dimensionPhase.current = null;
+      setDimensionPhase(null);
       dimensionPointA.current = null;
     }
     setDraftShape(null);
     startPoint.current = null;
     setSnapIndicator(NO_SNAP);
-  }, [activeTool, setDraftShape]);
+  }, [activeTool, setDraftShape, setDimensionPhase]);
 
   return {
     draftShape: activeTool === 'select' ? null : draftShape,
     snapIndicator,
+    arcPhase: activeTool === 'arc' ? arcPhaseState : null,
+    dimensionPhase: activeTool === 'dimension' ? dimensionPhaseState : null,
+    isHintDismissed,
     onMouseDown,
     onMouseMove,
     onMouseUp,
