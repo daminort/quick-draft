@@ -26,6 +26,11 @@ const SNAP_POINT_SIZE = 5;
 /** Radius (screen px, before dividing by zoom scale) of a Move tool anchor-point marker. */
 const MOVE_ANCHOR_RADIUS_PX = 5;
 
+/** Below this screen-space distance from where the anchor was picked, releasing the mouse over the
+ * Move tool is treated as a plain click (leaving the tool armed for a second, precise placement
+ * click) rather than a drag-to-place gesture. */
+const MOVE_DRAG_THRESHOLD_PX = 3;
+
 const MARQUEE_STROKE_COLOR = '#2563eb';
 
 const MARQUEE_FILL_COLOR = 'rgba(37, 99, 235, 0.1)';
@@ -45,6 +50,7 @@ export {
   SNAP_INDICATOR_COLOR,
   SNAP_POINT_SIZE,
   MOVE_ANCHOR_RADIUS_PX,
+  MOVE_DRAG_THRESHOLD_PX,
   MARQUEE_STROKE_COLOR,
   MARQUEE_FILL_COLOR,
   EDIT_OVERLAY_PADDING_PX,

@@ -247,7 +247,9 @@ const CanvasStage = () => {
   const snapIndicator =
     drawingTool.snapIndicator.x !== null || drawingTool.snapIndicator.y !== null
       ? drawingTool.snapIndicator
-      : selectTool.snapIndicator;
+      : selectTool.snapIndicator.x !== null || selectTool.snapIndicator.y !== null
+        ? selectTool.snapIndicator
+        : moveTool.snapIndicator;
 
   const isHintDismissed =
     ((activeTool === 'arc' || activeTool === 'dimension') && drawingTool.isHintDismissed) ||
@@ -449,7 +451,7 @@ const CanvasStage = () => {
 
   const onAnchorMouseDown = (point: TPoint) => (e: Konva.KonvaEventObject<MouseEvent>) => {
     e.cancelBubble = true;
-    moveTool.onPickAnchor(point);
+    moveTool.onPickAnchor(point, e);
   };
 
   const onStageMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -460,6 +462,11 @@ const CanvasStage = () => {
     if (isRulerVisible && areRulerGuidesVisible) {
       setCursorPos(e.target.getStage()?.getPointerPosition() ?? null);
     }
+  };
+
+  const onStageMouseUp = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    drawingTool.onMouseUp();
+    moveTool.onMouseUp(e);
   };
 
   const onStageMouseLeave = () => {
@@ -568,7 +575,7 @@ const CanvasStage = () => {
         onMouseDown={onStageMouseDown}
         onMouseMove={onStageMouseMove}
         onMouseLeave={onStageMouseLeave}
-        onMouseUp={drawingTool.onMouseUp}
+        onMouseUp={onStageMouseUp}
         onContextMenu={onContextMenu}
       >
         <Layer ref={staticLayerRef}>
