@@ -1,5 +1,5 @@
 import type { DragEvent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Stage, Layer, Line, Rect, Circle } from 'react-konva';
 import { Box } from '@radix-ui/themes';
@@ -25,9 +25,8 @@ import {
 import { DIMENSION_LABEL_FONT_SIZE } from '~/constants/dimension';
 import { SELECTED_COLOR } from '~/constants/shapes';
 
-import { findDimensionResizeTarget } from '~/lib/dimensionBinding';
-import { resizeShapeAlongAxis } from '~/lib/shapeTransform';
-import { computeDimensionGeometry, convertLengthToInternal, formatLength } from '~/lib/dimension';
+import { findDimensionResizeTarget, computeDimensionResizePatch } from '~/lib/dimensionBinding';
+import { computeDimensionGeometry, formatLength } from '~/lib/dimension';
 
 import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
 import { selectionStore, selectionSelectors, selectionActions } from '~/stores/selectionStore';
@@ -275,16 +274,19 @@ const CanvasStage = () => {
 
   const rulerCursor = areRulerGuidesVisible ? cursorPos : null;
 
-  const startEditText = (id: TShapeId) => {
-    const shape = shapes.find(s => s.id === id);
-    if (!shape || shape.type !== 'text') {
-      return;
-    }
-    selectionActions.select([id]);
-    originalTextRef.current = shape.text;
-    documentStore.temporal.getState().pause();
-    setEditingTextId(id);
-  };
+  const startEditText = useCallback(
+    (id: TShapeId) => {
+      const shape = shapes.find(s => s.id === id);
+      if (!shape || shape.type !== 'text') {
+        return;
+      }
+      selectionActions.select([id]);
+      originalTextRef.current = shape.text;
+      documentStore.temporal.getState().pause();
+      setEditingTextId(id);
+    },
+    [shapes],
+  );
 
   const commitEditText = () => {
     documentStore.temporal.getState().resume();
@@ -301,17 +303,20 @@ const CanvasStage = () => {
     setEditingTextId(null);
   };
 
-  const startEditDimension = (id: TShapeId) => {
-    const shape = shapes.find(s => s.id === id);
-    if (!shape || shape.type !== 'dimension') {
-      return;
-    }
-    if (!findDimensionResizeTarget(shape, shapes)) {
-      return;
-    }
-    selectionActions.select([id]);
-    setEditingDimensionId(id);
-  };
+  const startEditDimension = useCallback(
+    (id: TShapeId) => {
+      const shape = shapes.find(s => s.id === id);
+      if (!shape || shape.type !== 'dimension') {
+        return;
+      }
+      if (!findDimensionResizeTarget(shape, shapes)) {
+        return;
+      }
+      selectionActions.select([id]);
+      setEditingDimensionId(id);
+    },
+    [shapes],
+  );
 
   const commitEditDimension = (rawValue: string) => {
     const shape = editingDimensionShape;
@@ -319,32 +324,69 @@ const CanvasStage = () => {
     if (!shape || shape.type !== 'dimension') {
       return;
     }
-    const target = findDimensionResizeTarget(shape, shapes);
-    if (!target) {
-      return;
-    }
-    const enteredLength = Number(rawValue.replace(',', '.'));
-    if (!Number.isFinite(enteredLength) || enteredLength <= 0) {
-      return;
-    }
-    const currentInternal =
-      shape.axis === 'vertical' ? Math.abs(shape.y2 - shape.y1) : Math.abs(shape.x2 - shape.x1);
-    const newInternal = convertLengthToInternal(
-      enteredLength,
+    const result = computeDimensionResizePatch(
+      shape,
+      shapes,
       documentScale,
       documentUnits,
-      shape.unit,
+      rawValue,
     );
-    const delta = newInternal - currentInternal;
-    if (delta === 0) {
+    if (!result) {
       return;
     }
-    documentActions.updateShape(target.id, resizeShapeAlongAxis(target, shape, delta));
+    documentActions.updateShape(result.targetId, result.patch);
   };
 
   const cancelEditDimension = () => {
     setEditingDimensionId(null);
   };
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter') {
+        return;
+      }
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) {
+        return;
+      }
+      if (!isInteractive || editingTextId !== null || editingDimensionId !== null) {
+        return;
+      }
+      if (selectedIds.length !== 1) {
+        return;
+      }
+      const shape = shapes.find(candidate => candidate.id === selectedIds[0]);
+      if (!shape) {
+        return;
+      }
+      if (shape.type !== 'text' && shape.type !== 'dimension') {
+        return;
+      }
+      // The edit box focuses and selects its content synchronously within this same keydown, so
+      // without preventDefault the browser's own Enter handling still fires against it right after
+      // (targeting whatever now has focus, not the original target) and replaces the selection
+      // with a line break.
+      e.preventDefault();
+      if (shape.type === 'text') {
+        startEditText(shape.id);
+        return;
+      }
+      startEditDimension(shape.id);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [
+    isInteractive,
+    editingTextId,
+    editingDimensionId,
+    selectedIds,
+    shapes,
+    startEditText,
+    startEditDimension,
+  ]);
 
   const onComponentDrop = (e: DragEvent<HTMLDivElement>) => {
     const componentId = e.dataTransfer.getData(COMPONENT_DRAG_MIME_TYPE);

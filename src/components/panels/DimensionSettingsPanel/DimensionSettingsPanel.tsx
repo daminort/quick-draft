@@ -1,12 +1,69 @@
-import { Flex, Select } from '@radix-ui/themes';
+import type { ChangeEvent, KeyboardEvent } from 'react';
+import { useEffect, useState } from 'react';
 
-import { documentActions } from '~/stores/documentStore';
+import { Flex, Select, TextField } from '@radix-ui/themes';
+
+import { computeDimensionGeometry, formatLength } from '~/lib/dimension';
+import { computeDimensionResizePatch } from '~/lib/dimensionBinding';
+
+import { documentStore, documentSelectors, documentActions } from '~/stores/documentStore';
+import { uiStore, uiSelectors } from '~/stores/uiStore';
 
 import { Section, LabeledRow, CompactNumberInput } from '~/components/panels/shared/PanelFields';
 
 import type { TDimensionSettingsPanelProps } from './DimensionSettingsPanel.props';
 
 const DimensionSettingsPanel = ({ shape }: TDimensionSettingsPanelProps) => {
+  const shapes = documentStore(documentSelectors.getShapes);
+  const documentScale = documentStore(documentSelectors.getScale);
+  const documentUnits = documentStore(documentSelectors.getUnits);
+  const shouldShowDimensionUnit = uiStore(uiSelectors.getShouldShowDimensionUnit);
+
+  const geometry = computeDimensionGeometry(
+    shape.x1,
+    shape.y1,
+    shape.x2,
+    shape.y2,
+    shape.axis,
+    shape.offset,
+    documentScale,
+    documentUnits,
+    shape.unit,
+    shouldShowDimensionUnit,
+    shapes,
+  );
+  const currentValue = geometry ? formatLength(geometry.length) : '';
+
+  const [valueDraft, setValueDraft] = useState(currentValue);
+  const [isValueFocused, setIsValueFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isValueFocused) {
+      setValueDraft(currentValue);
+    }
+  }, [currentValue, isValueFocused]);
+
+  const onValueChange = (e: ChangeEvent<HTMLInputElement>) => setValueDraft(e.target.value);
+  const onValueFocus = () => setIsValueFocused(true);
+  const onValueBlur = () => setIsValueFocused(false);
+  const onValueKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    e.preventDefault();
+    const result = computeDimensionResizePatch(
+      shape,
+      shapes,
+      documentScale,
+      documentUnits,
+      valueDraft,
+    );
+    if (result) {
+      documentActions.updateShape(result.targetId, result.patch);
+    }
+    e.currentTarget.blur();
+  };
+
   const onStartXChange = (v: number) =>
     documentActions.updateShape(shape.id, { x1: v, bindingA: null });
   const onStartYChange = (v: number) =>
@@ -20,6 +77,16 @@ const DimensionSettingsPanel = ({ shape }: TDimensionSettingsPanelProps) => {
 
   return (
     <Flex direction="column" gap="4">
+      <Section title="Value">
+        <TextField.Root
+          value={valueDraft}
+          onChange={onValueChange}
+          onFocus={onValueFocus}
+          onBlur={onValueBlur}
+          onKeyDown={onValueKeyDown}
+        />
+      </Section>
+
       <Section title="Position">
         <LabeledRow label="Start">
           <CompactNumberInput value={shape.x1} onChange={onStartXChange} />

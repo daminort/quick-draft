@@ -1,8 +1,16 @@
-import type { TDimensionBinding, TShape, TShapePointKey } from '~/types/document';
+import type {
+  TDimensionBinding,
+  TShape,
+  TShapeId,
+  TShapePatch,
+  TShapePointKey,
+} from '~/types/document';
 
 import { BINDING_EPSILON } from '~/constants/dimension';
 
 import { listBindablePoints } from '~/lib/bounds';
+import { convertLengthToInternal } from '~/lib/dimension';
+import { resizeShapeAlongAxis } from '~/lib/shapeTransform';
 
 type TPoint = { x: number; y: number };
 
@@ -39,6 +47,44 @@ function findDimensionResizeTarget(
     return null;
   }
   return target;
+}
+
+/**
+ * Applies a user-typed length to a bound dimension: resolves the shape it measures and returns the
+ * patch that resizes it by the difference between the typed length and the dimension's current one.
+ * Returns null when the dimension isn't resolvable, the value isn't a valid positive number, or the
+ * value doesn't actually change the length.
+ */
+function computeDimensionResizePatch(
+  dimension: Extract<TShape, { type: 'dimension' }>,
+  shapes: TShape[],
+  documentScale: number,
+  documentUnits: 'mm' | 'cm' | 'm',
+  rawValue: string,
+): { targetId: TShapeId; patch: TShapePatch } | null {
+  const target = findDimensionResizeTarget(dimension, shapes);
+  if (!target) {
+    return null;
+  }
+  const enteredLength = Number(rawValue.replace(',', '.'));
+  if (!Number.isFinite(enteredLength) || enteredLength <= 0) {
+    return null;
+  }
+  const currentInternal =
+    dimension.axis === 'vertical'
+      ? Math.abs(dimension.y2 - dimension.y1)
+      : Math.abs(dimension.x2 - dimension.x1);
+  const newInternal = convertLengthToInternal(
+    enteredLength,
+    documentScale,
+    documentUnits,
+    dimension.unit,
+  );
+  const delta = newInternal - currentInternal;
+  if (delta === 0) {
+    return null;
+  }
+  return { targetId: target.id, patch: resizeShapeAlongAxis(target, dimension, delta) };
 }
 
 /** Finds the shape+point that exactly matches `point` (already snapped by the caller), if any. */
@@ -100,4 +146,9 @@ function resyncDimensionBindings(shapes: TShape[]): TShape[] {
   return changed ? next : shapes;
 }
 
-export { findBindingForPoint, resyncDimensionBindings, findDimensionResizeTarget };
+export {
+  findBindingForPoint,
+  resyncDimensionBindings,
+  findDimensionResizeTarget,
+  computeDimensionResizePatch,
+};

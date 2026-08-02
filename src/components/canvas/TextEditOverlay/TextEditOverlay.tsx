@@ -1,5 +1,5 @@
 import type { CSSProperties, FormEvent, KeyboardEvent } from 'react';
-import { useEffect, useRef } from 'react';
+import { useCallback, useState } from 'react';
 
 import { EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
 
@@ -16,23 +16,23 @@ const TextEditOverlay = ({
   onCommit,
   onCancel,
 }: TTextEditOverlayProps) => {
-  const ref = useRef<HTMLDivElement>(null);
+  // Frozen at mount, rendered as the div's children below so the current text is there from the
+  // very first paint — no imperative step has to race a browser render. `shape.text` itself
+  // changes on every keystroke (onInput writes straight back to the document), so the frozen copy
+  // is what's rendered, not the live prop: re-rendering with the live value would fight the user's
+  // typing and caret position.
+  const [seedText] = useState(() => shape.text);
 
-  // Seeded once on mount so re-renders triggered by our own onChange calls don't reset the
-  // caret position while the user is typing.
-  useEffect(() => {
-    const el = ref.current;
+  const setRef = useCallback((el: HTMLDivElement | null) => {
     if (!el) {
       return;
     }
-    el.textContent = shape.text;
     el.focus();
     const range = document.createRange();
     range.selectNodeContents(el);
     const selection = window.getSelection();
     selection?.removeAllRanges();
     selection?.addRange(range);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fontStyle =
@@ -63,7 +63,7 @@ const TextEditOverlay = ({
 
   return (
     <div
-      ref={ref}
+      ref={setRef}
       contentEditable
       suppressContentEditableWarning
       spellCheck={false}
@@ -72,7 +72,9 @@ const TextEditOverlay = ({
       onKeyDown={onKeyDown}
       className={s.overlay}
       style={overlayStyle}
-    />
+    >
+      {seedText}
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
-import { useEffect, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { EDIT_OVERLAY_PADDING_PX } from '~/constants/canvas';
 
@@ -32,23 +32,23 @@ const DimensionEditOverlay = ({
   onCommit,
   onCancel,
 }: TDimensionEditOverlayProps) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
-  // Seeded once on mount, same as TextEditOverlay: the value only needs to be applied on commit,
-  // not tracked on every keystroke.
-  useEffect(() => {
-    const el = ref.current;
+  // Frozen at mount, rendered as the div's children below so the current value is there from the
+  // very first paint — no imperative step has to race a browser render, same as TextEditOverlay.
+  const [seedValue] = useState(() => initialValue);
+
+  const setRef = useCallback((el: HTMLDivElement | null) => {
+    ref.current = el;
     if (!el) {
       return;
     }
-    el.textContent = initialValue;
     el.focus();
     const range = document.createRange();
     range.selectNodeContents(el);
     const selection = window.getSelection();
     selection?.removeAllRanges();
     selection?.addRange(range);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const commit = () => onCommit(ref.current?.textContent ?? '');
@@ -73,7 +73,7 @@ const DimensionEditOverlay = ({
 
   return (
     <div
-      ref={ref}
+      ref={setRef}
       contentEditable
       suppressContentEditableWarning
       spellCheck={false}
@@ -81,7 +81,9 @@ const DimensionEditOverlay = ({
       onKeyDown={onKeyDown}
       className={s.overlay}
       style={overlayStyle}
-    />
+    >
+      {seedValue}
+    </div>
   );
 };
 
